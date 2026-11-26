@@ -22,10 +22,10 @@ name: Update Profile
 
 on:
   schedule:
-    # Every 6 hours — adjust cron expression to change frequency.
-    # GitHub minimum is every 5 minutes; profile data rarely changes faster
-    # than once per day, so 6 h is a good balance between freshness and quota.
-    - cron: "0 */6 * * *"
+    # Run every 6 hours offset to :05 past 00, 06, 12, 18 UTC (= 06:05 AM,
+    # 12:05 PM, 06:05 PM, 12:05 AM Asia/Dhaka) so Day (6 AM–6 PM) and
+    # Night (6 PM–6 AM) workspace themes flip reliably right after 6 AM / 6 PM.
+    - cron: "5 0,6,12,18 * * *"
 
   workflow_dispatch:
     inputs:
@@ -39,6 +39,16 @@ on:
           - updated
           - stars
           - name
+      workspace_theme:
+        description: "Workspace lighting theme (blank = auto 6AM/6PM Asia/Dhaka)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - auto
+          - day
+          - night
       dry_run:
         description: "Dry-run: regenerate assets but do NOT commit"
         required: false
@@ -175,6 +185,12 @@ jobs:
           SORT="${{ github.event.inputs.sort_by }}"
           if [ -n "$SORT" ]; then
             ARGS="$ARGS --sort-by $SORT"
+          fi
+
+          # workspace_theme from manual dispatch (empty string = auto)
+          THEME="${{ github.event.inputs.workspace_theme }}"
+          if [ -n "$THEME" ]; then
+            ARGS="$ARGS --theme $THEME"
           fi
 
           # dry_run flag (only relevant on manual dispatch)

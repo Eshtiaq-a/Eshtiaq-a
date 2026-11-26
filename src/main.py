@@ -46,6 +46,7 @@ from src.visualizations.project_explorer import (
     build_section_divider_svg,
 )
 from src.visualizations.repo_galaxy import build_repo_galaxy_cards
+from src.workspace_scene import WorkspaceTheme
 
 
 def _render_and_validate_profile_assets(
@@ -56,13 +57,14 @@ def _render_and_validate_profile_assets(
     profile_cfg: Any,
     ascii_path: Path = ASCII_PORTRAIT_PATH,
     sort_by: ExplorerSortOrder | None = None,
+    workspace_theme: WorkspaceTheme = "auto",
 ) -> dict[str, Any]:
     """Validate datasets and render all three SVG sections, slices, divider, and README in memory."""
     validate_repositories_payload(repos_payload)
     validate_commits_payload(commits_payload)
     validate_profile_data_payload(profile_payload)
 
-    workspace_svg = build_workspace_svg(commits_payload, profile_cfg)
+    workspace_svg = build_workspace_svg(commits_payload, profile_cfg, theme=workspace_theme)
     validate_svg_document(workspace_svg)
 
     neofetch_model = build_neofetch_model(
@@ -153,6 +155,7 @@ def run_phase2_pipeline(
     client: GitHubClient | None = None,
     dry_run: bool = False,
     sort_by: ExplorerSortOrder | None = None,
+    workspace_theme: WorkspaceTheme = "auto",
 ) -> dict[str, Any]:
     """Fetch public repos/branches/commits/stats, validate, and atomically persist requested outputs."""
     profile_cfg = load_profile_config(config_path)
@@ -180,6 +183,7 @@ def run_phase2_pipeline(
         profile_cfg=profile_cfg,
         ascii_path=ascii_path,
         sort_by=sort_by,
+        workspace_theme=workspace_theme,
     )
 
     effective_cards_dir = _resolve_repo_cards_dir(repo_cards_dir, readme_path)
@@ -240,6 +244,7 @@ def run_full_profile_pipeline(
     dry_run: bool = False,
     from_cache: bool = False,
     sort_by: ExplorerSortOrder | None = None,
+    workspace_theme: WorkspaceTheme = "auto",
 ) -> dict[str, Any]:
     """Run complete 3-section profile generation (live API fetch or cached JSON datasets)."""
     if not from_cache:
@@ -260,6 +265,7 @@ def run_full_profile_pipeline(
             client=client,
             dry_run=dry_run,
             sort_by=sort_by,
+            workspace_theme=workspace_theme,
         )
 
     profile_cfg = load_profile_config(config_path)
@@ -276,6 +282,7 @@ def run_full_profile_pipeline(
         profile_cfg=profile_cfg,
         ascii_path=ascii_path,
         sort_by=sort_by,
+        workspace_theme=workspace_theme,
     )
 
     effective_cards_dir = _resolve_repo_cards_dir(repo_cards_dir, readme_path)
@@ -326,12 +333,19 @@ def main() -> None:
         default=None,
         help="Override Section 03 Project Explorer sorting strategy.",
     )
+    parser.add_argument(
+        "--theme",
+        choices=("auto", "day", "night"),
+        default="auto",
+        help="Section 01 workspace lighting theme (auto = day 06:00-17:59, night 18:00-05:59 in configured timezone).",
+    )
     args = parser.parse_args()
 
     summary = run_full_profile_pipeline(
         dry_run=args.dry_run,
         from_cache=args.from_cache,
         sort_by=args.sort_by,
+        workspace_theme=args.theme,
     )
     repos = summary["repositories"]
     commits = summary["commits"]

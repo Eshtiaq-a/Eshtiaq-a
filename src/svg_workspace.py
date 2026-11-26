@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -20,12 +21,14 @@ from src.config import (
 )
 from src.credits_formatter import build_credit_sequence, render_credit_lines_svg
 from src.validators import validate_commits_payload, validate_svg_document
-from src.workspace_scene import render_workspace_room_layers
+from src.workspace_scene import WorkspaceTheme, render_workspace_room_layers, resolve_is_daytime
 
 
 def build_workspace_svg(
     commits_payload: dict[str, Any],
     config: ProfileConfig,
+    theme: WorkspaceTheme = "auto",
+    now: datetime | None = None,
 ) -> str:
     """Compose the self-contained animated workspace SVG with scrolling movie credits."""
     validate_commits_payload(commits_payload)
@@ -37,9 +40,11 @@ def build_workspace_svg(
     sx, sy, sw, sh = MONITOR_SCREEN_BOX
     center_x = sx + sw / 2.0
     credit_markup = render_credit_lines_svg(lines, center_x=center_x)
-    room_layers = render_workspace_room_layers(config)
+    is_daytime = resolve_is_daytime(timezone_name=config.timezone, theme=theme, now=now)
+    room_layers = render_workspace_room_layers(config, theme=theme, now=now)
+    aria_sky = "sunny sky and clouds with desk lamp off" if is_daytime else "night sky with lit desk lamp"
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WORKSPACE_WIDTH} {WORKSPACE_HEIGHT}" width="{WORKSPACE_WIDTH}" height="{WORKSPACE_HEIGHT}" role="img" aria-label="Eshtiaq Ahmad pixel-art developer workspace with MacBook connected to external monitor displaying GitHub commit movie end credits" shape-rendering="crispEdges">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WORKSPACE_WIDTH} {WORKSPACE_HEIGHT}" width="{WORKSPACE_WIDTH}" height="{WORKSPACE_HEIGHT}" role="img" aria-label="Eshtiaq Ahmad pixel-art developer workspace ({aria_sky}) with MacBook connected to external monitor displaying GitHub commit movie end credits" shape-rendering="crispEdges">
   <defs>
     <clipPath id="room-card-clip">
       <rect x="0" y="0" width="{WORKSPACE_WIDTH}" height="{WORKSPACE_HEIGHT}" rx="14" ry="14" />
@@ -87,19 +92,19 @@ def build_workspace_svg(
         transform: translateY(2px);
         opacity: 0;
       }}
-      20% {{
-        opacity: 0.65;
+      25% {{
+        opacity: 0.62;
       }}
-      55% {{
-        opacity: 0.45;
-        transform: translateY(-5px) scaleX(1.15);
+      60% {{
+        transform: translateY(-7px);
+        opacity: 0.40;
       }}
       85% {{
-        opacity: 0.20;
-        transform: translateY(-9px) scaleX(1.35);
+        transform: translateY(-11px);
+        opacity: 0.16;
       }}
       100% {{
-        transform: translateY(-13px) scaleX(1.5);
+        transform: translateY(-14px);
         opacity: 0;
       }}
     }}
@@ -156,19 +161,27 @@ def build_workspace_svg(
     }}
     @keyframes steamPuff {{
       0% {{
-        transform: translateY(0px) scaleX(1);
+        transform: translateY(2px);
         opacity: 0;
       }}
-      15% {{
-        opacity: 1;
+      20% {{
+        opacity: 0.9;
       }}
       60% {{
-        transform: translateY(-8px) scaleX(1.4);
-        opacity: 0.5;
+        transform: translateY(-9px);
+        opacity: 0.45;
       }}
       100% {{
-        transform: translateY(-16px) scaleX(1.8);
+        transform: translateY(-18px);
         opacity: 0;
+      }}
+    }}
+    @keyframes cloudDrift {{
+      0%, 100% {{
+        transform: translateX(-10px);
+      }}
+      50% {{
+        transform: translateX(14px);
       }}
     }}
     @keyframes shootingStar {{
@@ -243,15 +256,18 @@ def build_workspace_svg(
     }}
     .mug-steam-puff-a {{
       animation: steamPuff 4.0s ease-in-out infinite;
-      transform-origin: center bottom;
     }}
     .mug-steam-puff-b {{
       animation: steamPuff 4.5s ease-in-out 1.4s infinite;
-      transform-origin: center bottom;
     }}
     .mug-steam-puff-c {{
       animation: steamPuff 5.2s ease-in-out 2.6s infinite;
-      transform-origin: center bottom;
+    }}
+    .cloud-drift-1 {{
+      animation: cloudDrift 28s ease-in-out infinite;
+    }}
+    .cloud-drift-2 {{
+      animation: cloudDrift 36s ease-in-out 4s reverse infinite;
     }}
     /* Shooting stars: 2-min initial delay, 5-min cycle, ~0.9s flash */
     .shooting-star-1 {{
@@ -269,6 +285,7 @@ def build_workspace_svg(
       .mug-steam-puff-a, .mug-steam-puff-b, .mug-steam-puff-c,
       .cat-tail-wag, .cat-breathe, .sleep-z-1, .sleep-z-2,
       .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone,
+      .cloud-drift-1, .cloud-drift-2,
       .shooting-star-1, .shooting-star-2, .shooting-star-3 {{
         animation: none;
       }}
@@ -303,12 +320,13 @@ def generate_workspace_svg_file(
     commits_path: Path | None = None,
     output_path: Path = WORKSPACE_SVG_PATH,
     config_path: Path | None = None,
+    theme: WorkspaceTheme = "auto",
 ) -> Path:
     """Load commit JSON + profile config, render animated SVG, validate, and write atomically."""
     config = load_profile_config() if config_path is None else load_profile_config(config_path)
     source_path = commits_path or (COMMITS_PATH if COMMITS_PATH.exists() else SAMPLE_COMMITS_PATH)
     payload = json.loads(source_path.read_text(encoding="utf-8"))
-    svg_text = build_workspace_svg(payload, config)
+    svg_text = build_workspace_svg(payload, config, theme=theme)
     return atomic_write_text(output_path, svg_text)
 
 

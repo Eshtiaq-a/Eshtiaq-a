@@ -1,6 +1,10 @@
-"""Pixel-art room scene generator matching Reference Image 1 with inhabited details & animated hooks."""
+"""Pixel-art room scene generator matching Reference Image 1 with inhabited details, Day/Night modes & animations."""
 
 from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+from typing import Literal
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from src.config import (
     MONITOR_SCREEN_BOX,
@@ -9,6 +13,32 @@ from src.config import (
     WORKSPACE_WIDTH,
     ProfileConfig,
 )
+
+WorkspaceTheme = Literal["auto", "day", "night"]
+
+
+def resolve_is_daytime(
+    timezone_name: str = "Asia/Dhaka",
+    theme: WorkspaceTheme = "auto",
+    now: datetime | None = None,
+) -> bool:
+    """Return True from 06:00 through 17:59 in the configured timezone (or forced theme)."""
+    if theme == "day":
+        return True
+    if theme == "night":
+        return False
+
+    ref_utc = now if now is not None else datetime.now(timezone.utc)
+    if ref_utc.tzinfo is None:
+        ref_utc = ref_utc.replace(tzinfo=timezone.utc)
+
+    try:
+        tz = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        tz = timezone(timedelta(hours=6))
+
+    local_dt = ref_utc.astimezone(tz)
+    return 6 <= local_dt.hour < 18
 
 # Crisp 5x7 pixel-bitmap font for the ESHTIAQ AHMAD wall plaque (zero system-font drift)
 PIXEL_FONT_5X7: dict[str, tuple[str, ...]] = {
@@ -102,15 +132,60 @@ def _render_wall_and_floor() -> str:
     return "\n    ".join(parts)
 
 
-def _render_window() -> str:
-    """Render cozy 2x2 night window with crescent moon, twinkling stars, pane highlights, sill, shooting stars, and hanging plant."""
-    # Clip path for shooting stars is defined inline via clipPath id="win-sky-clip"
-    return "\n    ".join(
-        [
-            # Drop shadow under sill & frame
-            f'<rect x="38" y="59" width="208" height="202" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
-            f'<rect x="36" y="55" width="208" height="202" fill="{P["window_frame"]}" />',
-            # 4 night sky panes
+def _render_window(is_daytime: bool = False) -> str:
+    """Render 2x2 window: sunny sky + pixel sun + drifting clouds (Day), or crescent moon + twinkling/shooting stars (Night)."""
+    if is_daytime:
+        sky_panes = [
+            # Bright sunny sky panes (Day: 06:00 - 17:59)
+            f'<rect x="44" y="63" width="92" height="88" fill="#4ca8f5" />',
+            f'<rect x="144" y="63" width="92" height="88" fill="#4ca8f5" />',
+            f'<rect x="44" y="159" width="92" height="90" fill="#74c2ff" />',
+            f'<rect x="144" y="159" width="92" height="90" fill="#74c2ff" />',
+            # Soft warm horizon glow at bottom of lower panes
+            f'<rect x="44" y="227" width="92" height="22" fill="#a8ddff" fill-opacity="0.8" />',
+            f'<rect x="144" y="227" width="92" height="22" fill="#a8ddff" fill-opacity="0.8" />',
+            # Crisp glass reflection ticks
+            f'<rect x="50" y="69" width="10" height="2" fill="#ffffff" fill-opacity="0.40" />',
+            f'<rect x="50" y="71" width="2" height="8" fill="#ffffff" fill-opacity="0.40" />',
+            f'<rect x="150" y="165" width="10" height="2" fill="#ffffff" fill-opacity="0.40" />',
+            # Pixel sun in upper-right pane with outer warmth + ray ticks
+            f'<rect x="184" y="80" width="24" height="24" fill="#fff5b8" fill-opacity="0.35" />',
+            f'<rect x="188" y="84" width="16" height="16" fill="#ffd94a" />',
+            f'<rect x="190" y="86" width="12" height="12" fill="#fff29c" />',
+            f'<rect x="195" y="76" width="2" height="4" fill="#ffd94a" />',
+            f'<rect x="195" y="104" width="2" height="4" fill="#ffd94a" />',
+            f'<rect x="180" y="91" width="4" height="2" fill="#ffd94a" />',
+            f'<rect x="208" y="91" width="4" height="2" fill="#ffd94a" />',
+            # Drifting pixel clouds clipped inside the 4 window panes
+            '<clipPath id="win-sky-clip">'
+            f'<rect x="44" y="63" width="92" height="88" />'
+            f'<rect x="144" y="63" width="92" height="88" />'
+            f'<rect x="44" y="159" width="92" height="90" />'
+            f'<rect x="144" y="159" width="92" height="90" />'
+            '</clipPath>',
+            '<g clip-path="url(#win-sky-clip)" pointer-events="none">',
+            '  <g class="cloud-drift-1">',
+            f'    <rect x="64" y="112" width="38" height="10" fill="#ffffff" />',
+            f'    <rect x="70" y="104" width="24" height="8" fill="#ffffff" />',
+            f'    <rect x="76" y="100" width="12" height="4" fill="#ffffff" />',
+            f'    <rect x="64" y="120" width="38" height="3" fill="#dceeff" />',
+            f'    <rect x="150" y="122" width="30" height="8" fill="#ffffff" fill-opacity="0.95" />',
+            f'    <rect x="156" y="116" width="16" height="6" fill="#ffffff" fill-opacity="0.95" />',
+            f'    <rect x="150" y="128" width="30" height="2" fill="#dceeff" />',
+            '  </g>',
+            '  <g class="cloud-drift-2">',
+            f'    <rect x="72" y="190" width="34" height="9" fill="#ffffff" fill-opacity="0.95" />',
+            f'    <rect x="78" y="184" width="20" height="6" fill="#ffffff" fill-opacity="0.95" />',
+            f'    <rect x="72" y="197" width="34" height="2" fill="#dceeff" />',
+            f'    <rect x="166" y="176" width="42" height="10" fill="#ffffff" />',
+            f'    <rect x="174" y="169" width="24" height="7" fill="#ffffff" />',
+            f'    <rect x="166" y="184" width="42" height="3" fill="#dceeff" />',
+            '  </g>',
+            '</g>',
+        ]
+    else:
+        sky_panes = [
+            # 4 night sky panes (Night: 18:00 - 05:59)
             f'<rect x="44" y="63" width="92" height="88" fill="{P["window_sky"]}" />',
             f'<rect x="144" y="63" width="92" height="88" fill="{P["window_sky"]}" />',
             f'<rect x="44" y="159" width="92" height="90" fill="{P["window_sky"]}" />',
@@ -135,8 +210,7 @@ def _render_window() -> str:
             f'<rect x="184" y="88" width="8" height="24" fill="{P["cream"]}" />',
             f'<rect x="184" y="104" width="24" height="8" fill="{P["cream"]}" />',
             f'<rect class="star-twinkle-c" x="208" y="120" width="4" height="4" fill="{P["cream"]}" />',
-            # ── Shooting stars (clipped to window sky area, 2-min delay, 5-min cycle) ──────────
-            # ClipPath scopes the comet trails strictly to the 4 panes area
+            # Shooting stars (clipped to window sky area, 2-min delay, 5-min cycle)
             '<clipPath id="win-sky-clip">'
             f'<rect x="44" y="63" width="92" height="88" />'
             f'<rect x="144" y="63" width="92" height="88" />'
@@ -144,41 +218,39 @@ def _render_window() -> str:
             f'<rect x="144" y="159" width="92" height="90" />'
             '</clipPath>',
             '<g clip-path="url(#win-sky-clip)" pointer-events="none">',
-            # Star 1: upper-left pane, diagonal NW→SE, fires at 120s, repeats every 300s
             f'  <line class="shooting-star-1" x1="52" y1="67" x2="52" y2="67" stroke="{P["cream"]}" stroke-width="1.5" stroke-linecap="round" />',
-            # Star 2: upper-right pane, offset by 97s within the 300s cycle
             f'  <line class="shooting-star-2" x1="152" y1="70" x2="152" y2="70" stroke="#c8e0ff" stroke-width="1.5" stroke-linecap="round" />',
-            # Star 3: lower-left pane, offset by 185s — rarer, appears mid-cycle
             f'  <line class="shooting-star-3" x1="56" y1="166" x2="56" y2="166" stroke="{P["window_star"]}" stroke-width="1.5" stroke-linecap="round" />',
             '</g>',
+        ]
+
+    return "\n    ".join(
+        [
+            # Drop shadow under sill & frame
+            f'<rect x="38" y="59" width="208" height="202" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
+            f'<rect x="36" y="55" width="208" height="202" fill="{P["window_frame"]}" />',
+            *sky_panes,
             # Wooden window sill with top bevel & cast wall shadow
             f'<rect x="28" y="257" width="224" height="2" fill="{P["wood_highlight"]}" />',
             f'<rect x="28" y="259" width="224" height="6" fill="{P["wood_top"]}" />',
             f'<rect x="28" y="265" width="224" height="4" fill="{P["wood_shadow"]}" />',
             f'<rect x="30" y="269" width="220" height="4" fill="{P["shadow_ambient"]}" fill-opacity="0.55" />',
-            # ── Hanging plant on window top-frame interior ───────────────────────────────────────
-            # Hook nail on the inside top edge of the frame (x=72, y=56)
+            # Hanging plant on window top-frame interior
             f'<rect x="73" y="56" width="4" height="6" fill="{P["wood_shadow"]}" />',
-            # Vine / string down from hook
             f'<rect x="74" y="62" width="2" height="12" fill="#5a7a44" />',
-            # Small terracotta pot suspended from string
-            f'<rect x="68" y="74" width="16" height="2" fill="#b06434" />',  # pot rim
-            f'<rect x="70" y="76" width="12" height="10" fill="#c0724a" />',  # pot body
-            f'<rect x="72" y="86" width="8" height="2" fill="#b06434" />',   # pot base
-            # Soil
+            f'<rect x="68" y="74" width="16" height="2" fill="#b06434" />',
+            f'<rect x="70" y="76" width="12" height="10" fill="#c0724a" />',
+            f'<rect x="72" y="86" width="8" height="2" fill="#b06434" />',
             f'<rect x="70" y="74" width="12" height="4" fill="#5c3d20" />',
-            # Trailing ivy leaves – left drape
             f'<rect x="58" y="78" width="12" height="6" fill="{P["plant_leaf"]}" />',
             f'<rect x="52" y="82" width="10" height="6" fill="{P["plant_leaf"]}" />',
             f'<rect x="46" y="88" width="10" height="6" fill="{P["plant_leaf_dark"]}" />',
             f'<rect x="52" y="94" width="8" height="4" fill="{P["plant_leaf"]}" />',
             f'<rect x="46" y="99" width="8" height="4" fill="{P["plant_leaf_dark"]}" />',
-            # Trailing ivy leaves – right drape
             f'<rect x="84" y="78" width="12" height="6" fill="{P["plant_leaf"]}" />',
             f'<rect x="92" y="84" width="10" height="6" fill="{P["plant_leaf"]}" />',
             f'<rect x="98" y="90" width="8" height="6" fill="{P["plant_leaf_dark"]}" />',
             f'<rect x="92" y="96" width="8" height="4" fill="{P["plant_leaf"]}" />',
-            # Stem highlights (lighter vein pixel)
             f'<rect x="62" y="80" width="2" height="2" fill="#93c8b2" />',
             f'<rect x="88" y="80" width="2" height="2" fill="#93c8b2" />',
         ]
@@ -227,8 +299,31 @@ def _render_name_plaque_and_wall_decor(display_name: str) -> str:
     )
 
 
-def _render_desk_and_lamp() -> str:
-    """Render layered wooden desk with depth, ambient shadows, and warm animated lamp glow."""
+def _render_desk_and_lamp(is_daytime: bool = False) -> str:
+    """Render layered wooden desk with depth, ambient shadows, and Day (off) / Night (lit) table lamp."""
+    if is_daytime:
+        lamp_light_and_shade = [
+            # Daytime: table lamp is OFF (no glow cone, unlit shade & dark bulb)
+            f'<rect x="264" y="293" width="22" height="4" fill="{P["lamp_pole"]}" />',
+            f'<rect x="273" y="192" width="4" height="101" fill="{P["lamp_pole"]}" />',
+            f'<rect x="271" y="236" width="8" height="4" fill="{P["monitor_base"]}" />',
+            f'<rect x="257" y="176" width="36" height="14" fill="#9e8748" />',
+            f'<rect x="259" y="188" width="32" height="2" fill="#4f462d" />',
+            f'<rect x="257" y="190" width="36" height="2" fill="#756333" />',
+        ]
+    else:
+        lamp_light_and_shade = [
+            # Nighttime: animated warm desk lamp glow cone illuminating MacBook & left desk
+            f'<polygon class="lamp-glow-cone" points="258,192 292,192 332,297 248,297" fill="url(#lamp-beam-grad)" />',
+            # Desk lamp hardware (far left on desk)
+            f'<rect x="264" y="293" width="22" height="4" fill="{P["lamp_pole"]}" />',
+            f'<rect x="273" y="192" width="4" height="101" fill="{P["lamp_pole"]}" />',
+            f'<rect x="271" y="236" width="8" height="4" fill="{P["monitor_base"]}" />',
+            f'<rect x="257" y="176" width="36" height="14" fill="{P["lamp_shade"]}" />',
+            f'<rect x="259" y="188" width="32" height="3" fill="#ffe694" />',
+            f'<rect x="257" y="190" width="36" height="2" fill="#d4aa42" />',
+        ]
+
     return "\n    ".join(
         [
             # Soft ambient desk glow from external monitor onto wall
@@ -245,15 +340,7 @@ def _render_desk_and_lamp() -> str:
             f'<rect x="248" y="299" width="494" height="16" fill="{P["wood_top"]}" />',
             f'<rect x="256" y="315" width="478" height="8" fill="{P["wood_shadow"]}" />',
             f'<rect x="260" y="323" width="470" height="5" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
-            # Animated warm desk lamp glow cone illuminating MacBook & left desk
-            f'<polygon class="lamp-glow-cone" points="258,192 292,192 332,297 248,297" fill="url(#lamp-beam-grad)" />',
-            # Desk lamp hardware (far left on desk)
-            f'<rect x="264" y="293" width="22" height="4" fill="{P["lamp_pole"]}" />',
-            f'<rect x="273" y="192" width="4" height="101" fill="{P["lamp_pole"]}" />',
-            f'<rect x="271" y="236" width="8" height="4" fill="{P["monitor_base"]}" />',
-            f'<rect x="257" y="176" width="36" height="14" fill="{P["lamp_shade"]}" />',
-            f'<rect x="259" y="188" width="32" height="3" fill="#ffe694" />',
-            f'<rect x="257" y="190" width="36" height="2" fill="#d4aa42" />',
+            *lamp_light_and_shade,
         ]
     )
 
@@ -385,20 +472,17 @@ def _render_mug_and_chair() -> str:
             f'<rect x="710" y="278" width="5" height="3" fill="{P["mug_cream"]}" />',
             f'<rect x="712" y="281" width="3" height="7" fill="{P["mug_cream"]}" />',
             f'<rect x="710" y="288" width="5" height="3" fill="{P["mug_cream"]}" />',
-            # ── Enhanced realistic animated coffee steam (layered fog wisps) ───────────────────
-            # Wide base puff — slow billow rising from mug rim
-            f'<rect class="mug-steam-puff-a" x="691" y="263" width="6" height="4" fill="{P["mug_cream"]}" fill-opacity="0.40" />',
-            f'<rect class="mug-steam-puff-a" x="697" y="261" width="8" height="4" fill="{P["mug_cream"]}" fill-opacity="0.30" />',
-            # Mid wisp — slightly narrower, offset timing
-            f'<rect class="mug-steam-puff-b" x="693" y="257" width="5" height="4" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
-            f'<rect class="mug-steam-puff-b" x="700" y="254" width="6" height="3" fill="{P["mug_cream"]}" fill-opacity="0.25" />',
-            # Top dissipating curl — smallest, fades fastest
-            f'<rect class="mug-steam-puff-c" x="695" y="250" width="4" height="3" fill="{P["mug_cream"]}" fill-opacity="0.20" />',
-            f'<rect class="mug-steam-puff-c" x="702" y="247" width="5" height="3" fill="{P["mug_cream"]}" fill-opacity="0.15" />',
-            # Thin vertical stem threads (original narrow wisps preserved for detail)
-            f'<rect class="mug-steam-1" x="696" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
-            f'<rect class="mug-steam-2" x="701" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
-            f'<rect class="mug-steam-3" x="706" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
+            # ── Vertical rising coffee steam (straight up above mug rim, zero sideways drift) ──
+            f'<rect class="mug-steam-puff-a" x="694" y="264" width="12" height="4" fill="{P["mug_cream"]}" fill-opacity="0.34" />',
+            f'<rect class="mug-steam-puff-a" x="696" y="260" width="8" height="4" fill="{P["mug_cream"]}" fill-opacity="0.26" />',
+            f'<rect class="mug-steam-puff-b" x="695" y="256" width="10" height="3" fill="{P["mug_cream"]}" fill-opacity="0.24" />',
+            f'<rect class="mug-steam-puff-b" x="697" y="252" width="6" height="3" fill="{P["mug_cream"]}" fill-opacity="0.18" />',
+            f'<rect class="mug-steam-puff-c" x="696" y="248" width="8" height="3" fill="{P["mug_cream"]}" fill-opacity="0.15" />',
+            f'<rect class="mug-steam-puff-c" x="698" y="244" width="4" height="2" fill="{P["mug_cream"]}" fill-opacity="0.11" />',
+            # Thin vertical wisps centered directly over coffee surface (x=695..705)
+            f'<rect class="mug-steam-1" x="695" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
+            f'<rect class="mug-steam-2" x="700" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
+            f'<rect class="mug-steam-3" x="705" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
             # Ergonomic desk chair positioned cleanly below tabletop y=312 (zero overlap with keyboard/screen)
             f'<rect x="524" y="312" width="56" height="30" fill="{P["chair_main"]}" />',
             f'<rect x="528" y="312" width="48" height="4" fill="{P["chair_highlight"]}" />',
@@ -420,20 +504,79 @@ def _render_mug_and_chair() -> str:
 
 
 def _render_indoor_plants(include_second_plant: bool) -> str:
-    """Render 1-2 subtle indoor pixel plants without cluttering the Mac setup."""
+    """Render large floor Monstera deliciosa plant beside desk plus optional shelf succulent."""
     parts = [
-        # Plant 1: Floor plant beside left of desk (x=114..174, base at y=404)
-        f'<rect x="122" y="354" width="42" height="10" fill="{P["plant_pot"]}" />',
-        f'<rect x="126" y="364" width="34" height="4" fill="{P["plant_pot_rim"]}" />',
-        f'<rect x="126" y="368" width="34" height="36" fill="{P["plant_pot"]}" />',
-        f'<rect x="152" y="368" width="8" height="36" fill="{P["plant_pot_rim"]}" />',
-        f'<rect x="140" y="282" width="6" height="72" fill="{P["plant_leaf"]}" />',
-        f'<rect x="146" y="290" width="24" height="10" fill="{P["plant_leaf"]}" />',
-        f'<rect x="146" y="300" width="24" height="2" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="116" y="308" width="24" height="10" fill="{P["plant_leaf"]}" />',
-        f'<rect x="116" y="318" width="24" height="2" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="146" y="324" width="20" height="10" fill="{P["plant_leaf"]}" />',
-        f'<rect x="146" y="334" width="20" height="2" fill="{P["plant_leaf_dark"]}" />',
+        # Plant 1: Big floor Monstera deliciosa beside left of desk (x=76..218, base at y=404)
+        # Sturdy terracotta pot & rich soil
+        f'<rect x="118" y="354" width="50" height="8" fill="{P["plant_pot"]}" />',
+        f'<rect x="122" y="362" width="42" height="4" fill="{P["plant_pot_rim"]}" />',
+        f'<rect x="124" y="366" width="38" height="38" fill="{P["plant_pot"]}" />',
+        f'<rect x="154" y="366" width="8" height="38" fill="{P["plant_pot_rim"]}" />',
+        f'<rect x="122" y="352" width="42" height="3" fill="#472f1e" />',
+        # Arching petioles/stems branching from soil + subtle aerial root
+        f'<rect x="140" y="306" width="6" height="46" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="120" y="320" width="22" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="144" y="318" width="24" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="116" y="340" width="24" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="144" y="338" width="22" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="134" y="348" width="2" height="6" fill="#856343" />',
+        # Crown top-center fenestrated Monstera leaf (x=120..170, y=276..310)
+        f'<rect x="130" y="276" width="28" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="122" y="280" width="44" height="6" fill="{P["plant_leaf"]}" />',
+        # Fenestration slit row 1 (open gaps on left/right sides)
+        f'<rect x="120" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="138" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="156" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="122" y="290" width="44" height="6" fill="{P["plant_leaf"]}" />',
+        # Fenestration slit row 2
+        f'<rect x="124" y="296" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="140" y="296" width="8" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="154" y="296" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="132" y="300" width="24" height="6" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="143" y="280" width="2" height="24" fill="#46c25b" />',
+        # Large upper-left fenestrated Monstera leaf (x=76..126, y=290..326)
+        f'<rect x="84" y="290" width="28" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="78" y="294" width="42" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="76" y="300" width="12" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="94" y="300" width="14" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="114" y="300" width="12" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="80" y="304" width="44" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="84" y="310" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="100" y="310" width="8" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="112" y="310" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="92" y="314" width="28" height="6" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="98" y="294" width="2" height="22" fill="#46c25b" />',
+        # Large upper-right fenestrated Monstera leaf (x=166..218, y=288..324)
+        f'<rect x="178" y="288" width="28" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="170" y="292" width="44" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="166" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="186" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="204" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="168" y="302" width="46" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="170" y="308" width="12" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="186" y="308" width="10" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="200" y="308" width="12" height="4" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="176" y="312" width="30" height="6" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="190" y="292" width="2" height="22" fill="#46c25b" />',
+        # Lower-left Monstera leaf with fenestration notch (x=82..128, y=326..354)
+        f'<rect x="88" y="326" width="32" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="82" y="330" width="14" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="102" y="330" width="22" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="84" y="334" width="42" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="92" y="340" width="32" height="6" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="102" y="330" width="2" height="12" fill="#46c25b" />',
+        # Lower-right Monstera leaf with fenestration notch (x=162..208, y=324..352)
+        f'<rect x="168" y="324" width="32" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="162" y="328" width="22" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="190" y="328" width="16" height="4" fill="{P["plant_leaf"]}" />',
+        f'<rect x="164" y="332" width="42" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="166" y="338" width="34" height="6" fill="{P["plant_leaf_dark"]}" />',
+        f'<rect x="184" y="328" width="2" height="12" fill="#46c25b" />',
+        # Young foreground Monstera sprout leaf above pot rim (x=132..156, y=324..348)
+        f'<rect x="136" y="324" width="16" height="4" fill="#3ac456" />',
+        f'<rect x="132" y="328" width="24" height="8" fill="#3ac456" />',
+        f'<rect x="136" y="336" width="16" height="6" fill="{P["plant_leaf"]}" />',
+        f'<rect x="143" y="326" width="2" height="14" fill="#7be08e" />',
     ]
     if include_second_plant:
         # Plant 2: Small potted succulent on left end of bottom right shelf (y=279)
@@ -550,14 +693,19 @@ def _render_clock_shelves_and_cat() -> str:
     )
 
 
-def render_workspace_room_layers(config: ProfileConfig) -> dict[str, str]:
+def render_workspace_room_layers(
+    config: ProfileConfig,
+    theme: WorkspaceTheme = "auto",
+    now: datetime | None = None,
+) -> dict[str, str]:
     """Render static and animated pixel-art room background and foreground layers around the monitor."""
+    is_daytime = resolve_is_daytime(timezone_name=config.timezone, theme=theme, now=now)
     background = "\n    ".join(
         [
             _render_wall_and_floor(),
-            _render_window(),
+            _render_window(is_daytime=is_daytime),
             _render_name_plaque_and_wall_decor(config.display_name),
-            _render_desk_and_lamp(),
+            _render_desk_and_lamp(is_daytime=is_daytime),
             _render_macbook_and_peripherals(),
             _render_external_monitor_shell(),
             _render_clock_shelves_and_cat(),
