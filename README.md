@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <sub><b>External Monitor Credits Feed:</b> 68 unique commits across 10 accessible public branches in 7 repositories</sub>
+  <sub><b>External Monitor Credits Feed:</b> 76 unique commits across 11 accessible public branches in 8 repositories</sub>
 </p>
 
 <p align="center">
@@ -37,7 +37,7 @@
 
 | Repository | Description | Languages | Stars | Updated | Live |
 |---|---|---|---:|---|---|
-| <a href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer"><code>Eshtiaq-a/</code></a> | No description provided. | Python | ★ 0 | Nov 2026 | — |
+| <a href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer"><code>Eshtiaq-a/</code></a> | No description provided. | Python, CSS | ★ 0 | Nov 2026 | — |
 | <a href="https://github.com/Eshtiaq-a/Clear-Cut-" target="_blank" rel="noopener noreferrer"><code>Clear-Cut-/</code></a> | a platform where you can see discounted products from many companies around the globe | TypeScript, PLpgSQL, JavaScript | ★ 0 | Nov 2026 | [Live](https://clear-cut-seven.vercel.app) |
 | <a href="https://github.com/Eshtiaq-a/Portfolio-main" target="_blank" rel="noopener noreferrer"><code>Portfolio-main/</code></a> | this is my portfolio site where ill be sharing my works | TypeScript, HTML, JavaScript | ★ 0 | Nov 2026 | [Live](https://portfolio-main-gilt-nu.vercel.app) |
 | <a href="https://github.com/Eshtiaq-a/Wrechship" target="_blank" rel="noopener noreferrer"><code>Wrechship/</code></a> | WrechShip is a shipwreck and maritime-disaster dataset till 2026, with vessel names, loss dates, available times, vessel types, incident details, and wreck coordinates. | Python, HTML, JavaScript, CSS, PowerShell, Shell, Go Template | ★ 0 | Nov 2026 | [Live](https://www.wreckship.me/) |

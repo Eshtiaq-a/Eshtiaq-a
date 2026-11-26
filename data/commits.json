@@ -1,23 +1,16 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-26T17:07:55Z",
+  "generated_at": "2026-11-26T21:14:40Z",
   "username": "Eshtiaq-a",
   "scope": "all_accessible_public_branches",
   "is_sample_data": false,
-  "total_unique_commits": 68,
-  "repositories_processed": 7,
-  "repositories_skipped": 1,
-  "branches_processed": 10,
+  "total_unique_commits": 76,
+  "repositories_processed": 8,
+  "repositories_skipped": 0,
+  "branches_processed": 11,
   "branches_skipped": 0,
   "complete_coverage": true,
-  "collection_warnings": [
-    {
-      "level": "info",
-      "repository": "Eshtiaq-a",
-      "branch": null,
-      "reason": "empty_repository_size_zero"
-    }
-  ],
+  "collection_warnings": [],
   "accessible_history_note": "Commits are collected across all accessible public branches (refs/heads/*) of public repositories owned by the profile owner. Commits in private repositories, force-pushed/rebased orphaned commits unreachable from current branch heads, or unmerged tag-only commits are inaccessible via the public REST branch-commit traversal.",
   "commits": [
     {
@@ -992,6 +985,118 @@
       "author_login": "Eshtiaq-a",
       "committed_at": "2026-11-20T15:03:36Z",
       "commit_url": "https://github.com/Eshtiaq-a/Clear-Cut-/commit/e050b20bf0065dcaeb6b2c19ed08a2af4a64f560",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "544b636bad59dbbc3c5bc82c71dbfb6ae49325c7",
+      "commit_message": "project plan created and initial structure designed",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T16:49:10Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/544b636bad59dbbc3c5bc82c71dbfb6ae49325c7",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "c85efacec68831504962cd0ff3d691273e61e358",
+      "commit_message": "completed developer terminal",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T17:17:37Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/c85efacec68831504962cd0ff3d691273e61e358",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "12124855d728357d07a2cf89b07a283058843e36",
+      "commit_message": "eriched and animated room , repo galazy engine implemented",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T17:54:01Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/12124855d728357d07a2cf89b07a283058843e36",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "8778a65f970f400aec3be3db030ea141a1d4eb03",
+      "commit_message": "project explorer created",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T18:12:57Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/8778a65f970f400aec3be3db030ea141a1d4eb03",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "95d422fdfbe4b3f7a9816da259f47aefe90d3ef9",
+      "commit_message": "bugs fixed and security audit done",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T18:38:50Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/95d422fdfbe4b3f7a9816da259f47aefe90d3ef9",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "92a3aadf86a324e1e18027b99f985d88438df8c0",
+      "commit_message": "visual enhancement",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T18:53:36Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/92a3aadf86a324e1e18027b99f985d88438df8c0",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "6a9d13017b372d83cf1968174606581b2240a6b4",
+      "commit_message": "feat: Phase 3-5 — Neofetch, Explorer, visual enhancements, GitHub Actions automation",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T18:56:58Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/6a9d13017b372d83cf1968174606581b2240a6b4",
+      "branch_names": [
+        "main"
+      ],
+      "is_merge": false
+    },
+    {
+      "repository_id": 1473362581,
+      "repository_name": "Eshtiaq-a",
+      "commit_sha": "cf8fe5106da85dccd952e252bb3359134da7541a",
+      "commit_message": "github workflow error fix",
+      "author_name": "Eshtiaq_Ah",
+      "author_login": "Eshtiaq-a",
+      "committed_at": "2026-11-26T21:13:28Z",
+      "commit_url": "https://github.com/Eshtiaq-a/Eshtiaq-a/commit/cf8fe5106da85dccd952e252bb3359134da7541a",
       "branch_names": [
         "main"
       ],

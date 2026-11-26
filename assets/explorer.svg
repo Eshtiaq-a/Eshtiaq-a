@@ -64,7 +64,7 @@
 
       <!-- Terminal Command Prompt -->
       <text x="20" y="65" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700"> $</tspan><tspan fill="#ebf0f4" font-weight="700"> ls ~/projects</tspan></text>
-      <text x="989" y="65" text-anchor="end" font-size="10.8" fill="#7b879e">8 total · 7 active · ★ 0</text>
+      <text x="989" y="65" text-anchor="end" font-size="10.8" fill="#7b879e">8 total · 8 active · ★ 0</text>
 
       <!-- Directory Listing Container Frame -->
       <rect x="16.0" y="82.0" width="977.0" height="364.0" rx="8" fill="#090d16" stroke="#1d2b4d" stroke-width="1.1" />
@@ -79,16 +79,15 @@
     </g>
     <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer" aria-label="Open Eshtiaq-a repository on GitHub">
         <g class="exp-row">
-          <title>Eshtiaq-a/Eshtiaq-a | No description provided. | Language: Python | Stars: 0 | Updated: Nov 2026</title>
+          <title>Eshtiaq-a/Eshtiaq-a | No description provided. | Language: Python, CSS | Stars: 0 | Updated: Nov 2026</title>
           <rect class="exp-row-bg" x="20" y="116.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" pointer-events="all" />
-          <rect class="exp-accent-bar" x="20" y="123.0" width="3" height="24" rx="1.5" fill="#4b8bbe" fill-opacity="0.28" />
-          <text x="34" y="139.0" font-size="11.5" fill="#626c82">d---</text>
+          <rect class="exp-accent-bar" x="20" y="123.0" width="3" height="24" rx="1.5" fill="#4b8bbe" fill-opacity="0.72" />
+          <text x="34" y="139.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="124.0" width="22" height="22" rx="4.5" fill="#182e47" stroke="#4b8bbe" stroke-width="1" /><rect x="81.0" y="129.0" width="7" height="5" rx="2" fill="#4b8bbe" /><rect x="86.0" y="136.0" width="7" height="5" rx="2" fill="#f2cb62" /><rect x="84.0" y="133.0" width="6" height="4" rx="1" fill="#82b8e8" /><circle cx="83.2" cy="131.2" r="0.9" fill="#0d0f14" /><circle cx="90.8" cy="138.8" r="0.9" fill="#0d0f14" />
-          <text class="exp-repo-name" x="110" y="139.0" font-size="12.5" font-weight="700" fill="#7b879e">Eshtiaq-a/</text>
-          <rect x="193.0" y="127.5" width="40.0" height="15" rx="3.5" fill="#171c28" stroke="#343d52" stroke-width="0.8" /><text x="213.0" y="138.1" text-anchor="middle" font-size="8.4" font-weight="700" fill="#7f8aa1">EMPTY</text>
+          <text class="exp-repo-name" x="110" y="139.0" font-size="12.5" font-weight="700" fill="#68b5ff">Eshtiaq-a/</text>
           <text x="332" y="139.0" font-size="11.5" fill="#5d667a">No description provided.</text>
           <circle cx="726" cy="135.0" r="3.8" fill="#4b8bbe" />
-          <text x="736" y="139.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">Python</text>
+          <text x="736" y="139.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">Python<tspan fill="#7b879e"> +1</tspan></text>
           <text x="860" y="139.0" font-size="11.0" fill="#7b879e">Nov 2026</text>
           <text x="978" y="139.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
