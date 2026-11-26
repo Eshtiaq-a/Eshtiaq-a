@@ -11,6 +11,7 @@ from src.config import MAX_SVG_BYTES
 FORBIDDEN_SVG_TAGS = ("script", "foreignObject")
 FORBIDDEN_SVG_ATTR_RE = re.compile(r"\bon[a-z]+\s*=", re.IGNORECASE)
 EXTERNAL_URL_RE = re.compile(r"https?://", re.IGNORECASE)
+SAFE_ANCHOR_URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/?$")
 
 
 def validate_commits_payload(payload: dict[str, Any]) -> None:
@@ -149,8 +150,12 @@ def validate_svg_document(svg_text: str, max_bytes: int = MAX_SVG_BYTES) -> ET.E
         for attr_name, attr_val in elem.attrib.items():
             if attr_name.lower().startswith("on"):
                 raise ValueError(f"Forbidden event attribute detected: {attr_name!r}.")
-            if attr_name.lower().endswith("href") and EXTERNAL_URL_RE.search(attr_val):
-                raise ValueError(f"External href not allowed in self-contained SVG: {attr_val!r}.")
+            if attr_name.lower().endswith("href"):
+                if local_name == "a":
+                    if not SAFE_ANCHOR_URL_RE.match(attr_val.strip()):
+                        raise ValueError(f"Unsafe SVG anchor href detected: {attr_val!r}.")
+                elif EXTERNAL_URL_RE.search(attr_val):
+                    raise ValueError(f"External href not allowed in self-contained SVG: {attr_val!r}.")
 
     if FORBIDDEN_SVG_ATTR_RE.search(svg_text):
         raise ValueError("Forbidden inline event attribute pattern detected in SVG.")

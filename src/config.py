@@ -22,6 +22,9 @@ WORKSPACE_SVG_PATH = ASSETS_DIR / "workspace.svg"
 WORKSPACE_GIF_PATH = ASSETS_DIR / "workspace.gif"
 ASCII_PORTRAIT_PATH = ASSETS_DIR / "ascii_portrait.txt"
 NEOFETCH_SVG_PATH = ASSETS_DIR / "neofetch.svg"
+EXPLORER_SVG_PATH = ASSETS_DIR / "explorer.svg"
+DIVIDER_SVG_PATH = ASSETS_DIR / "divider.svg"
+README_PATH = ROOT_DIR / "README.md"
 
 GITHUB_API_BASE = "https://api.github.com"
 GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
@@ -113,6 +116,32 @@ NEOFETCH_PALETTE: dict[str, str] = {
     "cursor": "#4c9aff",
 }
 
+EXPLORER_WIDTH = 1009
+EXPLORER_PALETTE: dict[str, str] = {
+    "bg": "#0d0f14",
+    "titlebar_bg": "#121723",
+    "panel_bg": "#090d16",
+    "row_even": "#0c111c",
+    "row_odd": "#090d16",
+    "row_hover": "#141d33",
+    "border": "#5582bc",
+    "inner_border": "#1d2b4d",
+    "rule": "#1b2540",
+    "dir_green": "#73b88d",
+    "dir_muted": "#626c82",
+    "prompt_blue": "#5aa9ff",
+    "repo_blue": "#68b5ff",
+    "text": "#ebf0f4",
+    "desc": "#a3adc2",
+    "muted": "#7b879e",
+    "dim": "#5d667a",
+    "star_gold": "#f2cb62",
+    "live_green": "#73b88d",
+    "win_red": "#ff5f56",
+    "win_yellow": "#ffbd2e",
+    "win_green": "#27c93f",
+}
+
 
 @dataclass(frozen=True)
 class ProfileConfig:
@@ -127,15 +156,20 @@ class ProfileConfig:
     show_human_character: bool
     human_character_gender: str
     watermark: str | None
+    explorer_sort_by: str = "updated"
 
 
 def load_profile_config(path: Path = CONFIG_PATH) -> ProfileConfig:
     """Load and validate static profile configuration."""
     raw: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
     ws = raw.get("workspace", {})
+    exp = raw.get("explorer", {})
     gender = str(ws.get("human_character_gender", "none")).lower()
     if gender == "female":
         raise ValueError("Female character/avatar is strictly prohibited by design rules.")
+    sort_by = str(exp.get("sort_by", "updated")).lower()
+    if sort_by not in {"updated", "stars", "name"}:
+        sort_by = "updated"
     return ProfileConfig(
         username=str(raw["username"]),
         display_name=str(raw["display_name"]),
@@ -146,6 +180,7 @@ def load_profile_config(path: Path = CONFIG_PATH) -> ProfileConfig:
         show_human_character=bool(ws.get("show_human_character", False)),
         human_character_gender=gender,
         watermark=ws.get("watermark"),
+        explorer_sort_by=sort_by,
     )
 
 

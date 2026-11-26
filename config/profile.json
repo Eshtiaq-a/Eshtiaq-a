@@ -20,5 +20,8 @@
     "focus": "Python, Data Science & AI/ML Engineering",
     "max_languages": 4,
     "contact_links": []
+  },
+  "explorer": {
+    "sort_by": "updated"
   }
 }
