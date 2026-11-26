@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html
 import re
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
@@ -33,17 +34,56 @@ def _safe_profile_url(profile_data: dict[str, Any], username: str) -> str:
     raw = _clean((profile_data.get("directly_sourced_profile") or {}).get("html_url"))
     if SAFE_GITHUB_PROFILE_RE.match(raw):
         return raw
-    return f"https://github.com/{username}"
+    safe_user = urllib.parse.quote(username or "Eshtiaq-a", safe="-._")
+    return f"https://github.com/{safe_user}"
 
 
-def _render_quick_open_links(rows: tuple[ExplorerRow, ...]) -> str:
-    if not rows:
-        return "<sub><b>~/projects:</b> No public repositories discovered yet.</sub>"
+def _render_repo_link_strip(prefix_label: str, rows: tuple[ExplorerRow, ...]) -> str:
+    linked = [row for row in rows if row.html_url]
+    if not linked:
+        return f"<sub><b>{_esc_attr(prefix_label)}:</b> No public repositories discovered yet.</sub>"
     anchors = [
-        f'<a href="{_esc_attr(row.html_url)}" title="{_esc_attr(row.description)}"><code>{_esc_attr(row.name)}/</code></a>'
-        for row in rows
+        f'<a href="{_esc_attr(row.html_url)}" target="_blank" rel="noopener noreferrer" title="{_esc_attr(row.description)}"><code>{_esc_attr(row.name)}/</code></a>'
+        for row in linked
     ]
-    return "<sub><b>~/projects:</b> " + " · ".join(anchors) + "</sub>"
+    return f"<sub><b>{_esc_attr(prefix_label)}:</b> " + " · ".join(anchors) + "</sub>"
+
+
+def _render_explorer_slices_block(model: ExplorerModel, repos_tab_url: str) -> str:
+    """Render contiguous clickable terminal header, per-repo rows, and footer for GitHub README."""
+    header_tag = (
+        f'<a href="{_esc_attr(repos_tab_url)}" target="_blank" rel="noopener noreferrer">'
+        f'<img src="assets/explorer/header.svg" width="100%" align="top" '
+        f'alt="{_esc_attr(model.username)} terminal project explorer header showing ls ~/projects" /></a>'
+    )
+    footer_tag = (
+        f'<a href="{_esc_attr(repos_tab_url)}" target="_blank" rel="noopener noreferrer">'
+        f'<img src="assets/explorer/footer.svg" width="100%" align="top" '
+        f'alt="{_esc_attr(model.username)} terminal project explorer status footer" /></a>'
+    )
+    if not model.rows:
+        empty_tag = (
+            f'<a href="{_esc_attr(repos_tab_url)}" target="_blank" rel="noopener noreferrer">'
+            '<img src="assets/explorer/rows/_empty.svg" width="100%" align="top" '
+            'alt="No public repositories discovered yet" /></a>'
+        )
+        return header_tag + empty_tag + footer_tag
+
+    row_tags: list[str] = []
+    for row in model.rows:
+        img_tag = (
+            f'<img src="assets/explorer/rows/{_esc_attr(row.row_slug)}.svg" width="100%" align="top" '
+            f'alt="{_esc_attr(row.name)}/ — {_esc_attr(row.description)}" />'
+        )
+        if row.html_url:
+            row_tags.append(
+                f'<a href="{_esc_attr(row.html_url)}" target="_blank" rel="noopener noreferrer" '
+                f'title="{_esc_attr(row.name)} — {_esc_attr(row.description)}">{img_tag}</a>'
+            )
+        else:
+            row_tags.append(img_tag)
+
+    return header_tag + "".join(row_tags) + footer_tag
 
 
 def _render_accessible_directory(rows: tuple[ExplorerRow, ...]) -> str:
@@ -57,7 +97,11 @@ def _render_accessible_directory(rows: tuple[ExplorerRow, ...]) -> str:
         "|---|---|---|---:|---|---|",
     ]
     for row in rows:
-        repo_link = f"[`{_esc_md_table(row.name)}/`]({_esc_attr(row.html_url)})"
+        repo_link = (
+            f'<a href="{_esc_attr(row.html_url)}" target="_blank" rel="noopener noreferrer"><code>{_esc_md_table(row.name)}/</code></a>'
+            if row.html_url
+            else f"<code>{_esc_md_table(row.name)}/</code>"
+        )
         desc_txt = _esc_md_table(row.description)
         langs_txt = _esc_md_table(", ".join(row.languages) if row.languages else row.primary_language)
         safe_homepage = row.homepage if (row.homepage and SAFE_HTTP_URL_RE.match(row.homepage)) else None
@@ -77,14 +121,17 @@ def build_readme_markdown(
 ) -> str:
     """Assemble the complete sanitized three-section README.md cleanly."""
     username = _clean(explorer_model.username or profile_data.get("username") or "Eshtiaq-a")
-    profile_url = _safe_profile_url(profile_data, username)
+    profile_url = _safe_profile_url(profile_data, username).rstrip("/")
+    repos_tab_url = f"{profile_url}?tab=repositories"
 
     workspace_asset = "assets/workspace.gif" if use_gif_workspace else "assets/workspace.svg"
     commit_count = int(commits_data.get("total_unique_commits") or len(commits_data.get("commits") or []))
     branches_count = int(commits_data.get("branches_processed") or 0)
     repos_processed = int(commits_data.get("repositories_processed") or explorer_model.total_repositories)
 
-    quick_links = _render_quick_open_links(explorer_model.rows)
+    galaxy_links = _render_repo_link_strip("Repo Galaxy", explorer_model.rows)
+    explorer_block = _render_explorer_slices_block(explorer_model, repos_tab_url)
+    quick_links = _render_repo_link_strip("~/projects", explorer_model.rows)
     accessible_dir = _render_accessible_directory(explorer_model.rows)
 
     sections = [
@@ -103,9 +150,11 @@ def build_readme_markdown(
         "</p>",
         "",
         '<p align="center">',
-        f'  <a href="{_esc_attr(profile_url)}">',
-        f'    <img src="assets/neofetch.svg" width="100%" alt="{_esc_attr(username)} animated Repo Galaxy and Neofetch developer terminal" />',
-        "  </a>",
+        f'  <img src="assets/neofetch.svg" width="100%" alt="{_esc_attr(username)} animated Repo Galaxy and Neofetch developer terminal" />',
+        "</p>",
+        "",
+        '<p align="center">',
+        f"  {galaxy_links}",
         "</p>",
         "",
         '<p align="center">',
@@ -113,7 +162,7 @@ def build_readme_markdown(
         "</p>",
         "",
         '<p align="center">',
-        f'  <img src="assets/explorer.svg" width="100%" alt="{_esc_attr(username)} terminal project explorer listing {explorer_model.total_repositories} public repositories" />',
+        f"  {explorer_block}",
         "</p>",
         "",
         '<p align="center">',

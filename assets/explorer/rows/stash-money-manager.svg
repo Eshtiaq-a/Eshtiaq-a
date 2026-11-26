@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 42" width="1009" height="42" role="img" aria-label="stash-money-manager repository row">
+  <style>
+    .exp-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .exp-repo-link {
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }
+    .exp-row-bg {
+      transition: fill 0.16s ease, stroke 0.16s ease;
+    }
+    .exp-accent-bar {
+      transition: fill-opacity 0.16s ease;
+    }
+    .exp-repo-name {
+      transition: fill 0.16s ease;
+    }
+    .exp-row:hover .exp-row-bg {
+      fill: #141d33;
+      stroke: #2c4375;
+    }
+    .exp-row:hover .exp-accent-bar {
+      fill-opacity: 1;
+    }
+    .exp-row:hover .exp-repo-name {
+      fill: #91ccff;
+    }
+  </style>
+  <g class="exp-mono">
+    <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/stash-money-manager" target="_blank" rel="noopener noreferrer" aria-label="Open stash-money-manager repository on GitHub">
+        <g class="exp-row">
+          <title>Eshtiaq-a/stash-money-manager | this is a money management app for university going students who tends to save money regularly , making it a bit fun to save money . | Language: TypeScript, CSS, JavaScript | Stars: 0 | Updated: May 2026 | Live: https://stash-saver.vercel.app/</title>
+          <rect class="exp-row-bg" x="4" y="1.0" width="1001" height="40" rx="7" fill="#090d16" stroke="#1d2b4d" stroke-width="1.1" pointer-events="all" />
+          <rect class="exp-accent-bar" x="5" y="8.0" width="3" height="26" rx="1.5" fill="#3b82f6" fill-opacity="0.78" />
+          <text x="34" y="24.0" font-size="11.5" fill="#73b88d">drwx</text>
+          <rect x="76.0" y="9.0" width="22" height="22" rx="4.5" fill="#183052" stroke="#3b82f6" stroke-width="1" /><text x="87.0" y="23.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#7db8ff">TS</text>
+          <text class="exp-repo-name" x="110" y="24.0" font-size="12.5" font-weight="700" fill="#68b5ff">stash-money-manager/</text>
+          <rect x="268.0" y="12.5" width="36.0" height="15" rx="3.5" fill="#112b22" stroke="#357958" stroke-width="0.8" /><text x="286.0" y="23.1" text-anchor="middle" font-size="8.4" font-weight="700" fill="#73b88d">LIVE</text>
+          <text x="332" y="24.0" font-size="11.5" fill="#a3adc2">this is a money management app for university...</text>
+          <circle cx="726" cy="20.0" r="3.8" fill="#3b82f6" />
+          <text x="736" y="24.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">TypeScript<tspan fill="#7b879e"> +2</tspan></text>
+          <text x="860" y="24.0" font-size="11.0" fill="#7b879e">May 2026</text>
+          <text x="978" y="24.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
+        </g>
+      </a>
+  </g>
+</svg>

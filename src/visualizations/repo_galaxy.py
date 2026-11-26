@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from src.config import ASSETS_DIR
+from src.validators import sanitize_github_repo_url
 
 GALAXY_CSS_PATH = ASSETS_DIR / "galaxy" / "galaxy_styles.css"
 
@@ -89,6 +90,7 @@ class GalaxyRepoNode:
     static_y: float
     label_box: tuple[float, float, float, float] | None
     label_above: bool = False
+    html_url: str | None = None
 
 
 @dataclass(frozen=True)
@@ -426,6 +428,7 @@ def _layout_galaxy_nodes(
                 static_y=round(chosen_y, 2),
                 label_box=chosen_box,
                 label_above=chosen_above,
+                html_url=spec.get("html_url"),
             )
         )
 
@@ -503,6 +506,7 @@ def build_repo_galaxy_model(
                 "is_empty": is_empty,
                 "archived": archived,
                 "node_radius": compute_node_radius(stars, is_empty=is_empty, archived=archived),
+                "html_url": sanitize_github_repo_url(repo.get("html_url"), username, raw_name),
             }
         )
 
@@ -540,6 +544,7 @@ def reflow_repo_galaxy_model(
             "is_empty": node.is_empty,
             "archived": node.archived,
             "node_radius": node.node_radius,
+            "html_url": node.html_url,
         }
         for node in model.nodes
     ]
@@ -612,35 +617,36 @@ def render_repo_galaxy_group(
     )
     star_elems = [
         f'<circle class="gx-star-{cls}" cx="{box_x + rx * box_w:.1f}" cy="{box_y + ry * box_h:.1f}" '
-        f'r="{r}" fill="#c9d8ff" />'
+        f'r="{r}" fill="#c9d8ff" pointer-events="none" />'
         for rx, ry, r, cls in stars_coords
     ]
 
-    # Orbit tracks
+    # Orbit tracks (strictly non-interactive so clicks pass cleanly to repository nodes)
     orbit_elems = [
         f'<circle cx="0" cy="0" r="{r_val:.1f}" fill="none" stroke="{ring_col}" '
-        f'stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" />'
+        f'stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" pointer-events="none" />'
         for _, r_val, ring_col in model.orbit_radii
     ]
 
-    # Small glowing dust particles around central galaxy
+    # Small glowing dust particles around central galaxy (strictly non-interactive)
     particle_angles = (15, 58, 104, 148, 196, 238, 282, 326)
     particle_radii = (16, 23, 19, 27, 17, 25, 21, 29)
     particle_elems = [
         f'<circle cx="{pr * math.cos(math.radians(pa)):.1f}" cy="{pr * math.sin(math.radians(pa)):.1f}" '
-        f'r="{1.1 if i % 2 == 0 else 0.8}" fill="#b9ceff" fill-opacity="0.72" />'
+        f'r="{1.1 if i % 2 == 0 else 0.8}" fill="#b9ceff" fill-opacity="0.72" pointer-events="none" />'
         for i, (pa, pr) in enumerate(zip(particle_angles, particle_radii))
     ]
 
-    # Repository orbiting nodes + upright counter-rotated labels
+    # Repository orbiting nodes + upright counter-rotated labels wrapped in accessible <a> links
     node_elems: list[str] = []
     for node in model.nodes:
         orbit_cls = f"gx-orbit-{node.ring_index % 5}"
         counter_cls = f"gx-counter-{node.ring_index % 5}"
         halo_r = round(node.node_radius * 2.15, 2)
+        hit_r = round(max(13.0, node.node_radius + 7.5), 1)
         dot_opacity = "0.55" if node.archived else ("0.65" if node.is_empty else "0.98")
         stroke_attr = (
-            f'stroke="{node.color}" stroke-width="1" stroke-dasharray="2 2" fill-opacity="0.3"'
+            f'stroke="{node.color}" stroke-width="1" stroke-dasharray="2 2" fill="#080c18" fill-opacity="0.3"'
             if node.is_empty
             else f'fill="{node.color}" fill-opacity="{dot_opacity}" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6"'
         )
@@ -656,25 +662,40 @@ def render_repo_galaxy_group(
                 ly = node.node_radius + 11.5
                 rect_y = ly - 9.2
             label_markup = (
-                f'<rect x="{-pill_w / 2.0:.1f}" y="{rect_y:.1f}" width="{pill_w:.1f}" height="12.0" '
+                f'<rect class="gx-label-hit" x="{-pill_w / 2.0 - 2.0:.1f}" y="{rect_y - 2.0:.1f}" '
+                f'width="{pill_w + 4.0:.1f}" height="16.0" rx="4" fill="#080c18" fill-opacity="0.001" />'
+                f'<rect class="gx-label-pill" x="{-pill_w / 2.0:.1f}" y="{rect_y:.1f}" width="{pill_w:.1f}" height="12.0" '
                 f'rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" />'
-                f'<text x="0" y="{ly:.1f}" text-anchor="middle" font-size="8.4" '
+                f'<text class="gx-label-text" x="0" y="{ly:.1f}" text-anchor="middle" font-size="8.4" '
                 f'fill="{("#8f99ad" if (node.archived or node.is_empty) else "#dce6ff")}">'
                 f"{_esc(node.display_label)}</text>"
             )
 
+        node_visual = [
+            f'    <title>{_esc(title_txt)}</title>',
+            f'    <circle class="gx-node-hit" cx="0" cy="0" r="{hit_r:.1f}" fill="#080c18" fill-opacity="0.001" />',
+            f'    <circle class="gx-node-halo" cx="0" cy="0" r="{halo_r}" fill="{node.color}" />',
+            f'    <circle class="gx-node-dot" cx="0" cy="0" r="{node.node_radius:.2f}" {stroke_attr} />',
+            f'    <circle cx="{-node.node_radius * 0.28:.2f}" cy="{-node.node_radius * 0.28:.2f}" r="{max(0.9, node.node_radius * 0.24):.2f}" fill="#ffffff" fill-opacity="0.7" />',
+            f'    <g class="{counter_cls}">',
+            f'      <g transform="rotate({-node.angle_deg:.2f})">{label_markup}</g>',
+            "    </g>",
+        ]
+        if node.html_url:
+            inner_block = [
+                f'    <a class="gx-repo-link" href="{_esc(node.html_url)}" target="_blank" rel="noopener noreferrer" pointer-events="all" aria-label="Open {_esc(node.name)} repository on GitHub">',
+                *[f"  {line}" for line in node_visual],
+                "    </a>",
+            ]
+        else:
+            inner_block = node_visual
+
         node_elems.append(
             "\n        ".join(
                 [
-                    f'<g class="{orbit_cls}">',
-                    f'  <g transform="rotate({node.angle_deg:.2f}) translate({node.orbit_radius:.1f}, 0)">',
-                    f'    <title>{_esc(title_txt)}</title>',
-                    f'    <circle class="gx-node-halo" cx="0" cy="0" r="{halo_r}" fill="{node.color}" />',
-                    f'    <circle cx="0" cy="0" r="{node.node_radius:.2f}" {stroke_attr} />',
-                    f'    <circle cx="{-node.node_radius * 0.28:.2f}" cy="{-node.node_radius * 0.28:.2f}" r="{max(0.9, node.node_radius * 0.24):.2f}" fill="#ffffff" fill-opacity="0.7" />',
-                    f'    <g class="{counter_cls}">',
-                    f'      <g transform="rotate({-node.angle_deg:.2f})">{label_markup}</g>',
-                    "    </g>",
+                    f'<g class="{orbit_cls}" pointer-events="none">',
+                    f'  <g transform="rotate({node.angle_deg:.2f}) translate({node.orbit_radius:.1f}, 0)" pointer-events="none">',
+                    *inner_block,
                     "  </g>",
                     "</g>",
                 ]
@@ -684,7 +705,7 @@ def render_repo_galaxy_group(
     empty_notice = ""
     if model.repo_count == 0:
         empty_notice = (
-            f'<text x="0" y="54" text-anchor="middle" font-size="10" fill="#727e96">'
+            f'<text x="0" y="54" text-anchor="middle" font-size="10" fill="#727e96" pointer-events="none">'
             "No public repositories discovered yet</text>"
         )
 
@@ -702,13 +723,13 @@ def render_repo_galaxy_group(
             ly = legend_title_y + 18.0 + row * 17.0
             pct_str = f"{stat.percentage:.1f}%" if stat.percentage >= 0.1 else "<0.1%"
             legend_items.append(
-                f'<circle cx="{lx + 4:.1f}" cy="{ly - 3.5:.1f}" r="3.6" fill="{stat.color}" />'
-                f'<text x="{lx + 13:.1f}" y="{ly:.1f}" font-size="10.0" fill="#cdd7ec">'
+                f'<circle cx="{lx + 4:.1f}" cy="{ly - 3.5:.1f}" r="3.6" fill="{stat.color}" pointer-events="none" />'
+                f'<text x="{lx + 13:.1f}" y="{ly:.1f}" font-size="10.0" fill="#cdd7ec" pointer-events="none">'
                 f'{_esc(stat.language)} <tspan fill="#75819c">· {pct_str}</tspan></text>'
             )
     else:
         legend_items.append(
-            f'<text x="{box_x + 18.0:.1f}" y="{legend_title_y + 20.0:.1f}" font-size="10" fill="#75819c">'
+            f'<text x="{box_x + 18.0:.1f}" y="{legend_title_y + 20.0:.1f}" font-size="10" fill="#75819c" pointer-events="none">'
             "Language breakdown unavailable</text>"
         )
 
@@ -716,37 +737,39 @@ def render_repo_galaxy_group(
     parts = [
         f'<g id="repo-galaxy-panel" class="gx-mono">',
         f'  <defs><clipPath id="gx-box-clip"><rect x="{box_x:.1f}" y="{box_y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="10" ry="10" /></clipPath></defs>',
-        f'  <rect x="{box_x:.1f}" y="{box_y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="10" ry="10" fill="#080c18" stroke="#2a3c70" stroke-width="1.2" />',
+        f'  <rect x="{box_x:.1f}" y="{box_y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="10" ry="10" fill="#080c18" stroke="#2a3c70" stroke-width="1.2" pointer-events="none" />',
         f'  <g clip-path="url(#gx-box-clip)">',
-        f'    <ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{box_w * 0.48:.1f}" ry="{box_h * 0.36:.1f}" fill="url(#gx-nebula-bg)" />',
+        f'    <ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{box_w * 0.48:.1f}" ry="{box_h * 0.36:.1f}" fill="url(#gx-nebula-bg)" pointer-events="none" />',
         "    " + "\n    ".join(star_elems),
-        # Header block
-        f'    <circle cx="{box_x + 20:.1f}" cy="{box_y + 22:.1f}" r="4" fill="#8294ea" />',
-        f'    <circle cx="{box_x + 20:.1f}" cy="{box_y + 22:.1f}" r="7" fill="#8294ea" fill-opacity="0.22" />',
-        f'    <text x="{box_x + 32:.1f}" y="{box_y + 26:.1f}" class="gx-title" font-size="12.5" font-weight="700" fill="#e5e9f3">REPO GALAXY</text>',
-        f'    <text x="{box_x + box_w - 18:.1f}" y="{box_y + 26:.1f}" text-anchor="end" font-size="11.0" fill="#5aa9ff">@{_esc(model.username)}</text>',
-        f'    <text x="{box_x + 18:.1f}" y="{box_y + 44:.1f}" font-size="10.5" font-weight="600" fill="#b8c4db">{_esc(stats_line)}</text>',
-        f'    <text x="{box_x + 18:.1f}" y="{box_y + 60:.1f}" font-size="9.5" fill="#707b94">Each star is a repository, sized by its stars.</text>',
-        f'    <line x1="{box_x + 16:.1f}" y1="{header_rule_y:.1f}" x2="{box_x + box_w - 16:.1f}" y2="{header_rule_y:.1f}" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" />',
+        # Header block (non-interactive)
+        f'    <g pointer-events="none">',
+        f'      <circle cx="{box_x + 20:.1f}" cy="{box_y + 22:.1f}" r="4" fill="#8294ea" />',
+        f'      <circle cx="{box_x + 20:.1f}" cy="{box_y + 22:.1f}" r="7" fill="#8294ea" fill-opacity="0.22" />',
+        f'      <text x="{box_x + 32:.1f}" y="{box_y + 26:.1f}" class="gx-title" font-size="12.5" font-weight="700" fill="#e5e9f3">REPO GALAXY</text>',
+        f'      <text x="{box_x + box_w - 18:.1f}" y="{box_y + 26:.1f}" text-anchor="end" font-size="11.0" fill="#5aa9ff">@{_esc(model.username)}</text>',
+        f'      <text x="{box_x + 18:.1f}" y="{box_y + 44:.1f}" font-size="10.5" font-weight="600" fill="#b8c4db">{_esc(stats_line)}</text>',
+        f'      <text x="{box_x + 18:.1f}" y="{box_y + 60:.1f}" font-size="9.5" fill="#707b94">Each star is a repository, sized by its stars.</text>',
+        f'      <line x1="{box_x + 16:.1f}" y1="{header_rule_y:.1f}" x2="{box_x + box_w - 16:.1f}" y2="{header_rule_y:.1f}" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" />',
+        "    </g>",
         # Galaxy center system
         f'    <g transform="translate({cx:.1f}, {cy:.1f})">',
-        # Rotating spiral arms (subtle deep cosmos depth)
-        '      <g class="gx-spiral-spin">',
+        # Rotating spiral arms (strictly non-interactive)
+        '      <g class="gx-spiral-spin" pointer-events="none">',
         '        <path d="M 0,0 C 26,-16 62,-8 92,-46" fill="none" stroke="#5aa9ff" stroke-width="2.2" stroke-opacity="0.14" stroke-linecap="round" />',
         '        <path d="M 0,0 C -26,16 -62,8 -92,46" fill="none" stroke="#8294ea" stroke-width="2.2" stroke-opacity="0.14" stroke-linecap="round" />',
         '        <path d="M 0,0 C 16,26 10,60 44,92" fill="none" stroke="#4b8bbe" stroke-width="1.8" stroke-opacity="0.12" stroke-linecap="round" />',
         '        <path d="M 0,0 C -16,-26 -10,-60 -44,-92" fill="none" stroke="#e3623a" stroke-width="1.5" stroke-opacity="0.10" stroke-linecap="round" />',
         "      </g>",
         "      " + "\n      ".join(orbit_elems),
-        # Central core glow & rotating dashed gyroscope rings
-        '      <g class="gx-ring-spin">',
+        # Central core glow & rotating dashed gyroscope rings (non-interactive)
+        '      <g class="gx-ring-spin" pointer-events="none">',
         '        <circle cx="0" cy="0" r="21" fill="none" stroke="#5aa9ff" stroke-width="0.9" stroke-opacity="0.45" stroke-dasharray="4 3" />',
         '        <circle cx="0" cy="0" r="30" fill="none" stroke="#8294ea" stroke-width="0.7" stroke-opacity="0.30" stroke-dasharray="2 5" />',
         "      </g>",
-        '      <g class="gx-particles-spin">',
+        '      <g class="gx-particles-spin" pointer-events="none">',
         "        " + "\n        ".join(particle_elems),
         "      </g>",
-        '      <g class="gx-core-pulse">',
+        '      <g class="gx-core-pulse" pointer-events="none">',
         '        <circle cx="0" cy="0" r="34" fill="url(#gx-core-glow)" />',
         '        <circle cx="0" cy="0" r="9.5" fill="#8294ea" fill-opacity="0.38" />',
         '        <circle cx="0" cy="0" r="4.8" fill="#ebf3ff" />',
@@ -754,9 +777,9 @@ def render_repo_galaxy_group(
         "      " + "\n      ".join(node_elems),
         f"      {empty_notice}",
         "    </g>",
-        # Bottom ARM / LANGUAGE Legend
-        f'    <line x1="{box_x + 16:.1f}" y1="{legend_y_rule:.1f}" x2="{box_x + box_w - 16:.1f}" y2="{legend_y_rule:.1f}" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" />',
-        f'    <text x="{box_x + 18:.1f}" y="{legend_title_y:.1f}" font-size="8.8" font-weight="700" letter-spacing="1.4" fill="#6f7c99">ARM / LANGUAGE</text>',
+        # Bottom ARM / LANGUAGE Legend (non-interactive)
+        f'    <line x1="{box_x + 16:.1f}" y1="{legend_y_rule:.1f}" x2="{box_x + box_w - 16:.1f}" y2="{legend_y_rule:.1f}" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" pointer-events="none" />',
+        f'    <text x="{box_x + 18:.1f}" y="{legend_title_y:.1f}" font-size="8.8" font-weight="700" letter-spacing="1.4" fill="#6f7c99" pointer-events="none">ARM / LANGUAGE</text>',
         "    " + "\n    ".join(legend_items),
         "  </g>",
         "</g>",

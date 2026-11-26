@@ -92,6 +92,42 @@
   animation: gxNodeGlow 3.6s ease-in-out infinite;
 }
 
+.gx-repo-link {
+  cursor: pointer;
+  pointer-events: all;
+  text-decoration: none;
+}
+
+.gx-repo-link .gx-node-dot,
+.gx-repo-link .gx-label-pill,
+.gx-repo-link .gx-label-text {
+  transition: opacity 0.16s ease, stroke 0.16s ease, stroke-width 0.16s ease, fill 0.16s ease;
+}
+
+.gx-repo-link:hover .gx-node-halo,
+.gx-repo-link:focus .gx-node-halo {
+  opacity: 0.85;
+}
+
+.gx-repo-link:hover .gx-node-dot,
+.gx-repo-link:focus .gx-node-dot {
+  stroke: #ffffff;
+  stroke-opacity: 0.95;
+  stroke-width: 1.4;
+}
+
+.gx-repo-link:hover .gx-label-pill,
+.gx-repo-link:focus .gx-label-pill {
+  fill: #101b38;
+  stroke: #5aa9ff;
+  stroke-width: 1.1;
+}
+
+.gx-repo-link:hover .gx-label-text,
+.gx-repo-link:focus .gx-label-text {
+  fill: #ffffff;
+}
+
 .gx-orbit-0 {
   transform-origin: 0px 0px;
   animation: gxCoreSpin 42s linear infinite;

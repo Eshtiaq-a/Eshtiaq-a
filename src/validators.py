@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import urllib.parse
 import xml.etree.ElementTree as ET
 from typing import Any
 
@@ -15,6 +16,29 @@ FORBIDDEN_SVG_ATTR_RE = re.compile(
 )
 EXTERNAL_URL_RE = re.compile(r"https?://", re.IGNORECASE)
 SAFE_ANCHOR_URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/?$")
+SAFE_GITHUB_SLUG_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+_CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f]")
+
+
+def sanitize_github_repo_url(raw_url: Any, username: Any, repo_name: Any) -> str | None:
+    """Return an authoritative GitHub HTTPS repo URL or safe fallback; None if unresolvable."""
+    candidate = re.sub(r"\s+", " ", _CONTROL_CHAR_RE.sub(" ", str(raw_url or ""))).strip()
+    if candidate and SAFE_ANCHOR_URL_RE.match(candidate):
+        return candidate
+    clean_user = re.sub(r"\s+", "", _CONTROL_CHAR_RE.sub("", str(username or ""))).strip()
+    clean_repo = re.sub(r"\s+", "", _CONTROL_CHAR_RE.sub("", str(repo_name or ""))).strip()
+    if (
+        clean_user
+        and clean_repo
+        and SAFE_GITHUB_SLUG_RE.match(clean_user)
+        and SAFE_GITHUB_SLUG_RE.match(clean_repo)
+    ):
+        return (
+            f"https://github.com/"
+            f"{urllib.parse.quote(clean_user, safe='-._')}/"
+            f"{urllib.parse.quote(clean_repo, safe='-._')}"
+        )
+    return None
 
 
 def validate_commits_payload(payload: dict[str, Any]) -> None:

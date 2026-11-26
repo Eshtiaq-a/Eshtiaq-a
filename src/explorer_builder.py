@@ -4,19 +4,18 @@ from __future__ import annotations
 
 import re
 import textwrap
-import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Literal
 
 from src.config import COMMITS_PATH, CONFIG_PATH, REPOSITORIES_PATH
+from src.validators import sanitize_github_repo_url
 from src.visualizations.repo_galaxy import get_language_color
 
 ExplorerSortOrder = Literal["updated", "stars", "name"]
 
 CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f]")
-SAFE_GITHUB_URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/?$")
 SAFE_HTTP_URL_RE = re.compile(r"^https?://[^\s<>'\"()\[\]`]+$", re.IGNORECASE)
 
 LANGUAGE_BADGE_MAP: dict[str, tuple[str, str, str, str]] = {
@@ -81,13 +80,13 @@ def _truncate_repo_dir(name: str, max_chars: int) -> str:
     return f"{name[:keep].rstrip()}…/"
 
 
-def _sanitize_repo_url(raw_url: Any, username: str, repo_name: str) -> str:
-    candidate = _clean_text(raw_url)
-    if candidate and SAFE_GITHUB_URL_RE.match(candidate):
-        return candidate
-    safe_user = urllib.parse.quote(username, safe="-._")
-    safe_repo = urllib.parse.quote(repo_name, safe="-._")
-    return f"https://github.com/{safe_user}/{safe_repo}"
+def _make_row_slug(name: str, repo_id: int, used_slugs: set[str]) -> str:
+    base = re.sub(r"[^a-z0-9._-]+", "-", name.lower()).strip("-") or f"repo-{repo_id}"
+    slug = base
+    if slug in used_slugs:
+        slug = f"{base}-{repo_id}"
+    used_slugs.add(slug)
+    return slug
 
 
 def _sanitize_homepage_url(raw_url: Any) -> str | None:
@@ -105,7 +104,7 @@ class ExplorerRow:
     name: str
     display_name: str
     full_name: str
-    html_url: str
+    html_url: str | None
     homepage: str | None
     dir_mode: str
     status_badge: str | None
@@ -128,6 +127,7 @@ class ExplorerRow:
     is_fork: bool
     updated_at: str
     updated_label: str
+    row_slug: str = ""
 
 
 @dataclass(frozen=True)
@@ -250,11 +250,13 @@ def build_explorer_model(
     )
 
     rows: list[ExplorerRow] = []
+    used_slugs: set[str] = set()
     for idx, repo in enumerate(ordered):
         repo_id = int(repo.get("repository_id") or repo.get("id") or (idx + 1))
         name = _clean_text(repo.get("name"))
+        row_slug = _make_row_slug(name, repo_id, used_slugs)
         full_name = _clean_text(repo.get("full_name")) or f"{username}/{name}"
-        html_url = _sanitize_repo_url(repo.get("html_url"), username, name)
+        html_url = sanitize_github_repo_url(repo.get("html_url"), username, name)
         homepage = _sanitize_homepage_url(repo.get("homepage"))
 
         archived = bool(repo.get("archived", False))
@@ -357,6 +359,7 @@ def build_explorer_model(
                 is_fork=is_fork,
                 updated_at=updated_raw,
                 updated_label=updated_label,
+                row_slug=row_slug,
             )
         )
 

@@ -87,14 +87,19 @@ def build_workspace_svg(
         transform: translateY(2px);
         opacity: 0;
       }}
-      30% {{
-        opacity: 0.55;
+      20% {{
+        opacity: 0.65;
       }}
-      75% {{
-        opacity: 0.35;
+      55% {{
+        opacity: 0.45;
+        transform: translateY(-5px) scaleX(1.15);
+      }}
+      85% {{
+        opacity: 0.20;
+        transform: translateY(-9px) scaleX(1.35);
       }}
       100% {{
-        transform: translateY(-10px);
+        transform: translateY(-13px) scaleX(1.5);
         opacity: 0;
       }}
     }}
@@ -149,6 +154,46 @@ def build_workspace_svg(
         opacity: 1;
       }}
     }}
+    @keyframes steamPuff {{
+      0% {{
+        transform: translateY(0px) scaleX(1);
+        opacity: 0;
+      }}
+      15% {{
+        opacity: 1;
+      }}
+      60% {{
+        transform: translateY(-8px) scaleX(1.4);
+        opacity: 0.5;
+      }}
+      100% {{
+        transform: translateY(-16px) scaleX(1.8);
+        opacity: 0;
+      }}
+    }}
+    @keyframes shootingStar {{
+      0% {{
+        stroke-dasharray: 0 80;
+        stroke-dashoffset: 0;
+        transform: translate(0px, 0px);
+        opacity: 0;
+      }}
+      1% {{
+        opacity: 0.9;
+        stroke-dasharray: 32 48;
+      }}
+      3% {{
+        stroke-dasharray: 0 80;
+        stroke-dashoffset: -80;
+        transform: translate(60px, 28px);
+        opacity: 0;
+      }}
+      100% {{
+        stroke-dasharray: 0 80;
+        transform: translate(60px, 28px);
+        opacity: 0;
+      }}
+    }}
     #credits-track {{
       animation: scrollCredits {duration_sec:.2f}s linear infinite;
       will-change: transform;
@@ -196,11 +241,35 @@ def build_workspace_svg(
     .lamp-glow-cone {{
       animation: lampGlowPulse 4.6s ease-in-out infinite;
     }}
+    .mug-steam-puff-a {{
+      animation: steamPuff 4.0s ease-in-out infinite;
+      transform-origin: center bottom;
+    }}
+    .mug-steam-puff-b {{
+      animation: steamPuff 4.5s ease-in-out 1.4s infinite;
+      transform-origin: center bottom;
+    }}
+    .mug-steam-puff-c {{
+      animation: steamPuff 5.2s ease-in-out 2.6s infinite;
+      transform-origin: center bottom;
+    }}
+    /* Shooting stars: 2-min initial delay, 5-min cycle, ~0.9s flash */
+    .shooting-star-1 {{
+      animation: shootingStar 300s linear 120s infinite;
+    }}
+    .shooting-star-2 {{
+      animation: shootingStar 300s linear 217s infinite;
+    }}
+    .shooting-star-3 {{
+      animation: shootingStar 300s linear 305s infinite;
+    }}
     @media (prefers-reduced-motion: reduce) {{
       #credits-track, .clock-min-hand, .clock-hour-hand,
       .mug-steam-1, .mug-steam-2, .mug-steam-3,
+      .mug-steam-puff-a, .mug-steam-puff-b, .mug-steam-puff-c,
       .cat-tail-wag, .cat-breathe, .sleep-z-1, .sleep-z-2,
-      .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone {{
+      .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone,
+      .shooting-star-1, .shooting-star-2, .shooting-star-3 {{
         animation: none;
       }}
     }}

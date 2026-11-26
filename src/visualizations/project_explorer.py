@@ -113,7 +113,20 @@ def _build_accessible_title(row: ExplorerRow) -> str:
     return " | ".join(parts)
 
 
-def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
+def _wrap_row_link(row: ExplorerRow, inner_lines: list[str]) -> str:
+    body = "\n      ".join(inner_lines)
+    if not row.html_url:
+        return body
+    return "\n      ".join(
+        [
+            f'<a class="exp-repo-link" href="{_esc(row.html_url)}" target="_blank" rel="noopener noreferrer" aria-label="Open {_esc(row.name)} repository on GitHub">',
+            body,
+            "</a>",
+        ]
+    )
+
+
+def _render_desktop_row_content(row: ExplorerRow, index: int, y: float, is_slice: bool = False) -> str:
     alt_fill = P["row_even"] if index % 2 == 0 else P["row_odd"]
     is_dim = row.archived or row.is_empty
     mode_col = P["dir_muted"] if is_dim else P["dir_green"]
@@ -130,7 +143,6 @@ def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
         else ""
     )
 
-    # Compute safe x coordinate for optional status pill directly after repo name
     shown_name = row.display_name
     pill_w = _status_pill_width(row.status_badge)
     if row.status_badge:
@@ -147,26 +159,46 @@ def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
         pill_svg = ""
     icon_svg = _render_language_icon(row, 76.0, y + 8.0)
 
-    return "\n      ".join(
-        [
-            f'<a href="{_esc(row.html_url)}" target="_blank">',
-            '  <g class="exp-row">',
-            f"    <title>{_esc(_build_accessible_title(row))}</title>",
-            f'    <rect class="exp-row-bg" x="20" y="{y:.1f}" width="969" height="38" rx="5" fill="{alt_fill}" stroke="transparent" stroke-width="1" />',
-            f'    <rect class="exp-accent-bar" x="20" y="{y + 7:.1f}" width="3" height="24" rx="1.5" fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.72}" />',
-            f'    <text x="34" y="{y + 23:.1f}" font-size="11.5" fill="{mode_col}">{_esc(row.dir_mode)}</text>',
-            f"    {icon_svg}",
-            f'    <text class="exp-repo-name" x="110" y="{y + 23:.1f}" font-size="12.5" font-weight="700" fill="{name_col}">{_esc(shown_name)}</text>',
-            f"    {pill_svg}" if pill_svg else "",
-            f'    <text x="332" y="{y + 23:.1f}" font-size="11.5" fill="{desc_col}">{_esc(row.short_description)}</text>',
-            f'    <circle cx="726" cy="{y + 19:.1f}" r="3.8" fill="{row.language_color}" />',
-            f'    <text x="736" y="{y + 23:.1f}" font-size="11.5" fill="{P["text"]}" xml:space="preserve">{_esc(lang_display)}{extra_span}</text>',
-            f'    <text x="860" y="{y + 23:.1f}" font-size="11.0" fill="{P["muted"]}">{_esc(row.updated_label)}</text>',
-            f'    <text x="978" y="{y + 23:.1f}" text-anchor="end" font-size="11.5" font-weight="600" fill="{star_col}">★ {row.stars}</text>',
-            "  </g>",
-            "</a>",
-        ]
-    )
+    if is_slice:
+        row_bg = (
+            f'    <rect class="exp-row-bg" x="4" y="{y:.1f}" width="1001" height="40" rx="7" '
+            f'fill="{alt_fill}" stroke="#1d2b4d" stroke-width="1.1" pointer-events="all" />'
+        )
+        accent_bar = (
+            f'    <rect class="exp-accent-bar" x="5" y="{y + 7:.1f}" width="3" height="26" rx="1.5" '
+            f'fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.78}" />'
+        )
+    else:
+        row_bg = (
+            f'    <rect class="exp-row-bg" x="20" y="{y:.1f}" width="969" height="38" rx="5" '
+            f'fill="{alt_fill}" stroke="transparent" stroke-width="1" pointer-events="all" />'
+        )
+        accent_bar = (
+            f'    <rect class="exp-accent-bar" x="20" y="{y + 7:.1f}" width="3" height="24" rx="1.5" '
+            f'fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.72}" />'
+        )
+
+    inner_lines = [
+        '  <g class="exp-row">',
+        f"    <title>{_esc(_build_accessible_title(row))}</title>",
+        row_bg,
+        accent_bar,
+        f'    <text x="34" y="{y + 23:.1f}" font-size="11.5" fill="{mode_col}">{_esc(row.dir_mode)}</text>',
+        f"    {icon_svg}",
+        f'    <text class="exp-repo-name" x="110" y="{y + 23:.1f}" font-size="12.5" font-weight="700" fill="{name_col}">{_esc(shown_name)}</text>',
+        f"    {pill_svg}" if pill_svg else "",
+        f'    <text x="332" y="{y + 23:.1f}" font-size="11.5" fill="{desc_col}">{_esc(row.short_description)}</text>',
+        f'    <circle cx="726" cy="{y + 19:.1f}" r="3.8" fill="{row.language_color}" />',
+        f'    <text x="736" y="{y + 23:.1f}" font-size="11.5" fill="{P["text"]}" xml:space="preserve">{_esc(lang_display)}{extra_span}</text>',
+        f'    <text x="860" y="{y + 23:.1f}" font-size="11.0" fill="{P["muted"]}">{_esc(row.updated_label)}</text>',
+        f'    <text x="978" y="{y + 23:.1f}" text-anchor="end" font-size="11.5" font-weight="600" fill="{star_col}">★ {row.stars}</text>',
+        "  </g>",
+    ]
+    return _wrap_row_link(row, [line for line in inner_lines if line])
+
+
+def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
+    return _render_desktop_row_content(row, index, y, is_slice=False)
 
 
 def _render_compact_row(row: ExplorerRow, index: int, y: float) -> str:
@@ -199,25 +231,22 @@ def _render_compact_row(row: ExplorerRow, index: int, y: float) -> str:
             f'    <text x="28" y="{y + 42 + li * 15:.1f}" font-size="10.8" fill="{desc_col}">{_esc(line)}</text>'
         )
 
-    return "\n      ".join(
-        [
-            f'<a href="{_esc(row.html_url)}" target="_blank">',
-            '  <g class="exp-row">',
-            f"    <title>{_esc(_build_accessible_title(row))}</title>",
-            f'    <rect class="exp-row-bg" x="18" y="{y:.1f}" width="524" height="82" rx="5" fill="{alt_fill}" stroke="transparent" stroke-width="1" />',
-            f'    <rect class="exp-accent-bar" x="18" y="{y + 7:.1f}" width="3" height="68" rx="1.5" fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.72}" />',
-            f'    <text x="28" y="{y + 23:.1f}" font-size="11.0" fill="{mode_col}">{_esc(row.dir_mode)}</text>',
-            f"    {icon_svg}",
-            f'    <text class="exp-repo-name" x="98" y="{y + 23:.1f}" font-size="12.2" font-weight="700" fill="{name_col}">{_esc(compact_name)}</text>',
-            f"    {pill_svg}" if pill_svg else "",
-            f'    <text x="530" y="{y + 23:.1f}" text-anchor="end" font-size="11.5" font-weight="600" fill="{star_col}">★ {row.stars}</text>',
-            *desc_elems,
-            f'    <circle cx="32" cy="{y + 72:.1f}" r="3.2" fill="{row.language_color}" />',
-            f'    <text x="41" y="{y + 75.5:.1f}" font-size="10.0" fill="{P["muted"]}">{_esc(meta_line)}</text>',
-            "  </g>",
-            "</a>",
-        ]
-    )
+    inner_lines = [
+        '  <g class="exp-row">',
+        f"    <title>{_esc(_build_accessible_title(row))}</title>",
+        f'    <rect class="exp-row-bg" x="18" y="{y:.1f}" width="524" height="82" rx="5" fill="{alt_fill}" stroke="transparent" stroke-width="1" pointer-events="all" />',
+        f'    <rect class="exp-accent-bar" x="18" y="{y + 7:.1f}" width="3" height="68" rx="1.5" fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.72}" />',
+        f'    <text x="28" y="{y + 23:.1f}" font-size="11.0" fill="{mode_col}">{_esc(row.dir_mode)}</text>',
+        f"    {icon_svg}",
+        f'    <text class="exp-repo-name" x="98" y="{y + 23:.1f}" font-size="12.2" font-weight="700" fill="{name_col}">{_esc(compact_name)}</text>',
+        f"    {pill_svg}" if pill_svg else "",
+        f'    <text x="530" y="{y + 23:.1f}" text-anchor="end" font-size="11.5" font-weight="600" fill="{star_col}">★ {row.stars}</text>',
+        *desc_elems,
+        f'    <circle cx="32" cy="{y + 72:.1f}" r="3.2" fill="{row.language_color}" />',
+        f'    <text x="41" y="{y + 75.5:.1f}" font-size="10.0" fill="{P["muted"]}">{_esc(meta_line)}</text>',
+        "  </g>",
+    ]
+    return _wrap_row_link(row, [line for line in inner_lines if line])
 
 
 def build_explorer_svg(
@@ -328,6 +357,11 @@ def build_explorer_svg(
     .exp-mono {{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }}
+    .exp-repo-link {{
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }}
     .exp-row-bg {{
       transition: fill 0.16s ease, stroke 0.16s ease;
     }}
@@ -360,41 +394,197 @@ def build_explorer_svg(
     }}
   </style>
 
-  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="{P["bg"]}" />
+  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="{P["bg"]}" pointer-events="none" />
 
   <g clip-path="url(#exp-window-clip)" class="exp-mono">
     <!-- macOS Terminal Top Title Bar -->
-    <rect x="4" y="4" width="{canvas_w - 8}" height="38" fill="{P["titlebar_bg"]}" />
-    <line x1="4" y1="42" x2="{canvas_w - 4}" y2="42" stroke="{P["inner_border"]}" stroke-width="1" />
+    <g pointer-events="none">
+      <rect x="4" y="4" width="{canvas_w - 8}" height="38" fill="{P["titlebar_bg"]}" />
+      <line x1="4" y1="42" x2="{canvas_w - 4}" y2="42" stroke="{P["inner_border"]}" stroke-width="1" />
 
-    <circle cx="26" cy="23" r="5.5" fill="{P["win_red"]}" />
-    <circle cx="45" cy="23" r="5.5" fill="{P["win_yellow"]}" />
-    <circle cx="64" cy="23" r="5.5" fill="{P["win_green"]}" />
+      <circle cx="26" cy="23" r="5.5" fill="{P["win_red"]}" />
+      <circle cx="45" cy="23" r="5.5" fill="{P["win_yellow"]}" />
+      <circle cx="64" cy="23" r="5.5" fill="{P["win_green"]}" />
 
-    {window_title_svg}
-    <circle cx="{canvas_w - 22 - len(header_pill) * 6.3:.1f}" cy="23" r="3" fill="{P["dir_green"]}" />
-    <text x="{canvas_w - 18}" y="27" text-anchor="end" font-size="10.2" fill="{P["muted"]}">{_esc(header_pill)}</text>
+      {window_title_svg}
+      <circle cx="{canvas_w - 22 - len(header_pill) * 6.3:.1f}" cy="23" r="3" fill="{P["dir_green"]}" />
+      <text x="{canvas_w - 18}" y="27" text-anchor="end" font-size="10.2" fill="{P["muted"]}">{_esc(header_pill)}</text>
 
-    <!-- Terminal Command Prompt -->
-    {top_prompt_svg}
-    <text x="{canvas_w - 20}" y="65" text-anchor="end" font-size="10.8" fill="{P["muted"]}">{_esc(summary_text)}</text>
+      <!-- Terminal Command Prompt -->
+      {top_prompt_svg}
+      <text x="{canvas_w - 20}" y="65" text-anchor="end" font-size="10.8" fill="{P["muted"]}">{_esc(summary_text)}</text>
 
-    <!-- Directory Listing Container -->
-    <rect x="{panel_x:.1f}" y="{panel_y:.1f}" width="{panel_w:.1f}" height="{panel_h:.1f}" rx="8" fill="{P["panel_bg"]}" stroke="{P["inner_border"]}" stroke-width="1.1" />
-    {header_row}
+      <!-- Directory Listing Container Frame -->
+      <rect x="{panel_x:.1f}" y="{panel_y:.1f}" width="{panel_w:.1f}" height="{panel_h:.1f}" rx="8" fill="{P["panel_bg"]}" stroke="{P["inner_border"]}" stroke-width="1.1" />
+      {header_row}
+    </g>
     {rows_markup}
 
     <!-- Bottom Terminal Status Line -->
-    <text x="22" y="{footer_y:.1f}" font-size="12.0" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(footer_prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700">$</tspan></text>
-    <rect class="exp-cursor" x="{cursor_x:.1f}" y="{footer_y - 12:.1f}" width="8" height="15" fill="{P["prompt_blue"]}" />
-    <text x="{canvas_w - 20}" y="{footer_y:.1f}" text-anchor="end" font-size="10.2" fill="{P["dim"]}">{_esc(footer_right)}</text>
+    <g pointer-events="none">
+      <text x="22" y="{footer_y:.1f}" font-size="12.0" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(footer_prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700">$</tspan></text>
+      <rect class="exp-cursor" x="{cursor_x:.1f}" y="{footer_y - 12:.1f}" width="8" height="15" fill="{P["prompt_blue"]}" />
+      <text x="{canvas_w - 20}" y="{footer_y:.1f}" text-anchor="end" font-size="10.2" fill="{P["dim"]}">{_esc(footer_right)}</text>
+    </g>
   </g>
 
-  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="none" stroke="{P["border"]}" stroke-width="1.5" />
+  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="none" stroke="{P["border"]}" stroke-width="1.5" pointer-events="none" />
 </svg>
 '''
     validate_svg_document(svg)
     return svg
+
+
+_EXP_SLICE_STYLE = f'''    .exp-mono {{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }}
+    .exp-repo-link {{
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }}
+    .exp-row-bg {{
+      transition: fill 0.16s ease, stroke 0.16s ease;
+    }}
+    .exp-accent-bar {{
+      transition: fill-opacity 0.16s ease;
+    }}
+    .exp-repo-name {{
+      transition: fill 0.16s ease;
+    }}
+    .exp-row:hover .exp-row-bg {{
+      fill: {P["row_hover"]};
+      stroke: #2c4375;
+    }}
+    .exp-row:hover .exp-accent-bar {{
+      fill-opacity: 1;
+    }}
+    .exp-row:hover .exp-repo-name {{
+      fill: #91ccff;
+    }}'''
+
+
+def build_explorer_header_slice_svg(model: ExplorerModel) -> str:
+    """Render the top terminal header + column labels slice for clickable GitHub README stacking."""
+    canvas_w = EXPLORER_WIDTH
+    canvas_h = 112
+    repo_word = "repo" if model.total_repositories == 1 else "repos"
+    summary_text = f"{model.total_repositories} total · {model.active_repositories} active · ★ {model.total_stars}"
+    header_pill = f"{model.total_repositories} {repo_word} · sort:{model.sort_by}"
+    prompt_prefix = f"{model.username.lower()}@github"
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} {canvas_h}" width="{canvas_w}" height="{canvas_h}" role="img" aria-label="{_esc(model.username)} terminal project explorer header">
+  <defs>
+    <clipPath id="exp-hdr-clip">
+      <rect x="4" y="2" width="{canvas_w - 8}" height="{canvas_h - 4}" rx="12" ry="12" />
+    </clipPath>
+  </defs>
+  <style>
+{_EXP_SLICE_STYLE}
+  </style>
+  <rect x="4" y="2" width="{canvas_w - 8}" height="{canvas_h - 4}" rx="12" ry="12" fill="{P["bg"]}" />
+  <g clip-path="url(#exp-hdr-clip)" class="exp-mono">
+    <rect x="4" y="2" width="{canvas_w - 8}" height="38" fill="{P["titlebar_bg"]}" />
+    <line x1="4" y1="40" x2="{canvas_w - 4}" y2="40" stroke="{P["inner_border"]}" stroke-width="1" />
+    <circle cx="26" cy="21" r="5.5" fill="{P["win_red"]}" />
+    <circle cx="45" cy="21" r="5.5" fill="{P["win_yellow"]}" />
+    <circle cx="64" cy="21" r="5.5" fill="{P["win_green"]}" />
+    <text x="{canvas_w / 2.0:.1f}" y="25" text-anchor="middle" font-size="11.5" fill="{P["muted"]}">{_esc(prompt_prefix)} — <tspan fill="{P["text"]}" font-weight="700">~/projects</tspan> — zsh</text>
+    <circle cx="{canvas_w - 22 - len(header_pill) * 6.3:.1f}" cy="21" r="3" fill="{P["dir_green"]}" />
+    <text x="{canvas_w - 18}" y="25" text-anchor="end" font-size="10.2" fill="{P["muted"]}">{_esc(header_pill)}</text>
+    <text x="20" y="63" font-size="12.5" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700"> $</tspan><tspan fill="{P["text"]}" font-weight="700"> ls ~/projects</tspan></text>
+    <text x="{canvas_w - 20}" y="63" text-anchor="end" font-size="10.8" fill="{P["muted"]}">{_esc(summary_text)}</text>
+    <rect x="14" y="76" width="{canvas_w - 28}" height="28" rx="6" fill="#0b101d" stroke="{P["inner_border"]}" stroke-width="1" />
+    <text x="34" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">MODE</text>
+    <text x="76" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">REPOSITORY</text>
+    <text x="332" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">DESCRIPTION</text>
+    <text x="722" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">LANGUAGE</text>
+    <text x="860" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">UPDATED</text>
+    <text x="978" y="94" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="{P["muted"]}">STARS</text>
+  </g>
+  <rect x="4" y="2" width="{canvas_w - 8}" height="{canvas_h - 4}" rx="12" ry="12" fill="none" stroke="{P["border"]}" stroke-width="1.5" />
+</svg>
+'''
+    validate_svg_document(svg)
+    return svg
+
+
+def build_explorer_row_slice_svg(row: ExplorerRow, index: int) -> str:
+    """Render a self-contained single clickable repository row SVG slice (1009x42)."""
+    canvas_w = EXPLORER_WIDTH
+    canvas_h = 42
+    row_markup = _render_desktop_row_content(row, index, 1.0, is_slice=True)
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} {canvas_h}" width="{canvas_w}" height="{canvas_h}" role="img" aria-label="{_esc(row.name)} repository row">
+  <style>
+{_EXP_SLICE_STYLE}
+  </style>
+  <g class="exp-mono">
+    {row_markup}
+  </g>
+</svg>
+'''
+    validate_svg_document(svg)
+    return svg
+
+
+def build_explorer_empty_slice_svg() -> str:
+    """Render graceful empty-state repository slice SVG (1009x46)."""
+    canvas_w = EXPLORER_WIDTH
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} 46" width="{canvas_w}" height="46" role="img" aria-label="No public repositories discovered yet">
+  <style>
+    .exp-mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }}
+  </style>
+  <rect x="4" y="2" width="{canvas_w - 8}" height="42" rx="7" fill="{P["row_odd"]}" stroke="{P["inner_border"]}" stroke-width="1.1" />
+  <text x="{canvas_w / 2.0:.1f}" y="27" text-anchor="middle" class="exp-mono" font-size="11.5" fill="{P["muted"]}">ls: ~/projects: No public repositories discovered yet.</text>
+</svg>
+'''
+    validate_svg_document(svg)
+    return svg
+
+
+def build_explorer_footer_slice_svg(model: ExplorerModel) -> str:
+    """Render the bottom terminal status bar slice SVG (1009x42)."""
+    canvas_w = EXPLORER_WIDTH
+    canvas_h = 42
+    prompt_prefix = f"{model.username.lower()}@github"
+    bottom_prompt = f"{prompt_prefix}:~/projects$"
+    cursor_x = 22.0 + len(bottom_prompt) * 7.6 + 6.0
+    footer_right = f"synced {model.generated_at} · click any repository row to open on GitHub"
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} {canvas_h}" width="{canvas_w}" height="{canvas_h}" role="img" aria-label="{_esc(model.username)} terminal project explorer footer">
+  <style>
+    .exp-mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }}
+    @keyframes expCursorBlink {{
+      0%, 49% {{ opacity: 1; }}
+      50%, 100% {{ opacity: 0.15; }}
+    }}
+    .exp-cursor {{ animation: expCursorBlink 1.3s step-end infinite; }}
+    @media (prefers-reduced-motion: reduce) {{ .exp-cursor {{ animation: none; opacity: 1; }} }}
+  </style>
+  <rect x="4" y="2" width="{canvas_w - 8}" height="{canvas_h - 4}" rx="10" ry="10" fill="{P["bg"]}" stroke="{P["border"]}" stroke-width="1.3" />
+  <g class="exp-mono">
+    <text x="22" y="25" font-size="12.0" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700">$</tspan></text>
+    <rect class="exp-cursor" x="{cursor_x:.1f}" y="13" width="8" height="15" fill="{P["prompt_blue"]}" />
+    <text x="{canvas_w - 20}" y="25" text-anchor="end" font-size="10.2" fill="{P["dim"]}">{_esc(footer_right)}</text>
+  </g>
+</svg>
+'''
+    validate_svg_document(svg)
+    return svg
+
+
+def build_explorer_slice_svgs(model: ExplorerModel) -> dict[str, object]:
+    """Generate header, per-repository rows, and footer SVGs for clickable GitHub README rendering."""
+    row_svgs: list[tuple[str, str]] = [
+        (row.row_slug, build_explorer_row_slice_svg(row, idx))
+        for idx, row in enumerate(model.rows)
+    ]
+    return {
+        "header": build_explorer_header_slice_svg(model),
+        "rows": row_svgs,
+        "empty": None if row_svgs else build_explorer_empty_slice_svg(),
+        "footer": build_explorer_footer_slice_svg(model),
+    }
 
 
 def build_section_divider_svg(width: int = EXPLORER_WIDTH) -> str:

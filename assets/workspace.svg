@@ -46,14 +46,19 @@
         transform: translateY(2px);
         opacity: 0;
       }
-      30% {
-        opacity: 0.55;
+      20% {
+        opacity: 0.65;
       }
-      75% {
-        opacity: 0.35;
+      55% {
+        opacity: 0.45;
+        transform: translateY(-5px) scaleX(1.15);
+      }
+      85% {
+        opacity: 0.20;
+        transform: translateY(-9px) scaleX(1.35);
       }
       100% {
-        transform: translateY(-10px);
+        transform: translateY(-13px) scaleX(1.5);
         opacity: 0;
       }
     }
@@ -108,6 +113,46 @@
         opacity: 1;
       }
     }
+    @keyframes steamPuff {
+      0% {
+        transform: translateY(0px) scaleX(1);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      60% {
+        transform: translateY(-8px) scaleX(1.4);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-16px) scaleX(1.8);
+        opacity: 0;
+      }
+    }
+    @keyframes shootingStar {
+      0% {
+        stroke-dasharray: 0 80;
+        stroke-dashoffset: 0;
+        transform: translate(0px, 0px);
+        opacity: 0;
+      }
+      1% {
+        opacity: 0.9;
+        stroke-dasharray: 32 48;
+      }
+      3% {
+        stroke-dasharray: 0 80;
+        stroke-dashoffset: -80;
+        transform: translate(60px, 28px);
+        opacity: 0;
+      }
+      100% {
+        stroke-dasharray: 0 80;
+        transform: translate(60px, 28px);
+        opacity: 0;
+      }
+    }
     #credits-track {
       animation: scrollCredits 132.00s linear infinite;
       will-change: transform;
@@ -155,11 +200,35 @@
     .lamp-glow-cone {
       animation: lampGlowPulse 4.6s ease-in-out infinite;
     }
+    .mug-steam-puff-a {
+      animation: steamPuff 4.0s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .mug-steam-puff-b {
+      animation: steamPuff 4.5s ease-in-out 1.4s infinite;
+      transform-origin: center bottom;
+    }
+    .mug-steam-puff-c {
+      animation: steamPuff 5.2s ease-in-out 2.6s infinite;
+      transform-origin: center bottom;
+    }
+    /* Shooting stars: 2-min initial delay, 5-min cycle, ~0.9s flash */
+    .shooting-star-1 {
+      animation: shootingStar 300s linear 120s infinite;
+    }
+    .shooting-star-2 {
+      animation: shootingStar 300s linear 217s infinite;
+    }
+    .shooting-star-3 {
+      animation: shootingStar 300s linear 305s infinite;
+    }
     @media (prefers-reduced-motion: reduce) {
       #credits-track, .clock-min-hand, .clock-hour-hand,
       .mug-steam-1, .mug-steam-2, .mug-steam-3,
+      .mug-steam-puff-a, .mug-steam-puff-b, .mug-steam-puff-c,
       .cat-tail-wag, .cat-breathe, .sleep-z-1, .sleep-z-2,
-      .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone {
+      .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone,
+      .shooting-star-1, .shooting-star-2, .shooting-star-3 {
         animation: none;
       }
     }
@@ -250,10 +319,33 @@
     <rect x="184" y="88" width="8" height="24" fill="#f3e8d4" />
     <rect x="184" y="104" width="24" height="8" fill="#f3e8d4" />
     <rect class="star-twinkle-c" x="208" y="120" width="4" height="4" fill="#f3e8d4" />
+    <clipPath id="win-sky-clip"><rect x="44" y="63" width="92" height="88" /><rect x="144" y="63" width="92" height="88" /><rect x="44" y="159" width="92" height="90" /><rect x="144" y="159" width="92" height="90" /></clipPath>
+    <g clip-path="url(#win-sky-clip)" pointer-events="none">
+      <line class="shooting-star-1" x1="52" y1="67" x2="52" y2="67" stroke="#f3e8d4" stroke-width="1.5" stroke-linecap="round" />
+      <line class="shooting-star-2" x1="152" y1="70" x2="152" y2="70" stroke="#c8e0ff" stroke-width="1.5" stroke-linecap="round" />
+      <line class="shooting-star-3" x1="56" y1="166" x2="56" y2="166" stroke="#4c5b7a" stroke-width="1.5" stroke-linecap="round" />
+    </g>
     <rect x="28" y="257" width="224" height="2" fill="#7c573b" />
     <rect x="28" y="259" width="224" height="6" fill="#6a4a31" />
     <rect x="28" y="265" width="224" height="4" fill="#563926" />
     <rect x="30" y="269" width="220" height="4" fill="#121723" fill-opacity="0.55" />
+    <rect x="73" y="56" width="4" height="6" fill="#563926" />
+    <rect x="74" y="62" width="2" height="12" fill="#5a7a44" />
+    <rect x="68" y="74" width="16" height="2" fill="#b06434" />
+    <rect x="70" y="76" width="12" height="10" fill="#c0724a" />
+    <rect x="72" y="86" width="8" height="2" fill="#b06434" />
+    <rect x="70" y="74" width="12" height="4" fill="#5c3d20" />
+    <rect x="58" y="78" width="12" height="6" fill="#2ca042" />
+    <rect x="52" y="82" width="10" height="6" fill="#2ca042" />
+    <rect x="46" y="88" width="10" height="6" fill="#217a32" />
+    <rect x="52" y="94" width="8" height="4" fill="#2ca042" />
+    <rect x="46" y="99" width="8" height="4" fill="#217a32" />
+    <rect x="84" y="78" width="12" height="6" fill="#2ca042" />
+    <rect x="92" y="84" width="10" height="6" fill="#2ca042" />
+    <rect x="98" y="90" width="8" height="6" fill="#217a32" />
+    <rect x="92" y="96" width="8" height="4" fill="#2ca042" />
+    <rect x="62" y="80" width="2" height="2" fill="#93c8b2" />
+    <rect x="88" y="80" width="2" height="2" fill="#93c8b2" />
     <rect x="278" y="56" width="66" height="50" fill="#121723" fill-opacity="0.5" />
     <rect x="276" y="54" width="66" height="50" fill="#14181e" />
     <rect x="280" y="58" width="58" height="42" fill="#101a30" />
@@ -1104,9 +1196,15 @@
     <rect x="710" y="278" width="5" height="3" fill="#ebe0cf" />
     <rect x="712" y="281" width="3" height="7" fill="#ebe0cf" />
     <rect x="710" y="288" width="5" height="3" fill="#ebe0cf" />
-    <rect class="mug-steam-1" x="695" y="264" width="2" height="6" fill="#ebe0cf" fill-opacity="0.55" />
+    <rect class="mug-steam-puff-a" x="691" y="263" width="6" height="4" fill="#ebe0cf" fill-opacity="0.40" />
+    <rect class="mug-steam-puff-a" x="697" y="261" width="8" height="4" fill="#ebe0cf" fill-opacity="0.30" />
+    <rect class="mug-steam-puff-b" x="693" y="257" width="5" height="4" fill="#ebe0cf" fill-opacity="0.35" />
+    <rect class="mug-steam-puff-b" x="700" y="254" width="6" height="3" fill="#ebe0cf" fill-opacity="0.25" />
+    <rect class="mug-steam-puff-c" x="695" y="250" width="4" height="3" fill="#ebe0cf" fill-opacity="0.20" />
+    <rect class="mug-steam-puff-c" x="702" y="247" width="5" height="3" fill="#ebe0cf" fill-opacity="0.15" />
+    <rect class="mug-steam-1" x="696" y="264" width="2" height="6" fill="#ebe0cf" fill-opacity="0.55" />
     <rect class="mug-steam-2" x="701" y="260" width="2" height="8" fill="#ebe0cf" fill-opacity="0.45" />
-    <rect class="mug-steam-3" x="705" y="265" width="2" height="5" fill="#ebe0cf" fill-opacity="0.35" />
+    <rect class="mug-steam-3" x="706" y="265" width="2" height="5" fill="#ebe0cf" fill-opacity="0.35" />
     <rect x="524" y="312" width="56" height="30" fill="#3d4350" />
     <rect x="528" y="312" width="48" height="4" fill="#4c4d52" />
     <rect x="510" y="330" width="10" height="4" fill="#4c4d52" />

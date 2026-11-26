@@ -237,9 +237,16 @@ class ExplorerAndReadmeTests(unittest.TestCase):
             t = Path(tmp)
             out_exp = t / "explorer.svg"
             out_div = t / "divider.svg"
-            generate_explorer_svg_file(output_path=out_exp, divider_path=out_div)
+            out_slices = t / "explorer"
+            generate_explorer_svg_file(
+                output_path=out_exp,
+                slices_dir=out_slices,
+                divider_path=out_div,
+            )
             self.assertTrue(out_exp.exists())
             self.assertTrue(out_div.exists())
+            self.assertTrue((out_slices / "header.svg").exists())
+            self.assertTrue((out_slices / "footer.svg").exists())
             validate_svg_document(out_exp.read_text(encoding="utf-8"))
 
             summary = run_full_profile_pipeline(
@@ -249,6 +256,7 @@ class ExplorerAndReadmeTests(unittest.TestCase):
                 workspace_svg_path=t / "workspace.svg",
                 neofetch_svg_path=t / "neofetch.svg",
                 explorer_svg_path=t / "explorer.svg",
+                explorer_slices_dir=out_slices,
                 divider_svg_path=t / "divider.svg",
                 readme_path=t / "README.md",
                 client=_FakePipelineClient(),  # type: ignore[arg-type]
@@ -257,7 +265,9 @@ class ExplorerAndReadmeTests(unittest.TestCase):
             readme = (t / "README.md").read_text(encoding="utf-8")
             self.assertIn("assets/workspace.svg", readme)
             self.assertIn("assets/neofetch.svg", readme)
-            self.assertIn("assets/explorer.svg", readme)
+            self.assertIn("assets/explorer/header.svg", readme)
+            self.assertIn("assets/explorer/rows/wrechship.svg", readme)
+            self.assertIn("assets/explorer/footer.svg", readme)
             self.assertIn("https://github.com/Eshtiaq-a/Wrechship", readme)
             self.assertIn("Shipwreck dataset", readme)
 

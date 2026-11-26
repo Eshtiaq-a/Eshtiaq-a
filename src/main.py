@@ -12,6 +12,7 @@ from src.config import (
     COMMITS_PATH,
     CONFIG_PATH,
     DIVIDER_SVG_PATH,
+    EXPLORER_SLICES_DIR,
     EXPLORER_SVG_PATH,
     NEOFETCH_SVG_PATH,
     PROFILE_DATA_PATH,
@@ -28,6 +29,7 @@ from src.neofetch_builder import build_neofetch_model
 from src.readme_builder import build_readme_markdown, write_readme_markdown
 from src.repos_builder import build_repositories_payload, write_repositories_json
 from src.stats_builder import build_profile_data_payload, write_profile_data_json
+from src.svg_explorer import write_explorer_slices
 from src.svg_neofetch import build_neofetch_svg
 from src.svg_workspace import build_workspace_svg
 from src.validators import (
@@ -36,7 +38,11 @@ from src.validators import (
     validate_repositories_payload,
     validate_svg_document,
 )
-from src.visualizations.project_explorer import build_explorer_svg, build_section_divider_svg
+from src.visualizations.project_explorer import (
+    build_explorer_slice_svgs,
+    build_explorer_svg,
+    build_section_divider_svg,
+)
 
 
 def _render_and_validate_profile_assets(
@@ -48,7 +54,7 @@ def _render_and_validate_profile_assets(
     ascii_path: Path = ASCII_PORTRAIT_PATH,
     sort_by: ExplorerSortOrder | None = None,
 ) -> dict[str, Any]:
-    """Validate datasets and render all three SVG sections, divider, and README in memory."""
+    """Validate datasets and render all three SVG sections, slices, divider, and README in memory."""
     validate_repositories_payload(repos_payload)
     validate_commits_payload(commits_payload)
     validate_profile_data_payload(profile_payload)
@@ -74,6 +80,7 @@ def _render_and_validate_profile_assets(
     )
     explorer_svg = build_explorer_svg(explorer_model)
     validate_svg_document(explorer_svg)
+    explorer_slices = build_explorer_slice_svgs(explorer_model)
 
     divider_svg = build_section_divider_svg()
     validate_svg_document(divider_svg)
@@ -88,6 +95,7 @@ def _render_and_validate_profile_assets(
         "workspace_svg": workspace_svg,
         "neofetch_svg": neofetch_svg,
         "explorer_svg": explorer_svg,
+        "explorer_slices": explorer_slices,
         "divider_svg": divider_svg,
         "readme_md": readme_md,
         "explorer_model": explorer_model,
@@ -102,6 +110,7 @@ def run_phase2_pipeline(
     workspace_svg_path: Path = WORKSPACE_SVG_PATH,
     neofetch_svg_path: Path | None = None,
     explorer_svg_path: Path | None = None,
+    explorer_slices_dir: Path | None = None,
     divider_svg_path: Path | None = None,
     readme_path: Path | None = None,
     ascii_path: Path = ASCII_PORTRAIT_PATH,
@@ -146,6 +155,8 @@ def run_phase2_pipeline(
             atomic_write_text(neofetch_svg_path, rendered["neofetch_svg"])
         if explorer_svg_path is not None:
             atomic_write_text(explorer_svg_path, rendered["explorer_svg"])
+        if explorer_slices_dir is not None:
+            write_explorer_slices(rendered["explorer_slices"], slices_dir=explorer_slices_dir)
         if divider_svg_path is not None:
             atomic_write_text(divider_svg_path, rendered["divider_svg"])
         if readme_path is not None:
@@ -171,6 +182,7 @@ def run_full_profile_pipeline(
     workspace_svg_path: Path = WORKSPACE_SVG_PATH,
     neofetch_svg_path: Path = NEOFETCH_SVG_PATH,
     explorer_svg_path: Path = EXPLORER_SVG_PATH,
+    explorer_slices_dir: Path = EXPLORER_SLICES_DIR,
     divider_svg_path: Path = DIVIDER_SVG_PATH,
     readme_path: Path = README_PATH,
     ascii_path: Path = ASCII_PORTRAIT_PATH,
@@ -189,6 +201,7 @@ def run_full_profile_pipeline(
             workspace_svg_path=workspace_svg_path,
             neofetch_svg_path=neofetch_svg_path,
             explorer_svg_path=explorer_svg_path,
+            explorer_slices_dir=explorer_slices_dir,
             divider_svg_path=divider_svg_path,
             readme_path=readme_path,
             ascii_path=ascii_path,
@@ -217,6 +230,7 @@ def run_full_profile_pipeline(
         atomic_write_text(workspace_svg_path, rendered["workspace_svg"])
         atomic_write_text(neofetch_svg_path, rendered["neofetch_svg"])
         atomic_write_text(explorer_svg_path, rendered["explorer_svg"])
+        write_explorer_slices(rendered["explorer_slices"], slices_dir=explorer_slices_dir)
         atomic_write_text(divider_svg_path, rendered["divider_svg"])
         write_readme_markdown(rendered["readme_md"], readme_path)
 

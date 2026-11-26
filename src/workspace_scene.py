@@ -103,7 +103,8 @@ def _render_wall_and_floor() -> str:
 
 
 def _render_window() -> str:
-    """Render cozy 2x2 night window with crescent moon, twinkling stars, pane highlights, and sill."""
+    """Render cozy 2x2 night window with crescent moon, twinkling stars, pane highlights, sill, shooting stars, and hanging plant."""
+    # Clip path for shooting stars is defined inline via clipPath id="win-sky-clip"
     return "\n    ".join(
         [
             # Drop shadow under sill & frame
@@ -134,11 +135,52 @@ def _render_window() -> str:
             f'<rect x="184" y="88" width="8" height="24" fill="{P["cream"]}" />',
             f'<rect x="184" y="104" width="24" height="8" fill="{P["cream"]}" />',
             f'<rect class="star-twinkle-c" x="208" y="120" width="4" height="4" fill="{P["cream"]}" />',
+            # ── Shooting stars (clipped to window sky area, 2-min delay, 5-min cycle) ──────────
+            # ClipPath scopes the comet trails strictly to the 4 panes area
+            '<clipPath id="win-sky-clip">'
+            f'<rect x="44" y="63" width="92" height="88" />'
+            f'<rect x="144" y="63" width="92" height="88" />'
+            f'<rect x="44" y="159" width="92" height="90" />'
+            f'<rect x="144" y="159" width="92" height="90" />'
+            '</clipPath>',
+            '<g clip-path="url(#win-sky-clip)" pointer-events="none">',
+            # Star 1: upper-left pane, diagonal NW→SE, fires at 120s, repeats every 300s
+            f'  <line class="shooting-star-1" x1="52" y1="67" x2="52" y2="67" stroke="{P["cream"]}" stroke-width="1.5" stroke-linecap="round" />',
+            # Star 2: upper-right pane, offset by 97s within the 300s cycle
+            f'  <line class="shooting-star-2" x1="152" y1="70" x2="152" y2="70" stroke="#c8e0ff" stroke-width="1.5" stroke-linecap="round" />',
+            # Star 3: lower-left pane, offset by 185s — rarer, appears mid-cycle
+            f'  <line class="shooting-star-3" x1="56" y1="166" x2="56" y2="166" stroke="{P["window_star"]}" stroke-width="1.5" stroke-linecap="round" />',
+            '</g>',
             # Wooden window sill with top bevel & cast wall shadow
             f'<rect x="28" y="257" width="224" height="2" fill="{P["wood_highlight"]}" />',
             f'<rect x="28" y="259" width="224" height="6" fill="{P["wood_top"]}" />',
             f'<rect x="28" y="265" width="224" height="4" fill="{P["wood_shadow"]}" />',
             f'<rect x="30" y="269" width="220" height="4" fill="{P["shadow_ambient"]}" fill-opacity="0.55" />',
+            # ── Hanging plant on window top-frame interior ───────────────────────────────────────
+            # Hook nail on the inside top edge of the frame (x=72, y=56)
+            f'<rect x="73" y="56" width="4" height="6" fill="{P["wood_shadow"]}" />',
+            # Vine / string down from hook
+            f'<rect x="74" y="62" width="2" height="12" fill="#5a7a44" />',
+            # Small terracotta pot suspended from string
+            f'<rect x="68" y="74" width="16" height="2" fill="#b06434" />',  # pot rim
+            f'<rect x="70" y="76" width="12" height="10" fill="#c0724a" />',  # pot body
+            f'<rect x="72" y="86" width="8" height="2" fill="#b06434" />',   # pot base
+            # Soil
+            f'<rect x="70" y="74" width="12" height="4" fill="#5c3d20" />',
+            # Trailing ivy leaves – left drape
+            f'<rect x="58" y="78" width="12" height="6" fill="{P["plant_leaf"]}" />',
+            f'<rect x="52" y="82" width="10" height="6" fill="{P["plant_leaf"]}" />',
+            f'<rect x="46" y="88" width="10" height="6" fill="{P["plant_leaf_dark"]}" />',
+            f'<rect x="52" y="94" width="8" height="4" fill="{P["plant_leaf"]}" />',
+            f'<rect x="46" y="99" width="8" height="4" fill="{P["plant_leaf_dark"]}" />',
+            # Trailing ivy leaves – right drape
+            f'<rect x="84" y="78" width="12" height="6" fill="{P["plant_leaf"]}" />',
+            f'<rect x="92" y="84" width="10" height="6" fill="{P["plant_leaf"]}" />',
+            f'<rect x="98" y="90" width="8" height="6" fill="{P["plant_leaf_dark"]}" />',
+            f'<rect x="92" y="96" width="8" height="4" fill="{P["plant_leaf"]}" />',
+            # Stem highlights (lighter vein pixel)
+            f'<rect x="62" y="80" width="2" height="2" fill="#93c8b2" />',
+            f'<rect x="88" y="80" width="2" height="2" fill="#93c8b2" />',
         ]
     )
 
@@ -343,10 +385,20 @@ def _render_mug_and_chair() -> str:
             f'<rect x="710" y="278" width="5" height="3" fill="{P["mug_cream"]}" />',
             f'<rect x="712" y="281" width="3" height="7" fill="{P["mug_cream"]}" />',
             f'<rect x="710" y="288" width="5" height="3" fill="{P["mug_cream"]}" />',
-            # Animated rising coffee steam wisps
-            f'<rect class="mug-steam-1" x="695" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
+            # ── Enhanced realistic animated coffee steam (layered fog wisps) ───────────────────
+            # Wide base puff — slow billow rising from mug rim
+            f'<rect class="mug-steam-puff-a" x="691" y="263" width="6" height="4" fill="{P["mug_cream"]}" fill-opacity="0.40" />',
+            f'<rect class="mug-steam-puff-a" x="697" y="261" width="8" height="4" fill="{P["mug_cream"]}" fill-opacity="0.30" />',
+            # Mid wisp — slightly narrower, offset timing
+            f'<rect class="mug-steam-puff-b" x="693" y="257" width="5" height="4" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
+            f'<rect class="mug-steam-puff-b" x="700" y="254" width="6" height="3" fill="{P["mug_cream"]}" fill-opacity="0.25" />',
+            # Top dissipating curl — smallest, fades fastest
+            f'<rect class="mug-steam-puff-c" x="695" y="250" width="4" height="3" fill="{P["mug_cream"]}" fill-opacity="0.20" />',
+            f'<rect class="mug-steam-puff-c" x="702" y="247" width="5" height="3" fill="{P["mug_cream"]}" fill-opacity="0.15" />',
+            # Thin vertical stem threads (original narrow wisps preserved for detail)
+            f'<rect class="mug-steam-1" x="696" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
             f'<rect class="mug-steam-2" x="701" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
-            f'<rect class="mug-steam-3" x="705" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
+            f'<rect class="mug-steam-3" x="706" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
             # Ergonomic desk chair positioned cleanly below tabletop y=312 (zero overlap with keyboard/screen)
             f'<rect x="524" y="312" width="56" height="30" fill="{P["chair_main"]}" />',
             f'<rect x="528" y="312" width="48" height="4" fill="{P["chair_highlight"]}" />',

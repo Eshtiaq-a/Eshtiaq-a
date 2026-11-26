@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 42" width="1009" height="42" role="img" aria-label="Eshtiaq-a repository row">
+  <style>
+    .exp-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .exp-repo-link {
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }
+    .exp-row-bg {
+      transition: fill 0.16s ease, stroke 0.16s ease;
+    }
+    .exp-accent-bar {
+      transition: fill-opacity 0.16s ease;
+    }
+    .exp-repo-name {
+      transition: fill 0.16s ease;
+    }
+    .exp-row:hover .exp-row-bg {
+      fill: #141d33;
+      stroke: #2c4375;
+    }
+    .exp-row:hover .exp-accent-bar {
+      fill-opacity: 1;
+    }
+    .exp-row:hover .exp-repo-name {
+      fill: #91ccff;
+    }
+  </style>
+  <g class="exp-mono">
+    <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer" aria-label="Open Eshtiaq-a repository on GitHub">
+        <g class="exp-row">
+          <title>Eshtiaq-a/Eshtiaq-a | No description provided. | Language: Python | Stars: 0 | Updated: Nov 2026</title>
+          <rect class="exp-row-bg" x="4" y="1.0" width="1001" height="40" rx="7" fill="#0c111c" stroke="#1d2b4d" stroke-width="1.1" pointer-events="all" />
+          <rect class="exp-accent-bar" x="5" y="8.0" width="3" height="26" rx="1.5" fill="#4b8bbe" fill-opacity="0.28" />
+          <text x="34" y="24.0" font-size="11.5" fill="#626c82">d---</text>
+          <rect x="76.0" y="9.0" width="22" height="22" rx="4.5" fill="#182e47" stroke="#4b8bbe" stroke-width="1" /><rect x="81.0" y="14.0" width="7" height="5" rx="2" fill="#4b8bbe" /><rect x="86.0" y="21.0" width="7" height="5" rx="2" fill="#f2cb62" /><rect x="84.0" y="18.0" width="6" height="4" rx="1" fill="#82b8e8" /><circle cx="83.2" cy="16.2" r="0.9" fill="#0d0f14" /><circle cx="90.8" cy="23.8" r="0.9" fill="#0d0f14" />
+          <text class="exp-repo-name" x="110" y="24.0" font-size="12.5" font-weight="700" fill="#7b879e">Eshtiaq-a/</text>
+          <rect x="193.0" y="12.5" width="40.0" height="15" rx="3.5" fill="#171c28" stroke="#343d52" stroke-width="0.8" /><text x="213.0" y="23.1" text-anchor="middle" font-size="8.4" font-weight="700" fill="#7f8aa1">EMPTY</text>
+          <text x="332" y="24.0" font-size="11.5" fill="#5d667a">No description provided.</text>
+          <circle cx="726" cy="20.0" r="3.8" fill="#4b8bbe" />
+          <text x="736" y="24.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">Python</text>
+          <text x="860" y="24.0" font-size="11.0" fill="#7b879e">Nov 2026</text>
+          <text x="978" y="24.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
+        </g>
+      </a>
+  </g>
+</svg>

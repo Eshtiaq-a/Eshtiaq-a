@@ -9,6 +9,11 @@
     .exp-mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
+    .exp-repo-link {
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }
     .exp-row-bg {
       transition: fill 0.16s ease, stroke 0.16s ease;
     }
@@ -41,28 +46,29 @@
     }
   </style>
 
-  <rect x="4" y="4" width="1001" height="482" rx="12" ry="12" fill="#0d0f14" />
+  <rect x="4" y="4" width="1001" height="482" rx="12" ry="12" fill="#0d0f14" pointer-events="none" />
 
   <g clip-path="url(#exp-window-clip)" class="exp-mono">
     <!-- macOS Terminal Top Title Bar -->
-    <rect x="4" y="4" width="1001" height="38" fill="#121723" />
-    <line x1="4" y1="42" x2="1005" y2="42" stroke="#1d2b4d" stroke-width="1" />
+    <g pointer-events="none">
+      <rect x="4" y="4" width="1001" height="38" fill="#121723" />
+      <line x1="4" y1="42" x2="1005" y2="42" stroke="#1d2b4d" stroke-width="1" />
 
-    <circle cx="26" cy="23" r="5.5" fill="#ff5f56" />
-    <circle cx="45" cy="23" r="5.5" fill="#ffbd2e" />
-    <circle cx="64" cy="23" r="5.5" fill="#27c93f" />
+      <circle cx="26" cy="23" r="5.5" fill="#ff5f56" />
+      <circle cx="45" cy="23" r="5.5" fill="#ffbd2e" />
+      <circle cx="64" cy="23" r="5.5" fill="#27c93f" />
 
-    <text x="504.5" y="27" text-anchor="middle" font-size="11.5" fill="#7b879e">eshtiaq-a@github — <tspan fill="#ebf0f4" font-weight="700">~/projects</tspan> — zsh</text>
-    <circle cx="848.4" cy="23" r="3" fill="#73b88d" />
-    <text x="991" y="27" text-anchor="end" font-size="10.2" fill="#7b879e">8 repos · sort:updated</text>
+      <text x="504.5" y="27" text-anchor="middle" font-size="11.5" fill="#7b879e">eshtiaq-a@github — <tspan fill="#ebf0f4" font-weight="700">~/projects</tspan> — zsh</text>
+      <circle cx="848.4" cy="23" r="3" fill="#73b88d" />
+      <text x="991" y="27" text-anchor="end" font-size="10.2" fill="#7b879e">8 repos · sort:updated</text>
 
-    <!-- Terminal Command Prompt -->
-    <text x="20" y="65" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700"> $</tspan><tspan fill="#ebf0f4" font-weight="700"> ls ~/projects</tspan></text>
-    <text x="989" y="65" text-anchor="end" font-size="10.8" fill="#7b879e">8 total · 7 active · ★ 0</text>
+      <!-- Terminal Command Prompt -->
+      <text x="20" y="65" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700"> $</tspan><tspan fill="#ebf0f4" font-weight="700"> ls ~/projects</tspan></text>
+      <text x="989" y="65" text-anchor="end" font-size="10.8" fill="#7b879e">8 total · 7 active · ★ 0</text>
 
-    <!-- Directory Listing Container -->
-    <rect x="16.0" y="82.0" width="977.0" height="364.0" rx="8" fill="#090d16" stroke="#1d2b4d" stroke-width="1.1" />
-    <rect x="16.0" y="82.0" width="977.0" height="28" rx="6" fill="#0b101d" />
+      <!-- Directory Listing Container Frame -->
+      <rect x="16.0" y="82.0" width="977.0" height="364.0" rx="8" fill="#090d16" stroke="#1d2b4d" stroke-width="1.1" />
+      <rect x="16.0" y="82.0" width="977.0" height="28" rx="6" fill="#0b101d" />
       <line x1="16.0" y1="110.0" x2="993.0" y2="110.0" stroke="#1b2540" stroke-width="1" />
       <text x="34" y="100.0" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">MODE</text>
       <text x="76" y="100.0" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">REPOSITORY</text>
@@ -70,10 +76,11 @@
       <text x="722" y="100.0" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">LANGUAGE</text>
       <text x="860" y="100.0" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">UPDATED</text>
       <text x="978" y="100.0" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">STARS</text>
-    <a href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank">
+    </g>
+    <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer" aria-label="Open Eshtiaq-a repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/Eshtiaq-a | No description provided. | Language: Python | Stars: 0 | Updated: Nov 2026</title>
-          <rect class="exp-row-bg" x="20" y="116.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="116.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="123.0" width="3" height="24" rx="1.5" fill="#4b8bbe" fill-opacity="0.28" />
           <text x="34" y="139.0" font-size="11.5" fill="#626c82">d---</text>
           <rect x="76.0" y="124.0" width="22" height="22" rx="4.5" fill="#182e47" stroke="#4b8bbe" stroke-width="1" /><rect x="81.0" y="129.0" width="7" height="5" rx="2" fill="#4b8bbe" /><rect x="86.0" y="136.0" width="7" height="5" rx="2" fill="#f2cb62" /><rect x="84.0" y="133.0" width="6" height="4" rx="1" fill="#82b8e8" /><circle cx="83.2" cy="131.2" r="0.9" fill="#0d0f14" /><circle cx="90.8" cy="138.8" r="0.9" fill="#0d0f14" />
@@ -86,10 +93,10 @@
           <text x="978" y="139.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/Clear-Cut-" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Clear-Cut-" target="_blank" rel="noopener noreferrer" aria-label="Open Clear-Cut- repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/Clear-Cut- | a platform where you can see discounted products from many companies around the globe | Language: TypeScript, PLpgSQL, JavaScript | Stars: 0 | Updated: Nov 2026 | Live: https://clear-cut-seven.vercel.app</title>
-          <rect class="exp-row-bg" x="20" y="156.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="156.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="163.0" width="3" height="24" rx="1.5" fill="#3b82f6" fill-opacity="0.72" />
           <text x="34" y="179.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="164.0" width="22" height="22" rx="4.5" fill="#183052" stroke="#3b82f6" stroke-width="1" /><text x="87.0" y="178.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#7db8ff">TS</text>
@@ -102,10 +109,10 @@
           <text x="978" y="179.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/Portfolio-main" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Portfolio-main" target="_blank" rel="noopener noreferrer" aria-label="Open Portfolio-main repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/Portfolio-main | this is my portfolio site where ill be sharing my works | Language: TypeScript, HTML, JavaScript | Stars: 0 | Updated: Nov 2026 | Live: https://portfolio-main-gilt-nu.vercel.app</title>
-          <rect class="exp-row-bg" x="20" y="196.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="196.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="203.0" width="3" height="24" rx="1.5" fill="#3b82f6" fill-opacity="0.72" />
           <text x="34" y="219.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="204.0" width="22" height="22" rx="4.5" fill="#183052" stroke="#3b82f6" stroke-width="1" /><text x="87.0" y="218.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#7db8ff">TS</text>
@@ -118,10 +125,10 @@
           <text x="978" y="219.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/Wrechship" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/Wrechship" target="_blank" rel="noopener noreferrer" aria-label="Open Wrechship repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/Wrechship | WrechShip is a shipwreck and maritime-disaster dataset till 2026, with vessel names, loss dates, available times, vessel types, incident details, and wreck coordinates. | Language: Python, HTML, JavaScript, CSS, PowerShell, Shell, Go Template | Stars: 0 | Updated: Nov 2026 | Live: https://www.wreckship.me/</title>
-          <rect class="exp-row-bg" x="20" y="236.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="236.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="243.0" width="3" height="24" rx="1.5" fill="#4b8bbe" fill-opacity="0.72" />
           <text x="34" y="259.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="244.0" width="22" height="22" rx="4.5" fill="#182e47" stroke="#4b8bbe" stroke-width="1" /><rect x="81.0" y="249.0" width="7" height="5" rx="2" fill="#4b8bbe" /><rect x="86.0" y="256.0" width="7" height="5" rx="2" fill="#f2cb62" /><rect x="84.0" y="253.0" width="6" height="4" rx="1" fill="#82b8e8" /><circle cx="83.2" cy="251.2" r="0.9" fill="#0d0f14" /><circle cx="90.8" cy="258.8" r="0.9" fill="#0d0f14" />
@@ -134,15 +141,14 @@
           <text x="978" y="259.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/C-code-Practices-" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/C-code-Practices-" target="_blank" rel="noopener noreferrer" aria-label="Open C-code-Practices- repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/C-code-Practices- | here i will store all the problems i solved in C . as C is one of the mother language , i am trying to master it . | Language: C | Stars: 0 | Updated: Aug 2026</title>
-          <rect class="exp-row-bg" x="20" y="276.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="276.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="283.0" width="3" height="24" rx="1.5" fill="#7b9ec9" fill-opacity="0.72" />
           <text x="34" y="299.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="284.0" width="22" height="22" rx="4.5" fill="#1b2840" stroke="#7b9ec9" stroke-width="1" /><text x="87.0" y="298.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#9ec4f0">C</text>
           <text class="exp-repo-name" x="110" y="299.0" font-size="12.5" font-weight="700" fill="#68b5ff">C-code-Practices-/</text>
-      
           <text x="332" y="299.0" font-size="11.5" fill="#a3adc2">here i will store all the problems i solved in...</text>
           <circle cx="726" cy="295.0" r="3.8" fill="#7b9ec9" />
           <text x="736" y="299.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">C</text>
@@ -150,10 +156,10 @@
           <text x="978" y="299.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/stash-money-manager" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/stash-money-manager" target="_blank" rel="noopener noreferrer" aria-label="Open stash-money-manager repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/stash-money-manager | this is a money management app for university going students who tends to save money regularly , making it a bit fun to save money . | Language: TypeScript, CSS, JavaScript | Stars: 0 | Updated: May 2026 | Live: https://stash-saver.vercel.app/</title>
-          <rect class="exp-row-bg" x="20" y="316.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="316.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="323.0" width="3" height="24" rx="1.5" fill="#3b82f6" fill-opacity="0.72" />
           <text x="34" y="339.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="324.0" width="22" height="22" rx="4.5" fill="#183052" stroke="#3b82f6" stroke-width="1" /><text x="87.0" y="338.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#7db8ff">TS</text>
@@ -166,15 +172,14 @@
           <text x="978" y="339.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/assignment_1" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/assignment_1" target="_blank" rel="noopener noreferrer" aria-label="Open assignment_1 repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/assignment_1 | No description provided. | Language: HTML, CSS | Stars: 0 | Updated: Jan 2026</title>
-          <rect class="exp-row-bg" x="20" y="356.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="356.0" width="969" height="38" rx="5" fill="#0c111c" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="363.0" width="3" height="24" rx="1.5" fill="#e3623a" fill-opacity="0.72" />
           <text x="34" y="379.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="364.0" width="22" height="22" rx="4.5" fill="#391e1a" stroke="#e3623a" stroke-width="1" /><path d="M 84.5 371.2 L 80.8 375.0 L 84.5 378.8" fill="none" stroke="#ff8d6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /><path d="M 89.5 371.2 L 93.2 375.0 L 89.5 378.8" fill="none" stroke="#ff8d6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /><line x1="88.0" y1="370.5" x2="86.0" y2="379.5" stroke="#f2cb62" stroke-width="1.3" stroke-linecap="round" />
           <text class="exp-repo-name" x="110" y="379.0" font-size="12.5" font-weight="700" fill="#68b5ff">assignment_1/</text>
-      
           <text x="332" y="379.0" font-size="11.5" fill="#5d667a">No description provided.</text>
           <circle cx="726" cy="375.0" r="3.8" fill="#e3623a" />
           <text x="736" y="379.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">HTML<tspan fill="#7b879e"> +1</tspan></text>
@@ -182,15 +187,14 @@
           <text x="978" y="379.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
         </g>
       </a>
-      <a href="https://github.com/Eshtiaq-a/test" target="_blank">
+      <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/test" target="_blank" rel="noopener noreferrer" aria-label="Open test repository on GitHub">
         <g class="exp-row">
           <title>Eshtiaq-a/test | No description provided. | Language: HTML, CSS | Stars: 0 | Updated: Jan 2026</title>
-          <rect class="exp-row-bg" x="20" y="396.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" />
+          <rect class="exp-row-bg" x="20" y="396.0" width="969" height="38" rx="5" fill="#090d16" stroke="transparent" stroke-width="1" pointer-events="all" />
           <rect class="exp-accent-bar" x="20" y="403.0" width="3" height="24" rx="1.5" fill="#e3623a" fill-opacity="0.72" />
           <text x="34" y="419.0" font-size="11.5" fill="#73b88d">drwx</text>
           <rect x="76.0" y="404.0" width="22" height="22" rx="4.5" fill="#391e1a" stroke="#e3623a" stroke-width="1" /><path d="M 84.5 411.2 L 80.8 415.0 L 84.5 418.8" fill="none" stroke="#ff8d6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /><path d="M 89.5 411.2 L 93.2 415.0 L 89.5 418.8" fill="none" stroke="#ff8d6b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /><line x1="88.0" y1="410.5" x2="86.0" y2="419.5" stroke="#f2cb62" stroke-width="1.3" stroke-linecap="round" />
           <text class="exp-repo-name" x="110" y="419.0" font-size="12.5" font-weight="700" fill="#68b5ff">test/</text>
-      
           <text x="332" y="419.0" font-size="11.5" fill="#5d667a">No description provided.</text>
           <circle cx="726" cy="415.0" r="3.8" fill="#e3623a" />
           <text x="736" y="419.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">HTML<tspan fill="#7b879e"> +1</tspan></text>
@@ -200,10 +204,12 @@
       </a>
 
     <!-- Bottom Terminal Status Line -->
-    <text x="22" y="472.0" font-size="12.0" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700">$</tspan></text>
-    <rect class="exp-cursor" x="240.8" y="460.0" width="8" height="15" fill="#5aa9ff" />
-    <text x="989" y="472.0" text-anchor="end" font-size="10.2" fill="#5d667a">synced 2026-11-26 · all public repositories synced automatically</text>
+    <g pointer-events="none">
+      <text x="22" y="472.0" font-size="12.0" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700">$</tspan></text>
+      <rect class="exp-cursor" x="240.8" y="460.0" width="8" height="15" fill="#5aa9ff" />
+      <text x="989" y="472.0" text-anchor="end" font-size="10.2" fill="#5d667a">synced 2026-11-26 · all public repositories synced automatically</text>
+    </g>
   </g>
 
-  <rect x="4" y="4" width="1001" height="482" rx="12" ry="12" fill="none" stroke="#5582bc" stroke-width="1.5" />
+  <rect x="4" y="4" width="1001" height="482" rx="12" ry="12" fill="none" stroke="#5582bc" stroke-width="1.5" pointer-events="none" />
 </svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 112" width="1009" height="112" role="img" aria-label="Eshtiaq-a terminal project explorer header">
+  <defs>
+    <clipPath id="exp-hdr-clip">
+      <rect x="4" y="2" width="1001" height="108" rx="12" ry="12" />
+    </clipPath>
+  </defs>
+  <style>
+    .exp-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .exp-repo-link {
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }
+    .exp-row-bg {
+      transition: fill 0.16s ease, stroke 0.16s ease;
+    }
+    .exp-accent-bar {
+      transition: fill-opacity 0.16s ease;
+    }
+    .exp-repo-name {
+      transition: fill 0.16s ease;
+    }
+    .exp-row:hover .exp-row-bg {
+      fill: #141d33;
+      stroke: #2c4375;
+    }
+    .exp-row:hover .exp-accent-bar {
+      fill-opacity: 1;
+    }
+    .exp-row:hover .exp-repo-name {
+      fill: #91ccff;
+    }
+  </style>
+  <rect x="4" y="2" width="1001" height="108" rx="12" ry="12" fill="#0d0f14" />
+  <g clip-path="url(#exp-hdr-clip)" class="exp-mono">
+    <rect x="4" y="2" width="1001" height="38" fill="#121723" />
+    <line x1="4" y1="40" x2="1005" y2="40" stroke="#1d2b4d" stroke-width="1" />
+    <circle cx="26" cy="21" r="5.5" fill="#ff5f56" />
+    <circle cx="45" cy="21" r="5.5" fill="#ffbd2e" />
+    <circle cx="64" cy="21" r="5.5" fill="#27c93f" />
+    <text x="504.5" y="25" text-anchor="middle" font-size="11.5" fill="#7b879e">eshtiaq-a@github — <tspan fill="#ebf0f4" font-weight="700">~/projects</tspan> — zsh</text>
+    <circle cx="848.4" cy="21" r="3" fill="#73b88d" />
+    <text x="991" y="25" text-anchor="end" font-size="10.2" fill="#7b879e">8 repos · sort:updated</text>
+    <text x="20" y="63" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#7b879e">:</tspan><tspan fill="#5aa9ff" font-weight="700">~/projects</tspan><tspan fill="#73b88d" font-weight="700"> $</tspan><tspan fill="#ebf0f4" font-weight="700"> ls ~/projects</tspan></text>
+    <text x="989" y="63" text-anchor="end" font-size="10.8" fill="#7b879e">8 total · 7 active · ★ 0</text>
+    <rect x="14" y="76" width="981" height="28" rx="6" fill="#0b101d" stroke="#1d2b4d" stroke-width="1" />
+    <text x="34" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">MODE</text>
+    <text x="76" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">REPOSITORY</text>
+    <text x="332" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">DESCRIPTION</text>
+    <text x="722" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">LANGUAGE</text>
+    <text x="860" y="94" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">UPDATED</text>
+    <text x="978" y="94" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing="1.1" fill="#7b879e">STARS</text>
+  </g>
+  <rect x="4" y="2" width="1001" height="108" rx="12" ry="12" fill="none" stroke="#5582bc" stroke-width="1.5" />
+</svg>

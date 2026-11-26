@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 42" width="1009" height="42" role="img" aria-label="C-code-Practices- repository row">
+  <style>
+    .exp-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .exp-repo-link {
+      cursor: pointer;
+      pointer-events: all;
+      text-decoration: none;
+    }
+    .exp-row-bg {
+      transition: fill 0.16s ease, stroke 0.16s ease;
+    }
+    .exp-accent-bar {
+      transition: fill-opacity 0.16s ease;
+    }
+    .exp-repo-name {
+      transition: fill 0.16s ease;
+    }
+    .exp-row:hover .exp-row-bg {
+      fill: #141d33;
+      stroke: #2c4375;
+    }
+    .exp-row:hover .exp-accent-bar {
+      fill-opacity: 1;
+    }
+    .exp-row:hover .exp-repo-name {
+      fill: #91ccff;
+    }
+  </style>
+  <g class="exp-mono">
+    <a class="exp-repo-link" href="https://github.com/Eshtiaq-a/C-code-Practices-" target="_blank" rel="noopener noreferrer" aria-label="Open C-code-Practices- repository on GitHub">
+        <g class="exp-row">
+          <title>Eshtiaq-a/C-code-Practices- | here i will store all the problems i solved in C . as C is one of the mother language , i am trying to master it . | Language: C | Stars: 0 | Updated: Aug 2026</title>
+          <rect class="exp-row-bg" x="4" y="1.0" width="1001" height="40" rx="7" fill="#0c111c" stroke="#1d2b4d" stroke-width="1.1" pointer-events="all" />
+          <rect class="exp-accent-bar" x="5" y="8.0" width="3" height="26" rx="1.5" fill="#7b9ec9" fill-opacity="0.78" />
+          <text x="34" y="24.0" font-size="11.5" fill="#73b88d">drwx</text>
+          <rect x="76.0" y="9.0" width="22" height="22" rx="4.5" fill="#1b2840" stroke="#7b9ec9" stroke-width="1" /><text x="87.0" y="23.4" text-anchor="middle" font-size="9.2" font-weight="700" fill="#9ec4f0">C</text>
+          <text class="exp-repo-name" x="110" y="24.0" font-size="12.5" font-weight="700" fill="#68b5ff">C-code-Practices-/</text>
+          <text x="332" y="24.0" font-size="11.5" fill="#a3adc2">here i will store all the problems i solved in...</text>
+          <circle cx="726" cy="20.0" r="3.8" fill="#7b9ec9" />
+          <text x="736" y="24.0" font-size="11.5" fill="#ebf0f4" xml:space="preserve">C</text>
+          <text x="860" y="24.0" font-size="11.0" fill="#7b879e">Aug 2026</text>
+          <text x="978" y="24.0" text-anchor="end" font-size="11.5" font-weight="600" fill="#7b879e">★ 0</text>
+        </g>
+      </a>
+  </g>
+</svg>

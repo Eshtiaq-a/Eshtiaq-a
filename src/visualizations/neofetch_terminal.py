@@ -223,14 +223,14 @@ def build_neofetch_terminal_svg(
     {galaxy_css}
   </style>
 
-  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="{P["bg"]}" stroke="{P["border"]}" stroke-width="1.5" />
+  <rect x="4" y="4" width="{canvas_w - 8}" height="{canvas_h - 8}" rx="12" ry="12" fill="{P["bg"]}" stroke="{P["border"]}" stroke-width="1.5" pointer-events="none" />
 
   <g class="nf-mono">
     {prompt_top}
 
     {galaxy_svg}
 
-    <g class="nf-panel">
+    <g class="nf-panel" pointer-events="none">
       {panel_svg}
     </g>
 
