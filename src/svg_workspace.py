@@ -55,6 +55,11 @@ def build_workspace_svg(
       <stop offset="0%" stop-color="{P["screen_bg"]}" stop-opacity="0" />
       <stop offset="100%" stop-color="{P["screen_bg"]}" stop-opacity="0.95" />
     </linearGradient>
+    <linearGradient id="lamp-beam-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="{P["lamp_shade"]}" stop-opacity="0.24" />
+      <stop offset="55%" stop-color="{P["lamp_shade"]}" stop-opacity="0.11" />
+      <stop offset="100%" stop-color="{P["lamp_shade"]}" stop-opacity="0.03" />
+    </linearGradient>
   </defs>
 
   <style>
@@ -69,9 +74,135 @@ def build_workspace_svg(
         transform: translateY(-{seq_height}px);
       }}
     }}
+    @keyframes clockSpin {{
+      0% {{
+        transform: rotate(0deg);
+      }}
+      100% {{
+        transform: rotate(360deg);
+      }}
+    }}
+    @keyframes steamRise {{
+      0% {{
+        transform: translateY(2px);
+        opacity: 0;
+      }}
+      30% {{
+        opacity: 0.55;
+      }}
+      75% {{
+        opacity: 0.35;
+      }}
+      100% {{
+        transform: translateY(-10px);
+        opacity: 0;
+      }}
+    }}
+    @keyframes catTailWag {{
+      0%, 72%, 100% {{
+        transform: rotate(0deg);
+      }}
+      80% {{
+        transform: rotate(-7deg);
+      }}
+      88% {{
+        transform: rotate(4deg);
+      }}
+      94% {{
+        transform: rotate(-3deg);
+      }}
+    }}
+    @keyframes catBreathe {{
+      0%, 100% {{
+        transform: scaleY(1);
+      }}
+      50% {{
+        transform: scaleY(0.95);
+      }}
+    }}
+    @keyframes sleepFloat {{
+      0% {{
+        transform: translateY(2px);
+        opacity: 0.25;
+      }}
+      50% {{
+        opacity: 0.78;
+      }}
+      100% {{
+        transform: translateY(-6px);
+        opacity: 0.15;
+      }}
+    }}
+    @keyframes starTwinkle {{
+      0%, 100% {{
+        opacity: 0.35;
+      }}
+      50% {{
+        opacity: 1;
+      }}
+    }}
+    @keyframes lampGlowPulse {{
+      0%, 100% {{
+        opacity: 0.85;
+      }}
+      50% {{
+        opacity: 1;
+      }}
+    }}
     #credits-track {{
       animation: scrollCredits {duration_sec:.2f}s linear infinite;
       will-change: transform;
+    }}
+    .clock-min-hand {{
+      transform-origin: 0px 0px;
+      animation: clockSpin 60s linear infinite;
+    }}
+    .clock-hour-hand {{
+      transform-origin: 0px 0px;
+      animation: clockSpin 720s linear infinite;
+    }}
+    .mug-steam-1 {{
+      animation: steamRise 3.2s ease-in-out infinite;
+    }}
+    .mug-steam-2 {{
+      animation: steamRise 3.8s ease-in-out 1.1s infinite;
+    }}
+    .mug-steam-3 {{
+      animation: steamRise 3.5s ease-in-out 2.0s infinite;
+    }}
+    .cat-tail-wag {{
+      transform-origin: 0px 0px;
+      animation: catTailWag 6.5s ease-in-out infinite;
+    }}
+    .cat-breathe {{
+      transform-origin: 0px 0px;
+      animation: catBreathe 4.2s ease-in-out infinite;
+    }}
+    .sleep-z-1 {{
+      animation: sleepFloat 3.6s ease-in-out infinite;
+    }}
+    .sleep-z-2 {{
+      animation: sleepFloat 3.6s ease-in-out 1.6s infinite;
+    }}
+    .star-twinkle-a {{
+      animation: starTwinkle 3.8s ease-in-out infinite;
+    }}
+    .star-twinkle-b {{
+      animation: starTwinkle 5.2s ease-in-out 1.3s infinite;
+    }}
+    .star-twinkle-c {{
+      animation: starTwinkle 6.4s ease-in-out 2.5s infinite;
+    }}
+    .lamp-glow-cone {{
+      animation: lampGlowPulse 4.6s ease-in-out infinite;
+    }}
+    @media (prefers-reduced-motion: reduce) {{
+      #credits-track, .clock-min-hand, .clock-hour-hand,
+      .mug-steam-1, .mug-steam-2, .mug-steam-3,
+      .cat-tail-wag, .cat-breathe, .sleep-z-1, .sleep-z-2,
+      .star-twinkle-a, .star-twinkle-b, .star-twinkle-c, .lamp-glow-cone {{
+        animation: none;
+      }}
     }}
   </style>
 

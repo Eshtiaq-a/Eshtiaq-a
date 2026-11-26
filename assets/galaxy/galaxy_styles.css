@@ -1,0 +1,151 @@
+/* Repo Galaxy CSS Animations — Camo-safe pure CSS keyframes (inlined into SVG assets) */
+
+.gx-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 1.6px;
+}
+
+.gx-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+@keyframes gxStarTwinkle {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes gxCorePulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes gxCoreSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gxCoreSpinReverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes gxNodeGlow {
+  0%, 100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.52;
+  }
+}
+
+.gx-star-a {
+  animation: gxStarTwinkle 3.4s ease-in-out infinite;
+}
+
+.gx-star-b {
+  animation: gxStarTwinkle 4.9s ease-in-out 1.4s infinite;
+}
+
+.gx-star-c {
+  animation: gxStarTwinkle 6.2s ease-in-out 2.3s infinite;
+}
+
+.gx-core-pulse {
+  transform-origin: 0px 0px;
+  animation: gxCorePulse 5.5s ease-in-out infinite;
+}
+
+.gx-spiral-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 96s linear infinite;
+}
+
+.gx-ring-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 52s linear infinite;
+}
+
+.gx-particles-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 68s linear infinite;
+}
+
+.gx-node-halo {
+  animation: gxNodeGlow 3.6s ease-in-out infinite;
+}
+
+.gx-orbit-0 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 42s linear infinite;
+}
+.gx-counter-0 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 42s linear infinite;
+}
+
+.gx-orbit-1 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 58s linear infinite;
+}
+.gx-counter-1 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 58s linear infinite;
+}
+
+.gx-orbit-2 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 76s linear infinite;
+}
+.gx-counter-2 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 76s linear infinite;
+}
+
+.gx-orbit-3 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 96s linear infinite;
+}
+.gx-counter-3 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 96s linear infinite;
+}
+
+.gx-orbit-4 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 120s linear infinite;
+}
+.gx-counter-4 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 120s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gx-star-a, .gx-star-b, .gx-star-c,
+  .gx-core-pulse, .gx-spiral-spin, .gx-ring-spin, .gx-particles-spin,
+  .gx-node-halo,
+  .gx-orbit-0, .gx-counter-0,
+  .gx-orbit-1, .gx-counter-1,
+  .gx-orbit-2, .gx-counter-2,
+  .gx-orbit-3, .gx-counter-3,
+  .gx-orbit-4, .gx-counter-4 {
+    animation: none;
+  }
+}

@@ -1,36 +1,400 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 610" width="1009" height="610" role="img" aria-label="eshtiaq-a@github Neofetch developer system information terminal">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009 610" width="1009" height="610" role="img" aria-label="eshtiaq-a@github animated Repo Galaxy and Neofetch developer terminal">
+  <defs>
+    <radialGradient id="gx-nebula-bg" cx="50%" cy="48%" r="60%">
+      <stop offset="0%" stop-color="#11224a" stop-opacity="0.72" />
+      <stop offset="45%" stop-color="#0b1530" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#080c18" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="gx-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e5efff" stop-opacity="0.95" />
+      <stop offset="22%" stop-color="#8bb4ff" stop-opacity="0.65" />
+      <stop offset="55%" stop-color="#3b5fc0" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#080c18" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
   <style>
     .nf-mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
-    .nf-ascii {
-      font-size: 11.5px;
-      fill: #73b88d;
-      letter-spacing: 0px;
-    }
     .nf-panel {
-      font-size: 12.2px;
+      font-size: 11.4px;
     }
+    @keyframes nfCursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.15; }
+    }
+    .nf-cursor {
+      animation: nfCursorBlink 1.3s step-end infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nf-cursor { animation: none; opacity: 1; }
+    }
+    /* Repo Galaxy CSS Animations — Camo-safe pure CSS keyframes (inlined into SVG assets) */
+
+.gx-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 1.6px;
+}
+
+.gx-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+@keyframes gxStarTwinkle {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes gxCorePulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes gxCoreSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gxCoreSpinReverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes gxNodeGlow {
+  0%, 100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.52;
+  }
+}
+
+.gx-star-a {
+  animation: gxStarTwinkle 3.4s ease-in-out infinite;
+}
+
+.gx-star-b {
+  animation: gxStarTwinkle 4.9s ease-in-out 1.4s infinite;
+}
+
+.gx-star-c {
+  animation: gxStarTwinkle 6.2s ease-in-out 2.3s infinite;
+}
+
+.gx-core-pulse {
+  transform-origin: 0px 0px;
+  animation: gxCorePulse 5.5s ease-in-out infinite;
+}
+
+.gx-spiral-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 96s linear infinite;
+}
+
+.gx-ring-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 52s linear infinite;
+}
+
+.gx-particles-spin {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 68s linear infinite;
+}
+
+.gx-node-halo {
+  animation: gxNodeGlow 3.6s ease-in-out infinite;
+}
+
+.gx-orbit-0 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 42s linear infinite;
+}
+.gx-counter-0 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 42s linear infinite;
+}
+
+.gx-orbit-1 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 58s linear infinite;
+}
+.gx-counter-1 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 58s linear infinite;
+}
+
+.gx-orbit-2 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 76s linear infinite;
+}
+.gx-counter-2 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 76s linear infinite;
+}
+
+.gx-orbit-3 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 96s linear infinite;
+}
+.gx-counter-3 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 96s linear infinite;
+}
+
+.gx-orbit-4 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpin 120s linear infinite;
+}
+.gx-counter-4 {
+  transform-origin: 0px 0px;
+  animation: gxCoreSpinReverse 120s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gx-star-a, .gx-star-b, .gx-star-c,
+  .gx-core-pulse, .gx-spiral-spin, .gx-ring-spin, .gx-particles-spin,
+  .gx-node-halo,
+  .gx-orbit-0, .gx-counter-0,
+  .gx-orbit-1, .gx-counter-1,
+  .gx-orbit-2, .gx-counter-2,
+  .gx-orbit-3, .gx-counter-3,
+  .gx-orbit-4, .gx-counter-4 {
+    animation: none;
+  }
+}
+
   </style>
 
   <rect x="4" y="4" width="1001" height="602" rx="12" ry="12" fill="#0d0f14" stroke="#5582bc" stroke-width="1.5" />
 
   <g class="nf-mono">
-    <text x="34" y="42" font-size="13" xml:space="preserve"><tspan fill="#5aa9ff" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#888b92">:~$</tspan><tspan fill="#ebf0f4"> neofetch</tspan></text>
+    <text x="24" y="34" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#888b92">:~$</tspan><tspan fill="#ebf0f4"> neofetch</tspan><tspan fill="#6e737d"> --repo-galaxy</tspan></text>
+    <circle cx="884" cy="30" r="3.5" fill="#73b88d" /><text x="985" y="34" text-anchor="end" font-size="10.5" fill="#9aa1ad">LIVE TELEMETRY</text>
 
-    <g class="nf-ascii">
-      <text x="50" y="97.8" xml:space="preserve">                 =-cc**sss</text>      <text x="50" y="111.2" xml:space="preserve">               ``.`.-..:.+**S</text>      <text x="50" y="124.8" xml:space="preserve">             s`.  :`.=.`..**:c</text>      <text x="50" y="138.2" xml:space="preserve">             `  `cSS####--=-+*</text>      <text x="50" y="151.8" xml:space="preserve">            .`*sS###%%%%#Sc=*</text>      <text x="50" y="165.2" xml:space="preserve">            .*csS###%@%%##Ss*</text>      <text x="50" y="178.8" xml:space="preserve">            + -*`.+sc*=sSs#cc</text>      <text x="50" y="192.2" xml:space="preserve">           c s**=-`%ssc.*SS*</text>      <text x="50" y="205.8" xml:space="preserve">           cccSSScs%%%%%%S#S#s</text>      <text x="50" y="219.2" xml:space="preserve">           c*cs##sc##%%##S%##S%</text>      <text x="50" y="232.8" xml:space="preserve">           #+csSssSS%%%S##S%%</text>      <text x="50" y="246.2" xml:space="preserve">            ccs`S#S#s*###s</text>      <text x="50" y="259.8" xml:space="preserve">            S*csc*sS##SSs</text>      <text x="50" y="273.2" xml:space="preserve">             ***cSS#Sss*s</text>      <text x="50" y="286.8" xml:space="preserve">             cc====+*-=#S</text>      <text x="50" y="300.2" xml:space="preserve">             c******c##S@S</text>      <text x="50" y="313.8" xml:space="preserve">             ccc**cSS@@@*+cs</text>      <text x="50" y="327.2" xml:space="preserve">           c`-cSS**s#@@@@=+*cc*cs</text>      <text x="50" y="340.8" xml:space="preserve">         c=:.....S%Sc@@@@@c*++++=`=*css</text>      <text x="50" y="354.2" xml:space="preserve">       +=:---``...`c:--*cc@***++++===++++ccsS</text>      <text x="50" y="367.8" xml:space="preserve">     s*`:-`:=````::%c:=-`c+*+++++------=++c=+=+</text>      <text x="50" y="381.2" xml:space="preserve">      ` :-:`-- -```+%`+.%%+*+++++:+=-:+-*+++++*c</text>      <text x="50" y="394.8" xml:space="preserve">    S` =-::--.-::`%:`+*S==+=++`-++-:-+==++: ---=</text>      <text x="50" y="408.2" xml:space="preserve">     ` -=``:-.::`:c`++*=*#*+.:==+=`:.:: +++++=--</text>      <text x="50" y="421.8" xml:space="preserve">    s`: -- `:: :``-.==+-SS====+*==`--. =+++*++-</text>      <text x="50" y="435.2" xml:space="preserve">   :.` -: ``: -:`=`=`=.=s-=:--=-:`- :=+=++==-=</text>      <text x="50" y="448.8" xml:space="preserve">  *.. :` ``:.:-:.-::-``:===--=- :---+-. `</text>      <text x="50" y="462.2" xml:space="preserve"> :`.`` `. ``::`-`.-`:.`.-:=-:-:-.`==.=+=-:</text>      <text x="50" y="475.8" xml:space="preserve"> :`.-: .....`: ::-. ``.``:-```:=:`..=- +==+=:-</text>      <text x="50" y="489.2" xml:space="preserve"> :``-`:.   .::-:-`````:`:`-:`:..:*#::-+=+++=*</text>      <text x="50" y="502.8" xml:space="preserve"> :::::-:`   .`: -= `.` ......S  *-=*++++==</text>
+    <g id="repo-galaxy-panel" class="gx-mono">
+      <defs><clipPath id="gx-box-clip"><rect x="24.0" y="52.0" width="422.0" height="508.0" rx="10" ry="10" /></clipPath></defs>
+      <rect x="24.0" y="52.0" width="422.0" height="508.0" rx="10" ry="10" fill="#080c18" stroke="#2a3c70" stroke-width="1.2" />
+      <g clip-path="url(#gx-box-clip)">
+        <ellipse cx="235.0" cy="298.0" rx="202.6" ry="182.9" fill="url(#gx-nebula-bg)" />
+        <circle class="gx-star-a" cx="57.8" cy="173.9" r="1.1" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="91.5" cy="209.5" r="0.8" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="137.9" cy="163.8" r="1.3" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="197.0" cy="179.0" r="0.9" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="294.1" cy="163.8" r="1.2" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="357.4" cy="189.2" r="1.0" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="408.0" cy="168.8" r="1.4" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="70.4" cy="275.5" r="0.9" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="116.8" cy="336.5" r="1.2" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="53.5" cy="392.4" r="1.4" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="100.0" cy="448.2" r="0.9" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="154.8" cy="453.3" r="1.1" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="323.6" cy="438.1" r="1.0" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="382.7" cy="402.5" r="1.3" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="416.5" cy="326.3" r="0.9" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="395.4" cy="255.2" r="1.1" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="344.7" cy="229.8" r="0.8" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="247.7" cy="158.7" r="0.8" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="175.9" cy="397.4" r="0.9" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="285.6" cy="402.5" r="1.1" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="83.1" cy="148.5" r="1.0" fill="#c9d8ff" />
+    <circle class="gx-star-a" cx="374.3" cy="453.3" r="1.1" fill="#c9d8ff" />
+    <circle class="gx-star-c" cx="226.6" cy="448.2" r="0.8" fill="#c9d8ff" />
+    <circle class="gx-star-b" cx="420.7" cy="443.2" r="1.0" fill="#c9d8ff" />
+        <circle cx="44.0" cy="74.0" r="4" fill="#8294ea" />
+        <circle cx="44.0" cy="74.0" r="7" fill="#8294ea" fill-opacity="0.22" />
+        <text x="56.0" y="78.0" class="gx-title" font-size="12.5" font-weight="700" fill="#e5e9f3">REPO GALAXY</text>
+        <text x="428.0" y="78.0" text-anchor="end" font-size="11.0" fill="#5aa9ff">@Eshtiaq-a</text>
+        <text x="42.0" y="96.0" font-size="10.5" font-weight="600" fill="#b8c4db">0 Stars · 8 Repositories</text>
+        <text x="42.0" y="112.0" font-size="9.5" fill="#707b94">Each star is a repository, sized by its stars.</text>
+        <line x1="40.0" y1="124.0" x2="430.0" y2="124.0" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" />
+        <g transform="translate(235.0, 298.0)">
+          <g class="gx-spiral-spin">
+            <path d="M 0,0 C 26,-16 62,-8 92,-46" fill="none" stroke="#5aa9ff" stroke-width="2.2" stroke-opacity="0.14" stroke-linecap="round" />
+            <path d="M 0,0 C -26,16 -62,8 -92,46" fill="none" stroke="#8294ea" stroke-width="2.2" stroke-opacity="0.14" stroke-linecap="round" />
+            <path d="M 0,0 C 16,26 10,60 44,92" fill="none" stroke="#4b8bbe" stroke-width="1.8" stroke-opacity="0.12" stroke-linecap="round" />
+            <path d="M 0,0 C -16,-26 -10,-60 -44,-92" fill="none" stroke="#e3623a" stroke-width="1.5" stroke-opacity="0.10" stroke-linecap="round" />
+          </g>
+          <circle cx="0" cy="0" r="46.3" fill="none" stroke="#4b8bbe" stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" />
+      <circle cx="0" cy="0" r="72.6" fill="none" stroke="#3b82f6" stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" />
+      <circle cx="0" cy="0" r="98.9" fill="none" stroke="#7b9ec9" stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" />
+      <circle cx="0" cy="0" r="125.2" fill="none" stroke="#3b82f6" stroke-width="0.9" stroke-opacity="0.32" stroke-dasharray="3 4" />
+          <g class="gx-ring-spin">
+            <circle cx="0" cy="0" r="21" fill="none" stroke="#5aa9ff" stroke-width="0.9" stroke-opacity="0.45" stroke-dasharray="4 3" />
+            <circle cx="0" cy="0" r="30" fill="none" stroke="#8294ea" stroke-width="0.7" stroke-opacity="0.30" stroke-dasharray="2 5" />
+          </g>
+          <g class="gx-particles-spin">
+            <circle cx="15.5" cy="4.1" r="1.1" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="12.2" cy="19.5" r="0.8" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="-4.6" cy="18.4" r="1.1" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="-22.9" cy="14.3" r="0.8" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="-16.3" cy="-4.7" r="1.1" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="-13.2" cy="-21.2" r="0.8" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="4.4" cy="-20.5" r="1.1" fill="#b9ceff" fill-opacity="0.72" />
+        <circle cx="24.0" cy="-16.2" r="0.8" fill="#b9ceff" fill-opacity="0.72" />
+          </g>
+          <g class="gx-core-pulse">
+            <circle cx="0" cy="0" r="34" fill="url(#gx-core-glow)" />
+            <circle cx="0" cy="0" r="9.5" fill="#8294ea" fill-opacity="0.38" />
+            <circle cx="0" cy="0" r="4.8" fill="#ebf3ff" />
+          </g>
+          <g class="gx-orbit-0">
+          <g transform="rotate(40.00) translate(46.3, 0)">
+            <title>Wrechship · Python · 0★ · 31 commits — WrechShip is a shipwreck and maritime-disaster dataset till 2026, with vessel names, loss dates, available times, vessel types, incident details, and wreck coordinates.</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#4b8bbe" />
+            <circle cx="0" cy="0" r="4.60" fill="#4b8bbe" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-0">
+              <g transform="rotate(-40.00)"><rect x="-27.8" y="6.9" width="55.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">Wrechship</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-1">
+          <g transform="rotate(55.00) translate(72.6, 0)">
+            <title>stash-money-manager · TypeScript · 0★ · 16 commits — this is a money management app for university going students who tends to save money regularly , making it a bit fun to save money .</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#3b82f6" />
+            <circle cx="0" cy="0" r="4.60" fill="#3b82f6" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-1">
+              <g transform="rotate(-55.00)"><rect x="-54.4" y="6.9" width="108.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">stash-money-manager</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-1">
+          <g transform="rotate(205.00) translate(72.6, 0)">
+            <title>Clear-Cut- · TypeScript · 0★ · 14 commits — a platform where you can see discounted products from many companies around the globe</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#3b82f6" />
+            <circle cx="0" cy="0" r="4.60" fill="#3b82f6" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-1">
+              <g transform="rotate(-205.00)"><rect x="-30.5" y="6.9" width="61.0" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">Clear-Cut-</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-2">
+          <g transform="rotate(225.00) translate(98.9, 0)">
+            <title>C-code-Practices- · C · 0★ · 3 commits — here i will store all the problems i solved in C . as C is one of the mother language , i am trying to master it .</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#7b9ec9" />
+            <circle cx="0" cy="0" r="4.60" fill="#7b9ec9" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-2">
+              <g transform="rotate(-225.00)"><rect x="-49.0" y="6.9" width="98.1" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">C-code-Practices-</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-2">
+          <g transform="rotate(65.00) translate(98.9, 0)">
+            <title>assignment_1 · HTML · 0★ · 2 commits — No description provided yet.</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#e3623a" />
+            <circle cx="0" cy="0" r="4.60" fill="#e3623a" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-2">
+              <g transform="rotate(-65.00)"><rect x="-35.8" y="6.9" width="71.6" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">assignment_1</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-3">
+          <g transform="rotate(125.00) translate(125.2, 0)">
+            <title>Portfolio-main · TypeScript · 0★ · 1 commits — this is my portfolio site where ill be sharing my works</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#3b82f6" />
+            <circle cx="0" cy="0" r="4.60" fill="#3b82f6" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-3">
+              <g transform="rotate(-125.00)"><rect x="-41.1" y="6.9" width="82.2" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">Portfolio-main</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-3">
+          <g transform="rotate(245.00) translate(125.2, 0)">
+            <title>test · HTML · 0★ · 1 commits — No description provided yet.</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#e3623a" />
+            <circle cx="0" cy="0" r="4.60" fill="#e3623a" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
+            <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-3">
+              <g transform="rotate(-245.00)"><rect x="-15.0" y="6.9" width="30.0" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">test</text></g>
+            </g>
+          </g>
+        </g>
+      <g class="gx-orbit-3">
+          <g transform="rotate(5.00) translate(125.2, 0)">
+            <title>Eshtiaq-a · Python · 0★ · 0 commits — No description provided yet.</title>
+            <circle class="gx-node-halo" cx="0" cy="0" r="7.31" fill="#4b8bbe" />
+            <circle cx="0" cy="0" r="3.40" stroke="#4b8bbe" stroke-width="1" stroke-dasharray="2 2" fill-opacity="0.3" />
+            <circle cx="-0.95" cy="-0.95" r="0.90" fill="#ffffff" fill-opacity="0.7" />
+            <g class="gx-counter-3">
+              <g transform="rotate(-5.00)"><rect x="-27.8" y="5.7" width="55.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="14.9" text-anchor="middle" font-size="8.4" fill="#8f99ad">Eshtiaq-a</text></g>
+            </g>
+          </g>
+        </g>
+          
+        </g>
+        <line x1="40.0" y1="474.0" x2="430.0" y2="474.0" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" />
+        <text x="42.0" y="490.0" font-size="8.8" font-weight="700" letter-spacing="1.4" fill="#6f7c99">ARM / LANGUAGE</text>
+        <circle cx="46.0" cy="504.5" r="3.6" fill="#4b8bbe" /><text x="55.0" y="508.0" font-size="10.0" fill="#cdd7ec">Python <tspan fill="#75819c">· 79.4%</tspan></text>
+    <circle cx="239.0" cy="504.5" r="3.6" fill="#e3623a" /><text x="248.0" y="508.0" font-size="10.0" fill="#cdd7ec">HTML <tspan fill="#75819c">· 15.4%</tspan></text>
+    <circle cx="46.0" cy="521.5" r="3.6" fill="#3b82f6" /><text x="55.0" y="525.0" font-size="10.0" fill="#cdd7ec">TypeScript <tspan fill="#75819c">· 3.3%</tspan></text>
+    <circle cx="239.0" cy="521.5" r="3.6" fill="#f1e05a" /><text x="248.0" y="525.0" font-size="10.0" fill="#cdd7ec">JavaScript <tspan fill="#75819c">· 0.9%</tspan></text>
+    <circle cx="46.0" cy="538.5" r="3.6" fill="#38bdf8" /><text x="55.0" y="542.0" font-size="10.0" fill="#cdd7ec">PLpgSQL <tspan fill="#75819c">· 0.5%</tspan></text>
+    <circle cx="239.0" cy="538.5" r="3.6" fill="#8b5cf6" /><text x="248.0" y="542.0" font-size="10.0" fill="#cdd7ec">CSS <tspan fill="#75819c">· 0.3%</tspan></text>
+      </g>
     </g>
 
     <g class="nf-panel">
-      <text x="420" y="84" font-size="12.5" font-weight="700" fill="#5aa9ff">eshtiaq-a@github</text>
-    <line x1="558" y1="80" x2="927" y2="80" stroke="#41444b" stroke-width="1" />      <text x="420" y="106" xml:space="preserve"><tspan fill="#5aa9ff">▪ Name: </tspan><tspan fill="#6e737d">...............................................</tspan><tspan fill="#ebf0f4"> Eshtiaq Ahmad</tspan></text>      <text x="420" y="125" xml:space="preserve"><tspan fill="#5aa9ff">▪ OS: </tspan><tspan fill="#6e737d">...................................</tspan><tspan fill="#ebf0f4"> GitHub / Developer Universe</tspan></text>      <text x="420" y="144" xml:space="preserve"><tspan fill="#5aa9ff">▪ Host: </tspan><tspan fill="#6e737d">...................................................</tspan><tspan fill="#ebf0f4"> Eshtiaq-a</tspan></text>      <text x="420" y="163" xml:space="preserve"><tspan fill="#5aa9ff">▪ Kernel: </tspan><tspan fill="#6e737d">.......................................</tspan><tspan fill="#ebf0f4"> Profile Data Engine</tspan></text>      <text x="420" y="182" xml:space="preserve"><tspan fill="#5aa9ff">▪ Shell: </tspan><tspan fill="#6e737d">...............................</tspan><tspan fill="#ebf0f4"> Python 3 Generation Pipeline</tspan></text>      <text x="420" y="201" xml:space="preserve"><tspan fill="#5aa9ff">▪ Identity: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> Software Engineering Student @ DIU</tspan></text>      <text x="420" y="220" xml:space="preserve"><tspan fill="#5aa9ff">▪ Focus: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> Python, Data Science &amp; AI/ML Engineering</tspan></text>      <text x="420" y="239" xml:space="preserve"><tspan fill="#5aa9ff">▪ Location: </tspan><tspan fill="#6e737d">......................................</tspan><tspan fill="#ebf0f4"> dhaka , bangladesh</tspan></text>      <text x="420" y="258" xml:space="preserve"><tspan fill="#5aa9ff">▪ Uptime: </tspan><tspan fill="#6e737d">.......................................</tspan><tspan fill="#ebf0f4"> 10 months on GitHub</tspan></text>      <text x="420" y="277" xml:space="preserve"><tspan fill="#5aa9ff">▪ Packages: </tspan><tspan fill="#6e737d">...................................</tspan><tspan fill="#ebf0f4"> 8 public repositories</tspan></text>      <text x="420" y="296" xml:space="preserve"><tspan fill="#5aa9ff">▪ Languages: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> Python, HTML, TypeScript, JavaScript</tspan></text>      <text x="420" y="323" font-size="12.5" font-weight="700" fill="#5aa9ff">- About</text>
-    <line x1="486" y1="319" x2="927" y2="319" stroke="#41444b" stroke-width="1" />      <text x="420" y="343" fill="#ebf0f4" xml:space="preserve">Software Engineering Student @ Daffodil International University |</text>      <text x="420" y="361" fill="#ebf0f4" xml:space="preserve">Learning Python, Data Science &amp; Machine Learning | Aspiring AI/ML...</text>      <text x="420" y="387" font-size="12.5" font-weight="700" fill="#5aa9ff">- Contact</text>
-    <line x1="502" y1="383" x2="927" y2="383" stroke="#41444b" stroke-width="1" />      <text x="420" y="407" xml:space="preserve"><tspan fill="#5aa9ff">▪ GitHub: </tspan><tspan fill="#6e737d">......................................</tspan><tspan fill="#ebf0f4"> github.com/Eshtiaq-a</tspan></text>      <text x="420" y="434" font-size="12.5" font-weight="700" fill="#5aa9ff">- GitHub Stats</text>
-    <line x1="542" y1="430" x2="927" y2="430" stroke="#41444b" stroke-width="1" />      <text x="420" y="454" xml:space="preserve"><tspan fill="#5aa9ff">▪ Repos: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 8</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Stars: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan></text>      <text x="420" y="473" xml:space="preserve"><tspan fill="#5aa9ff">▪ Commits: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> 68</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Branches: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 10</tspan></text>      <text x="420" y="492" xml:space="preserve"><tspan fill="#5aa9ff">▪ Followers: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 2</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Following: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 4</tspan></text>      <text x="420" y="511" xml:space="preserve"><tspan fill="#5aa9ff">▪ Forks: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Contributions: </tspan><tspan fill="#6e737d">....</tspan><tspan fill="#ebf0f4"> unavailable</tspan></text>
+      <text x="468.0" y="70.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">●</tspan> eshtiaq-a@github</text>
+    <line x1="608.4" y1="66.0" x2="978.0" y2="66.0" stroke="#41444b" stroke-width="1" />
+      <text x="468.0" y="90.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Name: </tspan><tspan fill="#6e737d">...............................................</tspan><tspan fill="#ebf0f4"> Eshtiaq Ahmad</tspan></text>
+      <text x="468.0" y="107.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ OS: </tspan><tspan fill="#6e737d">...................................</tspan><tspan fill="#ebf0f4"> GitHub / Developer Universe</tspan></text>
+      <text x="468.0" y="125.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Host: </tspan><tspan fill="#6e737d">...................................................</tspan><tspan fill="#ebf0f4"> Eshtiaq-a</tspan></text>
+      <text x="468.0" y="142.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Kernel: </tspan><tspan fill="#6e737d">.......................................</tspan><tspan fill="#ebf0f4"> Profile Data Engine</tspan></text>
+      <text x="468.0" y="160.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Role: </tspan><tspan fill="#6e737d">..........................</tspan><tspan fill="#ebf0f4"> Software Engineering Student @ DIU</tspan></text>
+      <text x="468.0" y="177.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Focus: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> Python, Data Science &amp; AI/ML Engineering</tspan></text>
+      <text x="468.0" y="195.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Location: </tspan><tspan fill="#6e737d">.......................................</tspan><tspan fill="#ebf0f4"> dhaka, bangladesh</tspan></text>
+      <text x="468.0" y="212.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Uptime: </tspan><tspan fill="#6e737d">.......................................</tspan><tspan fill="#ebf0f4"> 10 months on GitHub</tspan></text>
+      <text x="468.0" y="230.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Packages: </tspan><tspan fill="#6e737d">...................................</tspan><tspan fill="#ebf0f4"> 8 public repositories</tspan></text>
+      <text x="468.0" y="247.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Languages: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> Python, HTML, TypeScript, JavaScript</tspan></text>
+      <text x="468.0" y="271.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> About</text>
+    <line x1="533.8" y1="267.0" x2="978.0" y2="267.0" stroke="#41444b" stroke-width="1" />
+      <text x="468.0" y="289.5" fill="#ebf0f4" xml:space="preserve">Software Engineering Student @ Daffodil International University |</text>
+      <text x="468.0" y="306.0" fill="#ebf0f4" xml:space="preserve">Learning Python, Data Science &amp; Machine Learning | Aspiring AI/ML</text>
+      <text x="468.0" y="322.5" fill="#ebf0f4" xml:space="preserve">Engineer</text>
+      <text x="468.0" y="346.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> Contact</text>
+    <line x1="548.6" y1="342.0" x2="978.0" y2="342.0" stroke="#41444b" stroke-width="1" />
+      <text x="468.0" y="364.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ GitHub: </tspan><tspan fill="#6e737d">......................................</tspan><tspan fill="#ebf0f4"> github.com/Eshtiaq-a</tspan></text>
+      <text x="468.0" y="389.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> GitHub Stats</text>
+    <line x1="585.6" y1="385.0" x2="978.0" y2="385.0" stroke="#41444b" stroke-width="1" />
+      <text x="468.0" y="407.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Repos: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 8</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Stars: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan></text>
+      <text x="468.0" y="425.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Commits: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> 68</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Branches: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 10</tspan></text>
+      <text x="468.0" y="442.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Followers: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 2</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Following: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 4</tspan></text>
+      <text x="468.0" y="460.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Forks: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Contributions: </tspan><tspan fill="#6e737d">....</tspan><tspan fill="#ebf0f4"> unavailable</tspan></text>
+      <rect x="468.0" y="487.5" width="24" height="12" rx="2" fill="#1d2333" />
+      <rect x="496.0" y="487.5" width="24" height="12" rx="2" fill="#e3623a" />
+      <rect x="524.0" y="487.5" width="24" height="12" rx="2" fill="#73b88d" />
+      <rect x="552.0" y="487.5" width="24" height="12" rx="2" fill="#f1e05a" />
+      <rect x="580.0" y="487.5" width="24" height="12" rx="2" fill="#5aa9ff" />
+      <rect x="608.0" y="487.5" width="24" height="12" rx="2" fill="#8294ea" />
+      <rect x="636.0" y="487.5" width="24" height="12" rx="2" fill="#4b8bbe" />
+      <rect x="664.0" y="487.5" width="24" height="12" rx="2" fill="#ebf0f4" />
     </g>
 
-    <text x="34" y="578" font-size="13" xml:space="preserve"><tspan fill="#5aa9ff" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#888b92">:~$</tspan></text>
-  <rect x="196.0" y="566" width="9" height="16" fill="#4c9aff" />
+    <text x="24" y="586" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#888b92">:~$</tspan></text>
+    <rect class="nf-cursor" x="180.0" y="574" width="8" height="15" fill="#4c9aff" />
   </g>
 </svg>

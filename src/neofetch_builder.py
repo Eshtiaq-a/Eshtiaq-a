@@ -1,8 +1,9 @@
-"""Extract and format Phase 2 JSON data into Neofetch terminal layout structures."""
+"""Extract and format Phase 2 JSON data into Neofetch terminal + Repo Galaxy layout models."""
 
 from __future__ import annotations
 
 import json
+import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,6 +16,7 @@ from src.config import (
     PROFILE_DATA_PATH,
     REPOSITORIES_PATH,
 )
+from src.visualizations.repo_galaxy import RepoGalaxyModel, build_repo_galaxy_model
 
 RIGHT_COL_CHARS = 69
 STAT_HALF_CHARS = 33  # 33 + " | " (3) + 33 = 69 chars
@@ -39,7 +41,7 @@ class StatPairRow:
 
 @dataclass(frozen=True)
 class NeofetchModel:
-    """Presentation-ready data model for Section 02 Neofetch terminal."""
+    """Presentation-ready data model for Section 02 Repo Galaxy + Neofetch terminal."""
 
     prompt_prefix: str
     header_title: str
@@ -48,10 +50,11 @@ class NeofetchModel:
     about_lines: tuple[str, ...]
     contact_rows: tuple[DotRow, ...]
     stats_rows: tuple[StatPairRow, ...]
+    galaxy: RepoGalaxyModel
 
 
 def make_dot_row(label: str, value: str, total_width: int = RIGHT_COL_CHARS) -> DotRow:
-    """Format `• {label}: {dots} {value}` aligned cleanly to `total_width`."""
+    """Format `▪ {label}: {dots} {value}` aligned cleanly to `total_width`."""
     prefix_len = 2 + len(label) + 2  # "▪ " + label + ": "
     available_val_max = max(8, total_width - prefix_len - 4)
     val = value.strip()
@@ -70,6 +73,13 @@ def _format_uptime(months: Any) -> str | None:
     return f"{months} {unit} on GitHub"
 
 
+def _normalize_location(raw: Any) -> str:
+    text = str(raw or "").strip()
+    if not text:
+        return ""
+    return re.sub(r"\s*,\s*", ", ", text)
+
+
 def _compute_languages_display(
     profile_data: dict[str, Any],
     repositories_data: dict[str, Any],
@@ -84,7 +94,6 @@ def _compute_languages_display(
     ]
 
     if not ordered:
-        # Fallback directly from repositories.json primary/byte counts if stats omitted
         totals: dict[str, int] = {}
         for repo in repositories_data.get("repositories") or []:
             if repo.get("is_fork"):
@@ -105,10 +114,9 @@ def _compute_languages_display(
 
 def _load_ascii_lines(ascii_path: Path = ASCII_PORTRAIT_PATH) -> tuple[str, ...]:
     if not ascii_path.exists():
-        return ("   [ ASCII PORTRAIT UNAVAILABLE ]   ",)
+        return ()
     raw_lines = ascii_path.read_text(encoding="utf-8").splitlines()
-    cleaned = [line.rstrip() for line in raw_lines if line.strip()]
-    return tuple(cleaned) if cleaned else ("   [ ASCII PORTRAIT UNAVAILABLE ]   ",)
+    return tuple(line.rstrip() for line in raw_lines if line.strip())
 
 
 def _normalize_display_url(url: str | None, fallback: str) -> str:
@@ -126,7 +134,7 @@ def build_neofetch_model(
     config_raw: dict[str, Any] | None = None,
     ascii_path: Path = ASCII_PORTRAIT_PATH,
 ) -> NeofetchModel:
-    """Assemble verified Phase 2 datasets into a faithful Neofetch terminal model."""
+    """Assemble verified Phase 2 datasets into a Repo Galaxy + Neofetch terminal model."""
     cfg = config_raw or {}
     nf_cfg = cfg.get("neofetch") or {}
     sourced = profile_data.get("directly_sourced_profile") or {}
@@ -168,26 +176,25 @@ def build_neofetch_model(
     max_langs = int(nf_cfg.get("max_languages", 4))
     languages_str = _compute_languages_display(profile_data, repositories_data, max_langs)
 
-    # Developer identity & system info rows (authentic GitHub-themed Neofetch fields)
+    # Developer identity & system info rows
     sys_rows: list[DotRow] = [
         make_dot_row("Name", display_name),
         make_dot_row("OS", "GitHub / Developer Universe"),
         make_dot_row("Host", username),
         make_dot_row("Kernel", "Profile Data Engine"),
-        make_dot_row("Shell", "Python 3 Generation Pipeline"),
     ]
 
-    identity_val = str(nf_cfg.get("identity") or "").strip()
-    if identity_val:
-        sys_rows.append(make_dot_row("Identity", identity_val))
+    role_val = str(nf_cfg.get("role") or nf_cfg.get("identity") or "").strip()
+    if role_val:
+        sys_rows.append(make_dot_row("Role", role_val))
 
     focus_val = str(nf_cfg.get("focus") or "").strip()
     if focus_val:
         sys_rows.append(make_dot_row("Focus", focus_val))
 
-    location_raw = str(sourced.get("location") or cfg.get("location") or "").strip()
-    if location_raw:
-        sys_rows.append(make_dot_row("Location", location_raw))
+    location_clean = _normalize_location(sourced.get("location") or cfg.get("location"))
+    if location_clean:
+        sys_rows.append(make_dot_row("Location", location_clean))
 
     uptime_str = _format_uptime(calc.get("uptime_months"))
     if uptime_str:
@@ -196,10 +203,10 @@ def build_neofetch_model(
     sys_rows.append(make_dot_row("Packages", f"{repo_count} public repositories"))
     sys_rows.append(make_dot_row("Languages", languages_str))
 
-    # About block (clean word wrap from bio, safe fallback if null)
+    # About block (preserve full bio up to 3 lines cleanly without premature truncation)
     bio_raw = str(sourced.get("bio") or "").strip()
     if bio_raw:
-        wrapped_bio = textwrap.wrap(bio_raw, width=RIGHT_COL_CHARS, max_lines=2, placeholder="...")
+        wrapped_bio = textwrap.wrap(bio_raw, width=RIGHT_COL_CHARS, max_lines=3, placeholder="...")
     else:
         wrapped_bio = ["Public GitHub Developer Profile & Open-Source Workspace"]
 
@@ -209,6 +216,9 @@ def build_neofetch_model(
         f"github.com/{username}",
     )
     contact_rows: list[DotRow] = [make_dot_row("GitHub", github_display)]
+    linkedin_url = nf_cfg.get("linkedin")
+    if linkedin_url:
+        contact_rows.append(make_dot_row("LinkedIn", _normalize_display_url(str(linkedin_url), "")))
     blog_url = sourced.get("blog")
     if blog_url:
         contact_rows.append(make_dot_row("Web", _normalize_display_url(str(blog_url), "")))
@@ -278,6 +288,12 @@ def build_neofetch_model(
             )
         )
 
+    galaxy_model = build_repo_galaxy_model(
+        repositories_data=repositories_data,
+        profile_data=profile_data,
+        commits_data=commits_data,
+    )
+
     return NeofetchModel(
         prompt_prefix=prompt_prefix,
         header_title=prompt_prefix,
@@ -286,6 +302,7 @@ def build_neofetch_model(
         about_lines=tuple(wrapped_bio),
         contact_rows=tuple(contact_rows),
         stats_rows=tuple(stats_rows),
+        galaxy=galaxy_model,
     )
 
 

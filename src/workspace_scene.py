@@ -1,4 +1,4 @@
-"""Pixel-art room scene generator matching Reference Image 1 + dual-device Mac setup."""
+"""Pixel-art room scene generator matching Reference Image 1 with inhabited details & animated hooks."""
 
 from __future__ import annotations
 
@@ -31,10 +31,7 @@ def _render_pixel_text(text: str, start_x: int, start_y: int, px: int, color: st
     cursor_x = start_x
     for ch in text.upper():
         rows = PIXEL_FONT_5X7.get(ch)
-        if rows is None:
-            cursor_x += 4 * px
-            continue
-        if ch == " ":
+        if rows is None or ch == " ":
             cursor_x += 4 * px
             continue
         for ry, row in enumerate(rows):
@@ -49,7 +46,7 @@ def _render_pixel_text(text: str, start_x: int, start_y: int, px: int, color: st
 
 
 def _render_wall_and_floor() -> str:
-    """Render dark striped wallpaper and wooden plank flooring."""
+    """Render navy striped wallpaper, baseboard molding, wooden plank floor, and ambient shadows."""
     parts: list[str] = [
         f'<rect x="0" y="0" width="{WORKSPACE_WIDTH}" height="395" fill="{P["wall_primary"]}" />'
     ]
@@ -57,6 +54,10 @@ def _render_wall_and_floor() -> str:
         parts.append(
             f'<rect x="{x + 18}" y="0" width="18" height="395" fill="{P["wall_stripe"]}" />'
         )
+
+    # Wooden baseboard molding along bottom of wall (y=385..395)
+    parts.append(f'<rect x="0" y="385" width="{WORKSPACE_WIDTH}" height="2" fill="{P["wood_shadow"]}" />')
+    parts.append(f'<rect x="0" y="387" width="{WORKSPACE_WIDTH}" height="8" fill="{P["wood_dark"]}" />')
 
     # Wooden plank floor (y=395..504)
     parts.append(f'<rect x="0" y="395" width="{WORKSPACE_WIDTH}" height="109" fill="{P["floor_base"]}" />')
@@ -77,120 +78,250 @@ def _render_wall_and_floor() -> str:
         parts.append(
             f'<rect x="0" y="{seam_y}" width="{WORKSPACE_WIDTH}" height="2" fill="{P["floor_seam"]}" />'
         )
-    for row_top, row_h, joints in zip(row_tops, row_heights, joint_offsets):
+    for idx, (row_top, row_h, joints) in enumerate(zip(row_tops, row_heights, joint_offsets)):
+        # Subtle warm wood grain highlight strip on alternating rows
+        if idx % 2 == 0:
+            parts.append(
+                f'<rect x="0" y="{row_top + 1}" width="{WORKSPACE_WIDTH}" height="2" '
+                f'fill="{P["floor_highlight"]}" fill-opacity="0.45" />'
+            )
         for jx in joints:
             parts.append(
                 f'<rect x="{jx}" y="{row_top}" width="2" height="{row_h}" fill="{P["floor_seam"]}" />'
             )
+
+    # Ambient floor shadows under plant, desk, chair, and cat for grounded depth
+    parts.extend(
+        [
+            f'<rect x="118" y="402" width="50" height="5" fill="{P["floor_shadow"]}" />',
+            f'<rect x="264" y="399" width="464" height="6" fill="{P["floor_shadow"]}" fill-opacity="0.65" />',
+            f'<rect x="520" y="402" width="64" height="5" fill="{P["floor_shadow"]}" />',
+            f'<rect x="762" y="402" width="114" height="5" fill="{P["floor_shadow"]}" />',
+        ]
+    )
     return "\n    ".join(parts)
 
 
 def _render_window() -> str:
-    """Render cozy 2x2 night window with crescent moon, stars, and wooden sill."""
+    """Render cozy 2x2 night window with crescent moon, twinkling stars, pane highlights, and sill."""
     return "\n    ".join(
         [
+            # Drop shadow under sill & frame
+            f'<rect x="38" y="59" width="208" height="202" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
             f'<rect x="36" y="55" width="208" height="202" fill="{P["window_frame"]}" />',
             # 4 night sky panes
             f'<rect x="44" y="63" width="92" height="88" fill="{P["window_sky"]}" />',
             f'<rect x="144" y="63" width="92" height="88" fill="{P["window_sky"]}" />',
             f'<rect x="44" y="159" width="92" height="90" fill="{P["window_sky"]}" />',
             f'<rect x="144" y="159" width="92" height="90" fill="{P["window_sky"]}" />',
-            # Subtle pixel stars
-            f'<rect x="68" y="92" width="4" height="4" fill="{P["window_star"]}" />',
-            f'<rect x="168" y="76" width="4" height="4" fill="{P["window_star"]}" />',
-            f'<rect x="86" y="198" width="4" height="4" fill="{P["window_star"]}" />',
-            f'<rect x="196" y="206" width="4" height="4" fill="{P["window_star"]}" />',
-            # Pixel L-crescent moon in upper-right pane + star dot
+            # Subtle night horizon gradient band at lower panes
+            f'<rect x="44" y="229" width="92" height="20" fill="#10244a" fill-opacity="0.6" />',
+            f'<rect x="144" y="229" width="92" height="20" fill="#10244a" fill-opacity="0.6" />',
+            # Crisp pixel glass reflection ticks
+            f'<rect x="50" y="69" width="10" height="2" fill="{P["window_star"]}" fill-opacity="0.25" />',
+            f'<rect x="50" y="71" width="2" height="8" fill="{P["window_star"]}" fill-opacity="0.25" />',
+            f'<rect x="150" y="165" width="10" height="2" fill="{P["window_star"]}" fill-opacity="0.25" />',
+            # Staggered twinkling stars across panes
+            f'<rect class="star-twinkle-a" x="68" y="92" width="4" height="4" fill="{P["window_star"]}" />',
+            f'<rect class="star-twinkle-b" x="108" y="74" width="3" height="3" fill="{P["cream"]}" />',
+            f'<rect class="star-twinkle-c" x="168" y="76" width="4" height="4" fill="{P["window_star"]}" />',
+            f'<rect class="star-twinkle-a" x="154" y="124" width="3" height="3" fill="{P["cream"]}" />',
+            f'<rect class="star-twinkle-b" x="86" y="198" width="4" height="4" fill="{P["window_star"]}" />',
+            f'<rect class="star-twinkle-c" x="62" y="176" width="3" height="3" fill="{P["cream"]}" />',
+            f'<rect class="star-twinkle-a" x="196" y="206" width="4" height="4" fill="{P["window_star"]}" />',
+            f'<rect class="star-twinkle-b" x="218" y="172" width="3" height="3" fill="{P["window_star"]}" />',
+            # Pixel L-crescent moon in upper-right pane + companion star dot
             f'<rect x="184" y="88" width="8" height="24" fill="{P["cream"]}" />',
             f'<rect x="184" y="104" width="24" height="8" fill="{P["cream"]}" />',
-            f'<rect x="208" y="120" width="4" height="4" fill="{P["cream"]}" />',
-            # Wooden window sill
-            f'<rect x="28" y="257" width="224" height="8" fill="{P["wood_top"]}" />',
+            f'<rect class="star-twinkle-c" x="208" y="120" width="4" height="4" fill="{P["cream"]}" />',
+            # Wooden window sill with top bevel & cast wall shadow
+            f'<rect x="28" y="257" width="224" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="28" y="259" width="224" height="6" fill="{P["wood_top"]}" />',
             f'<rect x="28" y="265" width="224" height="4" fill="{P["wood_shadow"]}" />',
+            f'<rect x="30" y="269" width="220" height="4" fill="{P["shadow_ambient"]}" fill-opacity="0.55" />',
         ]
     )
 
 
-def _render_name_plaque(display_name: str) -> str:
-    """Render framed ESHTIAQ AHMAD plaque centered above the external monitor."""
-    # Center plaque directly over external monitor (cx=550)
+def _render_name_plaque_and_wall_decor(display_name: str) -> str:
+    """Render framed ESHTIAQ AHMAD plaque plus subtle framed developer wall decor."""
     plaque_x, plaque_y, plaque_w, plaque_h = 378, 50, 344, 46
-    # 12 visible letters + 1 space: width = 12*6*3 - 3 + 4*3 = 225px; exact centering inside 344px
     text_width = 225
     text_x = plaque_x + (plaque_w - text_width) // 2
     text_y = plaque_y + 12
+
     return "\n    ".join(
         [
+            # Subtle framed pixel git-constellation poster left of plaque (x=276..344, y=54..104)
+            f'<rect x="278" y="56" width="66" height="50" fill="{P["shadow_ambient"]}" fill-opacity="0.5" />',
+            f'<rect x="276" y="54" width="66" height="50" fill="{P["plaque_border"]}" />',
+            f'<rect x="280" y="58" width="58" height="42" fill="{P["poster_bg"]}" />',
+            # Mini pixel git-branch art inside wall frame
+            f'<rect x="288" y="78" width="42" height="2" fill="#35527a" />',
+            f'<rect x="296" y="68" width="2" height="10" fill="#93c8b2" />',
+            f'<rect x="296" y="68" width="24" height="2" fill="#93c8b2" />',
+            f'<rect x="320" y="68" width="2" height="10" fill="#93c8b2" />',
+            f'<rect x="288" y="76" width="6" height="6" fill="#5aa9ff" />',
+            f'<rect x="304" y="66" width="6" height="6" fill="#93c8b2" />',
+            f'<rect x="310" y="76" width="6" height="6" fill="#f2cb62" />',
+            f'<rect x="328" y="76" width="6" height="6" fill="#5aa9ff" />',
+            f'<rect x="288" y="88" width="38" height="2" fill="#2c4966" />',
+            f'<rect x="288" y="92" width="24" height="2" fill="#2c4966" />',
+            # Drop shadow & ESHTIAQ AHMAD nameplate plaque (x=378..722, y=50..96)
+            f'<rect x="{plaque_x + 3}" y="{plaque_y + 4}" width="{plaque_w}" height="{plaque_h}" fill="{P["shadow_ambient"]}" fill-opacity="0.55" />',
             f'<rect x="{plaque_x}" y="{plaque_y}" width="{plaque_w}" height="{plaque_h}" fill="{P["plaque_border"]}" />',
             f'<rect x="{plaque_x + 4}" y="{plaque_y + 4}" width="{plaque_w - 8}" height="{plaque_h - 8}" fill="{P["plaque_bg"]}" />',
             _render_pixel_text(display_name, text_x, text_y, px=3, color=P["plaque_border"]),
+            # Subtle pinboard sticky notes between plaque and wall clock (x=762..804, y=58..92)
+            f'<rect x="762" y="58" width="20" height="20" fill="{P["lamp_shade"]}" />',
+            f'<rect x="771" y="59" width="2" height="2" fill="#b43b2c" />',
+            f'<rect x="765" y="65" width="12" height="2" fill="{P["wood_dark"]}" fill-opacity="0.55" />',
+            f'<rect x="765" y="69" width="9" height="2" fill="{P["wood_dark"]}" fill-opacity="0.55" />',
+            f'<rect x="786" y="64" width="18" height="18" fill="{P["credit_repo"]}" />',
+            f'<rect x="794" y="65" width="2" height="2" fill="{P["window_frame"]}" />',
+            f'<rect x="789" y="71" width="11" height="2" fill="{P["window_frame"]}" fill-opacity="0.45" />',
+            f'<rect x="789" y="75" width="8" height="2" fill="{P["window_frame"]}" fill-opacity="0.45" />',
         ]
     )
 
 
 def _render_desk_and_lamp() -> str:
-    """Render widened wooden desk and warm desk lamp illuminating the MacBook."""
+    """Render layered wooden desk with depth, ambient shadows, and warm animated lamp glow."""
     return "\n    ".join(
         [
-            # Desk surface & legs (x=254..734, y=298..403)
-            f'<rect x="270" y="324" width="14" height="79" fill="{P["wood_shadow"]}" />',
-            f'<rect x="270" y="324" width="14" height="4" fill="{P["wood_dark"]}" />',
-            f'<rect x="704" y="324" width="14" height="79" fill="{P["wood_shadow"]}" />',
-            f'<rect x="704" y="324" width="14" height="4" fill="{P["wood_dark"]}" />',
-            f'<rect x="254" y="298" width="480" height="16" fill="{P["wood_top"]}" />',
-            f'<rect x="262" y="314" width="464" height="10" fill="{P["wood_shadow"]}" />',
-            # Desk lamp (far left, warm glow next to MacBook without clipping lid)
-            f'<polygon points="260,192 296,192 314,298 256,298" fill="{P["lamp_shade"]}" fill-opacity="0.08" />',
-            f'<rect x="268" y="294" width="20" height="4" fill="{P["lamp_pole"]}" />',
-            f'<rect x="276" y="192" width="4" height="102" fill="{P["lamp_pole"]}" />',
-            f'<rect x="260" y="176" width="36" height="14" fill="{P["lamp_shade"]}" />',
-            f'<rect x="260" y="188" width="36" height="4" fill="#d4aa42" />',
+            # Soft ambient desk glow from external monitor onto wall
+            f'<rect x="410" y="118" width="280" height="170" fill="#5aa9ff" fill-opacity="0.035" />',
+            # Desk legs & inner leg shadow (x=248..742, y=297..403)
+            f'<rect x="266" y="323" width="14" height="80" fill="{P["wood_shadow"]}" />',
+            f'<rect x="266" y="323" width="14" height="6" fill="{P["wood_dark"]}" />',
+            f'<rect x="280" y="323" width="4" height="80" fill="{P["shadow_ambient"]}" fill-opacity="0.35" />',
+            f'<rect x="710" y="323" width="14" height="80" fill="{P["wood_shadow"]}" />',
+            f'<rect x="710" y="323" width="14" height="6" fill="{P["wood_dark"]}" />',
+            f'<rect x="706" y="323" width="4" height="80" fill="{P["shadow_ambient"]}" fill-opacity="0.35" />',
+            # Desk top surface with highlight rim and front apron
+            f'<rect x="248" y="297" width="494" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="248" y="299" width="494" height="16" fill="{P["wood_top"]}" />',
+            f'<rect x="256" y="315" width="478" height="8" fill="{P["wood_shadow"]}" />',
+            f'<rect x="260" y="323" width="470" height="5" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
+            # Animated warm desk lamp glow cone illuminating MacBook & left desk
+            f'<polygon class="lamp-glow-cone" points="258,192 292,192 332,297 248,297" fill="url(#lamp-beam-grad)" />',
+            # Desk lamp hardware (far left on desk)
+            f'<rect x="264" y="293" width="22" height="4" fill="{P["lamp_pole"]}" />',
+            f'<rect x="273" y="192" width="4" height="101" fill="{P["lamp_pole"]}" />',
+            f'<rect x="271" y="236" width="8" height="4" fill="{P["monitor_base"]}" />',
+            f'<rect x="257" y="176" width="36" height="14" fill="{P["lamp_shade"]}" />',
+            f'<rect x="259" y="188" width="32" height="3" fill="#ffe694" />',
+            f'<rect x="257" y="190" width="36" height="2" fill="#d4aa42" />',
         ]
     )
 
 
-def _render_macbook_and_cable() -> str:
-    """Render Apple MacBook laptop on desk connected via cable to the external monitor."""
+def _render_macbook_and_peripherals() -> str:
+    """Render MacBook, USB-C dock/hub, connecting monitor cable, mechanical keyboard, mouse, notebook, and headphones."""
+    # Generate compact pixel keycap grid inside mechanical keyboard (x=462..552, y=300..308)
+    keycaps: list[str] = []
+    # Top row keycaps (Esc red, alphas light, accent blue)
+    for kx in range(463, 550, 5):
+        fill = P["keycap_esc"] if kx == 463 else (P["keycap_mod"] if kx >= 543 else P["keycap_light"])
+        keycaps.append(f'<rect x="{kx}" y="301" width="4" height="2" fill="{fill}" />')
+    # Middle row keycaps
+    for kx in range(463, 550, 5):
+        fill = P["keycap_mod"] if kx >= 543 else P["keycap_light"]
+        keycaps.append(f'<rect x="{kx}" y="304" width="4" height="2" fill="{fill}" />')
+    # Bottom row + spacebar
+    keycaps.append(f'<rect x="463" y="307" width="8" height="2" fill="{P["monitor_base"]}" />')
+    keycaps.append(f'<rect x="473" y="307" width="6" height="2" fill="{P["monitor_base"]}" />')
+    keycaps.append(f'<rect x="481" y="307" width="42" height="2" fill="{P["keycap_light"]}" />')
+    keycaps.append(f'<rect x="525" y="307" width="8" height="2" fill="{P["monitor_base"]}" />')
+    keycaps.append(f'<rect x="535" y="307" width="14" height="2" fill="{P["keycap_mod"]}" />')
+
     return "\n    ".join(
         [
-            # Display connection cable (USB-C / DisplayPort from MacBook right edge to monitor stand)
-            f'<rect x="398" y="290" width="6" height="5" fill="{P["mac_aluminum"]}" />',
-            f'<rect x="404" y="291" width="10" height="3" fill="{P["cable_highlight"]}" />',
-            f'<rect x="412" y="293" width="128" height="3" fill="{P["cable"]}" />',
-            f'<rect x="538" y="284" width="3" height="12" fill="{P["cable"]}" />',
-            # MacBook open lid / display (x=306..390, y=236..288)
-            f'<rect x="306" y="236" width="84" height="52" fill="{P["mac_edge"]}" />',
-            f'<rect x="308" y="238" width="80" height="48" fill="{P["mac_dark"]}" />',
-            f'<rect x="312" y="242" width="72" height="40" fill="{P["mac_screen"]}" />',
-            # Subtle static terminal / desktop UI on MacBook (NOT movie credits)
-            f'<rect x="316" y="246" width="18" height="3" fill="#64aee9" />',
-            f'<rect x="336" y="246" width="4" height="3" fill="#93c8b2" />',
-            f'<rect x="316" y="254" width="40" height="2" fill="{P["window_star"]}" />',
-            f'<rect x="316" y="260" width="54" height="2" fill="#35527a" />',
-            f'<rect x="316" y="266" width="32" height="2" fill="{P["window_star"]}" />',
-            f'<rect x="316" y="272" width="46" height="2" fill="#35527a" />',
-            # MacBook aluminum unibody base & keyboard deck (x=298..398, y=288..298)
-            f'<rect x="298" y="288" width="100" height="6" fill="{P["mac_aluminum"]}" />',
-            f'<rect x="312" y="288" width="72" height="2" fill="{P["mac_dark"]}" />',
-            f'<rect x="298" y="294" width="100" height="4" fill="{P["mac_edge"]}" />',
-            f'<rect x="342" y="294" width="12" height="2" fill="{P["mac_dark"]}" />',
+            # USB-C Dock / External SSD next to MacBook + display cable routed cleanly to monitor stand
+            f'<rect x="402" y="290" width="20" height="7" fill="{P["mac_dark"]}" />',
+            f'<rect x="404" y="291" width="16" height="2" fill="{P["mac_edge"]}" />',
+            f'<rect x="416" y="294" width="3" height="2" fill="#5aa9ff" />',
+            f'<rect x="396" y="291" width="6" height="4" fill="{P["mac_aluminum"]}" />',
+            f'<rect x="422" y="292" width="118" height="3" fill="{P["cable"]}" />',
+            f'<rect x="538" y="284" width="3" height="11" fill="{P["cable"]}" />',
+            # MacBook open lid / display (x=304..388, y=236..288)
+            f'<rect x="304" y="236" width="84" height="52" fill="{P["mac_edge"]}" />',
+            f'<rect x="306" y="238" width="80" height="48" fill="{P["mac_dark"]}" />',
+            f'<rect x="310" y="242" width="72" height="40" fill="{P["mac_screen"]}" />',
+            # Static clean syntax-highlighted IDE mockup on MacBook
+            f'<rect x="314" y="246" width="16" height="3" fill="#64aee9" />',
+            f'<rect x="332" y="246" width="8" height="3" fill="#93c8b2" />',
+            f'<rect x="314" y="253" width="38" height="2" fill="{P["window_star"]}" />',
+            f'<rect x="318" y="258" width="48" height="2" fill="#35527a" />',
+            f'<rect x="318" y="263" width="30" height="2" fill="{P["lamp_shade"]}" fill-opacity="0.7" />',
+            f'<rect x="314" y="268" width="44" height="2" fill="{P["window_star"]}" />',
+            f'<rect x="314" y="273" width="26" height="2" fill="#93c8b2" fill-opacity="0.6" />',
+            # MacBook aluminum unibody base (x=296..396, y=288..298)
+            f'<rect x="296" y="288" width="100" height="6" fill="{P["mac_aluminum"]}" />',
+            f'<rect x="310" y="288" width="72" height="2" fill="{P["mac_dark"]}" />',
+            f'<rect x="296" y="294" width="100" height="4" fill="{P["mac_edge"]}" />',
+            f'<rect x="340" y="294" width="12" height="2" fill="{P["mac_dark"]}" />',
+            # Mini Raspberry Pi / Audio DAC box under left monitor edge (x=428..454, y=288..297)
+            f'<rect x="428" y="289" width="26" height="8" fill="{P["monitor_inner"]}" />',
+            f'<rect x="430" y="290" width="22" height="2" fill="{P["monitor_base"]}" />',
+            f'<rect x="432" y="294" width="3" height="2" fill="#73b88d" />',
+            f'<rect x="437" y="294" width="6" height="2" fill="#f2cb62" />',
+            # Mechanical Keyboard (front center of desk y=299..310, completely unobstructed)
+            f'<rect x="504" y="294" width="3" height="6" fill="{P["cable"]}" />',
+            f'<rect x="460" y="300" width="92" height="10" fill="{P["mac_dark"]}" />',
+            f'<rect x="460" y="310" width="92" height="2" fill="{P["cable"]}" />',
+            *keycaps,
+            # Stitched Mousepad + Wireless Pixel Mouse (x=564..616, y=299..311)
+            f'<rect x="564" y="299" width="52" height="12" fill="{P["mousepad_border"]}" />',
+            f'<rect x="565" y="300" width="50" height="10" fill="{P["mousepad_bg"]}" />',
+            f'<rect x="582" y="297" width="16" height="10" fill="{P["chair_main"]}" />',
+            f'<rect x="583" y="297" width="14" height="3" fill="{P["mac_aluminum"]}" />',
+            f'<rect x="589" y="298" width="2" height="3" fill="#5aa9ff" />',
+            # Developer Notebook & Pen (x=624..671, y=298..310)
+            f'<rect x="624" y="299" width="34" height="10" fill="{P["book_cream"]}" />',
+            f'<rect x="624" y="299" width="6" height="10" fill="{P["book_blue"]}" />',
+            f'<rect x="633" y="302" width="20" height="1" fill="{P["monitor_base"]}" />',
+            f'<rect x="633" y="305" width="16" height="1" fill="{P["monitor_base"]}" />',
+            f'<rect x="662" y="297" width="3" height="11" fill="{P["lamp_shade"]}" />',
+            f'<rect x="662" y="296" width="3" height="2" fill="{P["mac_aluminum"]}" />',
+            f'<rect x="662" y="308" width="3" height="2" fill="{P["plaque_border"]}" />',
+            # Studio Over-Ear Headphones on Sleek Aluminum Desk Stand (x=714..738, y=253..297)
+            f'<rect x="716" y="294" width="18" height="3" fill="{P["monitor_base"]}" />',
+            f'<rect x="723" y="260" width="4" height="34" fill="{P["mac_edge"]}" />',
+            f'<rect x="715" y="254" width="20" height="4" fill="{P["mac_dark"]}" />',
+            f'<rect x="717" y="255" width="16" height="2" fill="{P["chair_highlight"]}" />',
+            # Headband side arms connecting seamlessly down into earcups
+            f'<rect x="715" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
+            f'<rect x="733" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
+            f'<rect x="713" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
+            f'<rect x="719" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
+            f'<rect x="714" y="269" width="2" height="6" fill="#8294ea" />',
+            f'<rect x="729" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
+            f'<rect x="728" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
+            f'<rect x="734" y="269" width="2" height="6" fill="#8294ea" />',
         ]
     )
 
 
 def _render_external_monitor_shell() -> str:
-    """Render external monitor stand, bezel, and backdrop behind the movie-credit screen."""
+    """Render external monitor stand, webcam, bezel, and backdrop behind the movie-credit screen."""
     sx, sy, sw, sh = MONITOR_SCREEN_BOX
     return "\n    ".join(
         [
-            # Monitor stand neck & wide flat base resting on desk (y=298)
-            f'<rect x="538" y="286" width="28" height="8" fill="{P["monitor_stand"]}" />',
-            f'<rect x="508" y="294" width="88" height="4" fill="{P["monitor_base"]}" />',
-            # Outer bezel & inner dark bevel (x=414..686, y=122..286)
+            # Monitor stand neck & wide flat base resting on desk (y=297)
+            f'<rect x="536" y="284" width="28" height="9" fill="{P["monitor_stand"]}" />',
+            f'<rect x="504" y="293" width="92" height="4" fill="{P["monitor_base"]}" />',
+            # Tiny webcam bar centered on top bezel (x=541..559, y=116..122)
+            f'<rect x="541" y="116" width="18" height="6" fill="{P["mac_dark"]}" />',
+            f'<rect x="548" y="117" width="4" height="4" fill="#5aa9ff" />',
+            f'<rect x="554" y="118" width="2" height="2" fill="#73b88d" />',
+            # Monitor wall/back drop shadow + outer bezel & inner dark bevel (x=414..686, y=122..284)
+            f'<rect x="418" y="126" width="272" height="162" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
             f'<rect x="414" y="122" width="272" height="164" fill="{P["monitor_outer"]}" />',
             f'<rect x="420" y="128" width="260" height="152" fill="{P["monitor_inner"]}" />',
-            # Power indicator LED dot on bottom bezel chin
-            f'<rect x="668" y="282" width="4" height="2" fill="{P["credit_repo"]}" />',
+            # Top bezel rim highlight + power indicator LED dot on bottom bezel chin
+            f'<rect x="414" y="122" width="272" height="2" fill="{P["monitor_stand"]}" />',
+            f'<rect x="668" y="281" width="4" height="2" fill="{P["credit_repo"]}" />',
             # Deep cinema screen backdrop
             f'<rect x="{sx}" y="{sy}" width="{sw}" height="{sh}" fill="{P["screen_bg"]}" />',
         ]
@@ -198,25 +329,37 @@ def _render_external_monitor_shell() -> str:
 
 
 def _render_mug_and_chair() -> str:
-    """Render coffee mug on right desk edge and non-occluding foreground chair."""
+    """Render coffee mug with rising animated steam + foreground desk chair below tabletop."""
     return "\n    ".join(
         [
-            # Coffee mug with hollow handle and steam right of external monitor (x=694..722)
-            f'<rect x="694" y="276" width="22" height="22" fill="{P["mug_cream"]}" />',
-            f'<rect x="712" y="276" width="4" height="22" fill="{P["mug_shadow"]}" />',
-            f'<rect x="716" y="280" width="6" height="3" fill="{P["mug_cream"]}" />',
-            f'<rect x="719" y="283" width="3" height="7" fill="{P["mug_cream"]}" />',
-            f'<rect x="716" y="290" width="6" height="3" fill="{P["mug_cream"]}" />',
-            # Subtle rising pixel steam
-            f'<rect x="700" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
-            f'<rect x="708" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
-            # T-shaped desk chair positioned cleanly below y=306 (zero monitor overlap)
-            f'<rect x="524" y="306" width="56" height="32" fill="{P["chair_main"]}" />',
-            f'<rect x="528" y="306" width="48" height="4" fill="{P["chair_highlight"]}" />',
-            f'<rect x="514" y="338" width="76" height="14" fill="{P["chair_highlight"]}" />',
-            f'<rect x="514" y="348" width="76" height="4" fill="{P["chair_shadow"]}" />',
-            f'<rect x="546" y="352" width="12" height="42" fill="{P["chair_main"]}" />',
-            f'<rect x="526" y="394" width="52" height="8" fill="{P["chair_shadow"]}" />',
+            # Coaster & Coffee mug cleanly to right of external monitor (x=678..708, y=274..297)
+            f'<rect x="678" y="295" width="24" height="3" fill="{P["wood_dark"]}" />',
+            f'<rect x="680" y="274" width="20" height="21" fill="{P["mug_cream"]}" />',
+            f'<rect x="682" y="274" width="16" height="2" fill="#4e3222" />',
+            f'<rect x="696" y="274" width="4" height="21" fill="{P["mug_shadow"]}" />',
+            f'<rect x="700" y="278" width="6" height="3" fill="{P["mug_cream"]}" />',
+            f'<rect x="703" y="281" width="3" height="7" fill="{P["mug_cream"]}" />',
+            f'<rect x="700" y="288" width="6" height="3" fill="{P["mug_cream"]}" />',
+            # Animated rising coffee steam wisps
+            f'<rect class="mug-steam-1" x="685" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
+            f'<rect class="mug-steam-2" x="691" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
+            f'<rect class="mug-steam-3" x="695" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
+            # Ergonomic desk chair positioned cleanly below tabletop y=312 (zero overlap with keyboard/screen)
+            f'<rect x="524" y="312" width="56" height="30" fill="{P["chair_main"]}" />',
+            f'<rect x="528" y="312" width="48" height="4" fill="{P["chair_highlight"]}" />',
+            # Armrests
+            f'<rect x="510" y="330" width="10" height="4" fill="{P["chair_highlight"]}" />',
+            f'<rect x="514" y="334" width="4" height="10" fill="{P["chair_shadow"]}" />',
+            f'<rect x="584" y="330" width="10" height="4" fill="{P["chair_highlight"]}" />',
+            f'<rect x="586" y="334" width="4" height="10" fill="{P["chair_shadow"]}" />',
+            # Seat pan, gas lift, and caster wheel base
+            f'<rect x="514" y="342" width="76" height="12" fill="{P["chair_highlight"]}" />',
+            f'<rect x="514" y="350" width="76" height="4" fill="{P["chair_shadow"]}" />',
+            f'<rect x="546" y="354" width="12" height="40" fill="{P["chair_main"]}" />',
+            f'<rect x="526" y="394" width="52" height="6" fill="{P["chair_shadow"]}" />',
+            f'<rect x="528" y="400" width="6" height="4" fill="{P["mac_dark"]}" />',
+            f'<rect x="549" y="400" width="6" height="4" fill="{P["mac_dark"]}" />',
+            f'<rect x="570" y="400" width="6" height="4" fill="{P["mac_dark"]}" />',
         ]
     )
 
@@ -228,6 +371,7 @@ def _render_indoor_plants(include_second_plant: bool) -> str:
         f'<rect x="122" y="354" width="42" height="10" fill="{P["plant_pot"]}" />',
         f'<rect x="126" y="364" width="34" height="4" fill="{P["plant_pot_rim"]}" />',
         f'<rect x="126" y="368" width="34" height="36" fill="{P["plant_pot"]}" />',
+        f'<rect x="152" y="368" width="8" height="36" fill="{P["plant_pot_rim"]}" />',
         f'<rect x="140" y="282" width="6" height="72" fill="{P["plant_leaf"]}" />',
         f'<rect x="146" y="290" width="24" height="10" fill="{P["plant_leaf"]}" />',
         f'<rect x="146" y="300" width="24" height="2" fill="{P["plant_leaf_dark"]}" />',
@@ -237,67 +381,129 @@ def _render_indoor_plants(include_second_plant: bool) -> str:
         f'<rect x="146" y="334" width="20" height="2" fill="{P["plant_leaf_dark"]}" />',
     ]
     if include_second_plant:
-        # Plant 2: Small subtle potted succulent on left end of bottom right shelf (y=279)
+        # Plant 2: Small potted succulent on left end of bottom right shelf (y=279)
         parts.extend(
             [
-                f'<rect x="780" y="261" width="24" height="4" fill="{P["plant_pot"]}" />',
-                f'<rect x="782" y="265" width="20" height="14" fill="{P["plant_pot_rim"]}" />',
-                f'<rect x="784" y="267" width="16" height="12" fill="{P["plant_pot"]}" />',
-                f'<rect x="788" y="245" width="8" height="16" fill="{P["plant_leaf"]}" />',
-                f'<rect x="780" y="251" width="8" height="10" fill="{P["plant_leaf_dark"]}" />',
-                f'<rect x="796" y="251" width="8" height="10" fill="{P["plant_leaf"]}" />',
+                f'<rect x="774" y="261" width="24" height="4" fill="{P["plant_pot"]}" />',
+                f'<rect x="776" y="265" width="20" height="14" fill="{P["plant_pot_rim"]}" />',
+                f'<rect x="778" y="267" width="16" height="12" fill="{P["plant_pot"]}" />',
+                f'<rect x="782" y="245" width="8" height="16" fill="{P["plant_leaf"]}" />',
+                f'<rect x="774" y="251" width="8" height="10" fill="{P["plant_leaf_dark"]}" />',
+                f'<rect x="790" y="251" width="8" height="10" fill="{P["plant_leaf"]}" />',
             ]
         )
     return "\n    ".join(parts)
 
 
 def _render_clock_shelves_and_cat() -> str:
-    """Render wall clock, two bookshelves with language books, and sleeping cat."""
+    """Render animated wall clock, well-stocked programmer bookshelves, and animated sleeping cat."""
     return "\n    ".join(
         [
-            # Wall clock (top right, cx=860, cy=73, r=27)
+            # Wall clock with animated hands (cx=860, cy=73)
+            f'<circle cx="862" cy="76" r="30" fill="{P["shadow_ambient"]}" fill-opacity="0.45" />',
             f'<circle cx="860" cy="73" r="30" fill="{P["window_frame"]}" />',
             f'<circle cx="860" cy="73" r="26" fill="{P["cream"]}" />',
-            f'<line x1="860" y1="73" x2="848" y2="63" stroke="{P["window_frame"]}" stroke-width="3" stroke-linecap="square" />',
-            f'<line x1="860" y1="73" x2="874" y2="59" stroke="{P["window_frame"]}" stroke-width="3" stroke-linecap="square" />',
-            # Top & bottom right bookshelves (x=762..948)
+            # Hour tick marks (12, 3, 6, 9)
+            f'<rect x="859" y="50" width="2" height="4" fill="{P["chair_shadow"]}" />',
+            f'<rect x="880" y="72" width="4" height="2" fill="{P["chair_shadow"]}" />',
+            f'<rect x="859" y="92" width="2" height="4" fill="{P["chair_shadow"]}" />',
+            f'<rect x="836" y="72" width="4" height="2" fill="{P["chair_shadow"]}" />',
+            # Animated clock hands pivoted cleanly around (860, 73)
+            '<g transform="translate(860, 73)">',
+            f'  <g class="clock-hour-hand"><line x1="0" y1="0" x2="-12" y2="-10" stroke="{P["window_frame"]}" stroke-width="3" stroke-linecap="square" /></g>',
+            f'  <g class="clock-min-hand"><line x1="0" y1="0" x2="14" y2="-14" stroke="{P["window_frame"]}" stroke-width="2.5" stroke-linecap="square" /></g>',
+            f'  <circle cx="0" cy="0" r="2.5" fill="{P["window_frame"]}" />',
+            "</g>",
+            # Top & bottom right bookshelves with metal L-brackets and cast shadows (x=762..948)
+            f'<rect x="778" y="210" width="4" height="10" fill="{P["lamp_pole"]}" />',
+            f'<rect x="926" y="210" width="4" height="10" fill="{P["lamp_pole"]}" />',
             f'<rect x="762" y="198" width="186" height="8" fill="{P["wood_top"]}" />',
             f'<rect x="762" y="206" width="186" height="4" fill="{P["wood_shadow"]}" />',
+            f'<rect x="764" y="210" width="182" height="4" fill="{P["shadow_ambient"]}" fill-opacity="0.4" />',
+            f'<rect x="778" y="291" width="4" height="10" fill="{P["lamp_pole"]}" />',
+            f'<rect x="926" y="291" width="4" height="10" fill="{P["lamp_pole"]}" />',
             f'<rect x="762" y="279" width="186" height="8" fill="{P["wood_top"]}" />',
             f'<rect x="762" y="287" width="186" height="4" fill="{P["wood_shadow"]}" />',
-            # 4 language books on top shelf
-            f'<rect x="768" y="156" width="30" height="42" fill="{P["book_blue"]}" />',
-            f'<rect x="768" y="164" width="30" height="3" fill="#4f8fc4" />',
-            f'<rect x="802" y="158" width="18" height="40" fill="{P["book_red"]}" />',
-            f'<rect x="824" y="150" width="10" height="48" fill="{P["book_blue"]}" />',
-            f'<rect x="838" y="158" width="10" height="40" fill="{P["book_yellow"]}" />',
-            f'<rect x="852" y="166" width="12" height="32" fill="{P["book_cream"]}" />',
-            # Sleeping orange cat on right floor (x=770..872, resting at y=404)
-            f'<rect x="764" y="388" width="26" height="8" fill="{P["cat_body"]}" />',
-            f'<rect x="790" y="376" width="56" height="28" fill="{P["cat_body"]}" />',
-            f'<rect x="798" y="384" width="34" height="4" fill="{P["cat_stripe"]}" />',
+            f'<rect x="764" y="291" width="182" height="4" fill="{P["shadow_ambient"]}" fill-opacity="0.4" />',
+            # Top shelf: rich technical & programming book collection + cube decor
+            f'<rect x="768" y="156" width="26" height="42" fill="{P["book_blue"]}" />',
+            f'<rect x="768" y="164" width="26" height="3" fill="#5aa9ff" />',
+            f'<rect x="772" y="186" width="18" height="2" fill="{P["lamp_shade"]}" />',
+            f'<rect x="797" y="158" width="18" height="40" fill="{P["book_red"]}" />',
+            f'<rect x="797" y="166" width="18" height="3" fill="{P["cream"]}" />',
+            f'<rect x="818" y="150" width="11" height="48" fill="{P["book_blue"]}" />',
+            f'<rect x="832" y="158" width="11" height="40" fill="{P["book_yellow"]}" />',
+            f'<rect x="846" y="164" width="13" height="34" fill="{P["book_cream"]}" />',
+            f'<rect x="846" y="172" width="13" height="3" fill="{P["wood_shadow"]}" />',
+            f'<rect x="862" y="154" width="16" height="44" fill="#2c8a7a" />',
+            f'<rect x="862" y="163" width="16" height="2" fill="{P["cream"]}" />',
+            # Stacked horizontal reference manuals + Rubik's cube on right side of top shelf
+            f'<rect x="888" y="189" width="52" height="9" fill="{P["chair_main"]}" />',
+            f'<rect x="892" y="180" width="46" height="9" fill="{P["book_blue"]}" />',
+            f'<rect x="904" y="168" width="12" height="12" fill="{P["plaque_border"]}" />',
+            f'<rect x="905" y="169" width="3" height="3" fill="{P["book_red"]}" />',
+            f'<rect x="909" y="169" width="3" height="3" fill="{P["book_yellow"]}" />',
+            f'<rect x="913" y="169" width="2" height="3" fill="#5aa9ff" />',
+            f'<rect x="905" y="173" width="3" height="3" fill="{P["plant_leaf"]}" />',
+            f'<rect x="909" y="173" width="3" height="3" fill="{P["cream"]}" />',
+            f'<rect x="913" y="173" width="2" height="3" fill="{P["book_red"]}" />',
+            f'<rect x="905" y="177" width="10" height="2" fill="{P["book_yellow"]}" />',
+            # Bottom shelf: Plant 2 + notebooks + retro mini computer dev box + prism trophy
+            f'<rect x="812" y="270" width="44" height="9" fill="{P["chair_main"]}" />',
+            f'<rect x="815" y="262" width="38" height="8" fill="{P["book_yellow"]}" />',
+            f'<rect x="868" y="253" width="28" height="26" fill="{P["mac_edge"]}" />',
+            f'<rect x="872" y="257" width="20" height="14" fill="{P["screen_bg"]}" />',
+            f'<rect x="874" y="261" width="10" height="2" fill="#73b88d" />',
+            f'<rect x="874" y="265" width="14" height="2" fill="#5aa9ff" />',
+            f'<rect x="872" y="274" width="4" height="2" fill="#73b88d" />',
+            f'<rect x="908" y="255" width="24" height="24" fill="{P["plaque_border"]}" />',
+            f'<rect x="911" y="258" width="18" height="18" fill="{P["poster_bg"]}" />',
+            f'<rect x="917" y="263" width="6" height="8" fill="{P["lamp_shade"]}" />',
+            # Sleeping orange cat on right floor (x=764..872, resting at y=404) with animated tail & sleep Zs
+            '<g transform="translate(790, 392)">',
+            '  <g class="cat-tail-wag">',
+            f'    <rect x="-26" y="-4" width="26" height="8" fill="{P["cat_body"]}" />',
+            f'    <rect x="-26" y="-4" width="6" height="4" fill="{P["cream"]}" />',
+            "  </g>",
+            "</g>",
+            '<g transform="translate(818, 404)">',
+            '  <g class="cat-breathe">',
+            f'    <rect x="-28" y="-28" width="56" height="28" fill="{P["cat_body"]}" />',
+            f'    <rect x="-20" y="-20" width="34" height="4" fill="{P["cat_stripe"]}" />',
+            f'    <rect x="-6" y="-12" width="16" height="3" fill="{P["cat_stripe"]}" />',
+            "  </g>",
+            "</g>",
             # Cat head & pixel ears
             f'<rect x="846" y="366" width="26" height="30" fill="{P["cat_body"]}" />',
             f'<rect x="846" y="358" width="8" height="8" fill="{P["cat_body"]}" />',
             f'<rect x="864" y="358" width="8" height="8" fill="{P["cat_body"]}" />',
-            f'<rect x="866" y="378" width="4" height="4" fill="{P["cat_stripe"]}" />',
-            # Subtle sleep 'z' pixel glyph above cat
-            f'<rect x="894" y="330" width="8" height="2" fill="{P["wall_stripe"]}" />',
-            f'<rect x="898" y="332" width="4" height="2" fill="{P["wall_stripe"]}" />',
-            f'<rect x="894" y="334" width="8" height="2" fill="{P["wall_stripe"]}" />',
+            f'<rect x="860" y="378" width="4" height="2" fill="{P["cat_stripe"]}" />',
+            f'<rect x="867" y="378" width="4" height="2" fill="{P["cat_stripe"]}" />',
+            f'<rect x="865" y="383" width="3" height="2" fill="#d97777" />',
+            # Animated drifting sleep 'z' glyphs above cat
+            '<g class="sleep-z-1">',
+            f'  <rect x="888" y="338" width="6" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="890" y="340" width="2" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="888" y="342" width="6" height="2" fill="{P["window_star"]}" />',
+            "</g>",
+            '<g class="sleep-z-2">',
+            f'  <rect x="898" y="324" width="8" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="902" y="326" width="2" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="898" y="328" width="8" height="2" fill="{P["window_star"]}" />',
+            "</g>",
         ]
     )
 
 
 def render_workspace_room_layers(config: ProfileConfig) -> dict[str, str]:
-    """Render static pixel-art room background and foreground layers around the monitor."""
+    """Render static and animated pixel-art room background and foreground layers around the monitor."""
     background = "\n    ".join(
         [
             _render_wall_and_floor(),
             _render_window(),
-            _render_name_plaque(config.display_name),
+            _render_name_plaque_and_wall_decor(config.display_name),
             _render_desk_and_lamp(),
-            _render_macbook_and_cable(),
+            _render_macbook_and_peripherals(),
             _render_external_monitor_shell(),
             _render_clock_shelves_and_cat(),
             _render_indoor_plants(config.include_second_plant),
