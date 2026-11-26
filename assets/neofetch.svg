@@ -257,24 +257,24 @@
             <circle cx="0" cy="0" r="4.8" fill="#ebf3ff" />
           </g>
           <g class="gx-orbit-0">
-          <g transform="rotate(40.00) translate(46.3, 0)">
+          <g transform="rotate(35.00) translate(46.3, 0)">
             <title>Wrechship · Python · 0★ · 31 commits — WrechShip is a shipwreck and maritime-disaster dataset till 2026, with vessel names, loss dates, available times, vessel types, incident details, and wreck coordinates.</title>
             <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#4b8bbe" />
             <circle cx="0" cy="0" r="4.60" fill="#4b8bbe" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
             <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
             <g class="gx-counter-0">
-              <g transform="rotate(-40.00)"><rect x="-27.8" y="6.9" width="55.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">Wrechship</text></g>
+              <g transform="rotate(-35.00)"><rect x="-27.8" y="6.9" width="55.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">Wrechship</text></g>
             </g>
           </g>
         </g>
       <g class="gx-orbit-1">
-          <g transform="rotate(55.00) translate(72.6, 0)">
+          <g transform="rotate(40.00) translate(72.6, 0)">
             <title>stash-money-manager · TypeScript · 0★ · 16 commits — this is a money management app for university going students who tends to save money regularly , making it a bit fun to save money .</title>
             <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#3b82f6" />
             <circle cx="0" cy="0" r="4.60" fill="#3b82f6" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
             <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
             <g class="gx-counter-1">
-              <g transform="rotate(-55.00)"><rect x="-54.4" y="6.9" width="108.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">stash-money-manager</text></g>
+              <g transform="rotate(-40.00)"><rect x="-54.4" y="6.9" width="108.7" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">stash-money-manager</text></g>
             </g>
           </g>
         </g>
@@ -301,13 +301,13 @@
           </g>
         </g>
       <g class="gx-orbit-2">
-          <g transform="rotate(65.00) translate(98.9, 0)">
+          <g transform="rotate(45.00) translate(98.9, 0)">
             <title>assignment_1 · HTML · 0★ · 2 commits — No description provided yet.</title>
             <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#e3623a" />
             <circle cx="0" cy="0" r="4.60" fill="#e3623a" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
             <circle cx="-1.29" cy="-1.29" r="1.10" fill="#ffffff" fill-opacity="0.7" />
             <g class="gx-counter-2">
-              <g transform="rotate(-65.00)"><rect x="-35.8" y="6.9" width="71.6" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">assignment_1</text></g>
+              <g transform="rotate(-45.00)"><rect x="-35.8" y="6.9" width="71.6" height="12.0" rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" /><text x="0" y="16.1" text-anchor="middle" font-size="8.4" fill="#dce6ff">assignment_1</text></g>
             </g>
           </g>
         </g>

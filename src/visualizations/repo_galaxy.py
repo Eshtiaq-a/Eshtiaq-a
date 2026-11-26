@@ -88,6 +88,7 @@ class GalaxyRepoNode:
     static_x: float
     static_y: float
     label_box: tuple[float, float, float, float] | None
+    label_above: bool = False
 
 
 @dataclass(frozen=True)
@@ -193,6 +194,259 @@ def _box_collides_core(box: tuple[float, float, float, float], cx: float, cy: fl
     return (dx * dx + dy * dy) < (core_r * core_r)
 
 
+def _pick_unlabeled_position(
+    orbit_r: float,
+    base_angle: float,
+    node_r: float,
+    cx: float,
+    cy: float,
+    placed_label_boxes: list[tuple[float, float, float, float]],
+    placed_node_circles: list[tuple[float, float, float]],
+) -> tuple[float, float, float]:
+    """Place an unlabeled node cleanly along its orbit while avoiding placed labels and dots."""
+    offsets = [0.0]
+    for step in range(10, 181, 10):
+        offsets.extend([float(step), -float(step)])
+
+    best_pen = float("inf")
+    best_ang = base_angle
+    best_x = cx + orbit_r * math.cos(math.radians(base_angle))
+    best_y = cy + orbit_r * math.sin(math.radians(base_angle))
+
+    for offset in offsets:
+        cand_ang = (base_angle + offset) % 360.0
+        rad = math.radians(cand_ang)
+        nx = cx + orbit_r * math.cos(rad)
+        ny = cy + orbit_r * math.sin(rad)
+        dot_box = (nx - node_r - 3.0, ny - node_r - 3.0, nx + node_r + 3.0, ny + node_r + 3.0)
+        pen = abs(offset) * 0.002
+        for lbox in placed_label_boxes:
+            if _boxes_overlap(dot_box, lbox, pad_x=4.0, pad_y=4.0):
+                pen += 200.0
+        for ox, oy, orad in placed_node_circles:
+            if math.hypot(nx - ox, ny - oy) < (node_r + orad + 10.0):
+                pen += 40.0
+        if pen < best_pen:
+            best_pen = pen
+            best_ang = cand_ang
+            best_x = nx
+            best_y = ny
+        if best_pen == 0.0:
+            break
+
+    return best_ang, best_x, best_y
+
+
+def _layout_galaxy_nodes(
+    repo_specs: list[dict[str, Any]],
+    username: str,
+    total_stars: int,
+    legend: tuple[GalaxyLanguageStat, ...],
+    box_x: float,
+    box_y: float,
+    box_w: float,
+    box_h: float,
+    max_visible_labels: int,
+) -> RepoGalaxyModel:
+    """Compute orbital ring placement and collision-free label boxes for ordered repo specs."""
+    sky_top = box_y + 78.0
+    sky_bottom = box_y + box_h - 94.0
+    cx = box_x + box_w / 2.0
+    cy = sky_top + (sky_bottom - sky_top) / 2.0
+
+    max_ring_r = min(box_w * 0.31, (sky_bottom - sky_top) * 0.375)
+    num_repos = len(repo_specs)
+
+    if num_repos <= 9:
+        base_rings = [
+            round(max_ring_r * 0.37, 1),
+            round(max_ring_r * 0.58, 1),
+            round(max_ring_r * 0.79, 1),
+            round(max_ring_r * 1.00, 1),
+        ]
+        ring_capacities = [1, 1, 1, 1] if num_repos <= 4 else [1, 2, 2, 4]
+    else:
+        base_rings = [
+            round(max_ring_r * 0.34, 1),
+            round(max_ring_r * 0.50, 1),
+            round(max_ring_r * 0.67, 1),
+            round(max_ring_r * 0.84, 1),
+            round(max_ring_r * 1.00, 1),
+        ]
+        # Spread labeled candidates across outer wider rings while keeping top-to-bottom ring priority
+        ring_capacities = [1, 1, 2, 3, max(4, num_repos)]
+
+    ring_assignments: list[int] = []
+    ring_idx = 0
+    used_in_ring = 0
+    for _ in range(num_repos):
+        while ring_idx < len(ring_capacities) - 1 and used_in_ring >= ring_capacities[ring_idx]:
+            ring_idx += 1
+            used_in_ring = 0
+        ring_assignments.append(ring_idx)
+        used_in_ring += 1
+
+    per_ring_indices: dict[int, list[int]] = {}
+    for idx, r_idx in enumerate(ring_assignments):
+        per_ring_indices.setdefault(r_idx, []).append(idx)
+
+    ring_base_angles = (-55.0, 25.0, -145.0, 125.0, -10.0)
+    candidate_offsets = [0.0]
+    for step in range(5, 181, 5):
+        candidate_offsets.extend([float(step), -float(step)])
+
+    placed_label_boxes: list[tuple[float, float, float, float]] = []
+    placed_node_circles: list[tuple[float, float, float]] = []
+    nodes: list[GalaxyRepoNode] = []
+
+    min_x = box_x + 14.0
+    max_x = box_x + box_w - 14.0
+    min_y = sky_top + 6.0
+    max_y = sky_bottom - 6.0
+
+    for idx, spec in enumerate(repo_specs):
+        raw_name = spec["name"]
+        wants_label = idx < max_visible_labels
+
+        r_idx = ring_assignments[idx]
+        orbit_r = base_rings[min(r_idx, len(base_rings) - 1)]
+        peers = per_ring_indices[r_idx]
+        pos_in_ring = peers.index(idx)
+        ring_count = len(peers)
+
+        stars = spec["stars"]
+        is_empty = spec["is_empty"]
+        archived = spec["archived"]
+        primary_lang = spec["primary_language"]
+        color = spec["color"]
+        node_r = spec["node_radius"]
+        label_str = _truncate_label(raw_name, max_chars=21)
+        est_w = max(32.0, len(label_str) * 5.6 + 10.0)
+        est_h = 14.0
+
+        golden_bias = (idx * 137.508) % 360.0
+        base_angle = (
+            golden_bias
+            if ring_count == 1
+            else (ring_base_angles[r_idx % len(ring_base_angles)] + pos_in_ring * (360.0 / ring_count))
+        ) % 360.0
+
+        chosen_angle = base_angle
+        chosen_x = cx + orbit_r * math.cos(math.radians(base_angle))
+        chosen_y = cy + orbit_r * math.sin(math.radians(base_angle))
+        chosen_box: tuple[float, float, float, float] | None = None
+        chosen_above = False
+        show_label = False
+
+        if wants_label:
+            best_penalty = float("inf")
+            for offset in candidate_offsets:
+                cand_ang = (base_angle + offset) % 360.0
+                rad = math.radians(cand_ang)
+                nx = cx + orbit_r * math.cos(rad)
+                ny = cy + orbit_r * math.sin(rad)
+
+                for side in ("below", "above"):
+                    if side == "below":
+                        ly_top = ny + node_r + 3.0
+                        cand_box = (nx - est_w / 2.0, ly_top, nx + est_w / 2.0, ly_top + est_h)
+                        penalty = abs(offset) * 0.004
+                    else:
+                        ly_bot = ny - node_r - 3.0
+                        cand_box = (nx - est_w / 2.0, ly_bot - est_h, nx + est_w / 2.0, ly_bot)
+                        penalty = abs(offset) * 0.004 + 0.05
+
+                    if cand_box[0] < min_x or cand_box[2] > max_x or cand_box[1] < min_y or cand_box[3] > max_y:
+                        penalty += 800.0
+                    if _box_collides_core(cand_box, cx, cy, core_r=33.0):
+                        penalty += 500.0
+                    for other_box in placed_label_boxes:
+                        if _boxes_overlap(cand_box, other_box, pad_x=6.0, pad_y=5.0):
+                            penalty += 220.0
+                    for ox, oy, orad in placed_node_circles:
+                        n_box = (ox - orad - 4.0, oy - orad - 4.0, ox + orad + 4.0, oy + orad + 4.0)
+                        if _boxes_overlap(cand_box, n_box, pad_x=4.0, pad_y=4.0):
+                            penalty += 150.0
+                        if math.hypot(nx - ox, ny - oy) < (node_r + orad + 16.0):
+                            penalty += 25.0
+
+                    if penalty < best_penalty:
+                        best_penalty = penalty
+                        chosen_angle = cand_ang
+                        chosen_x = nx
+                        chosen_y = ny
+                        chosen_box = cand_box
+                        chosen_above = side == "above"
+
+            if best_penalty < 150.0 and chosen_box is not None:
+                show_label = True
+                placed_label_boxes.append(chosen_box)
+            else:
+                chosen_box = None
+                chosen_above = False
+                chosen_angle, chosen_x, chosen_y = _pick_unlabeled_position(
+                    orbit_r,
+                    base_angle,
+                    node_r,
+                    cx,
+                    cy,
+                    placed_label_boxes,
+                    placed_node_circles,
+                )
+        else:
+            chosen_angle, chosen_x, chosen_y = _pick_unlabeled_position(
+                orbit_r,
+                base_angle,
+                node_r,
+                cx,
+                cy,
+                placed_label_boxes,
+                placed_node_circles,
+            )
+
+        placed_node_circles.append((chosen_x, chosen_y, node_r))
+        nodes.append(
+            GalaxyRepoNode(
+                index=idx,
+                name=raw_name,
+                display_label=label_str,
+                description=spec["description"],
+                primary_language=primary_lang,
+                color=color,
+                stars=stars,
+                commit_count=spec["commit_count"],
+                is_empty=is_empty,
+                archived=archived,
+                ring_index=r_idx,
+                orbit_radius=orbit_r,
+                angle_deg=round(chosen_angle, 2),
+                node_radius=node_r,
+                show_label=show_label,
+                static_x=round(chosen_x, 2),
+                static_y=round(chosen_y, 2),
+                label_box=chosen_box,
+                label_above=chosen_above,
+            )
+        )
+
+    orbit_radii: list[tuple[int, float, str]] = []
+    for r_idx, idxs in sorted(per_ring_indices.items()):
+        lang_color = nodes[idxs[0]].color if idxs else "#2c4178"
+        orbit_radii.append((r_idx, base_rings[r_idx], lang_color))
+
+    if not orbit_radii:
+        orbit_radii = [(0, base_rings[0], "#2c4178"), (1, base_rings[1], "#2c4178"), (2, base_rings[-1], "#2c4178")]
+
+    return RepoGalaxyModel(
+        username=username,
+        total_stars=total_stars,
+        repo_count=num_repos,
+        nodes=tuple(nodes),
+        orbit_radii=tuple(orbit_radii),
+        legend_languages=legend,
+    )
+
+
 def build_repo_galaxy_model(
     repositories_data: dict[str, Any],
     profile_data: dict[str, Any],
@@ -231,181 +485,74 @@ def build_repo_galaxy_model(
     ordered_repos = sorted(raw_repos, key=sort_key)
     total_stars = sum(max(0, int(r.get("stars") or 0)) for r in ordered_repos)
 
-    sky_top = box_y + 78.0
-    sky_bottom = box_y + box_h - 94.0
-    cx = box_x + box_w / 2.0
-    cy = sky_top + (sky_bottom - sky_top) / 2.0
-
-    # Safe orbital ring radii fitted strictly inside sky region with spacious 26px radial steps for 4 rings
-    max_ring_r = min(box_w * 0.31, (sky_bottom - sky_top) * 0.375)
-    num_repos = len(ordered_repos)
-
-    if num_repos <= 9:
-        base_rings = [
-            round(max_ring_r * 0.37, 1),
-            round(max_ring_r * 0.58, 1),
-            round(max_ring_r * 0.79, 1),
-            round(max_ring_r * 1.00, 1),
-        ]
-        ring_capacities = [1, 1, 1, 1] if num_repos <= 4 else [1, 2, 2, 4]
-    else:
-        base_rings = [
-            round(max_ring_r * 0.34, 1),
-            round(max_ring_r * 0.50, 1),
-            round(max_ring_r * 0.67, 1),
-            round(max_ring_r * 0.84, 1),
-            round(max_ring_r * 1.00, 1),
-        ]
-        ring_capacities = [1, 2, 3, 4, max(4, num_repos)]
-
-    ring_assignments: list[int] = []
-    ring_idx = 0
-    used_in_ring = 0
-    for idx in range(num_repos):
-        while ring_idx < len(ring_capacities) - 1 and used_in_ring >= ring_capacities[ring_idx]:
-            ring_idx += 1
-            used_in_ring = 0
-        ring_assignments.append(ring_idx)
-        used_in_ring += 1
-
-    # Count repos per ring for clean initial angular spread
-    per_ring_indices: dict[int, list[int]] = {}
-    for idx, r_idx in enumerate(ring_assignments):
-        per_ring_indices.setdefault(r_idx, []).append(idx)
-
-    # Phase offsets spread evenly across quadrants via golden-angle separation
-    ring_base_angles = (-55.0, 25.0, -145.0, 125.0, -10.0)
-
-    placed_label_boxes: list[tuple[float, float, float, float]] = []
-    placed_node_circles: list[tuple[float, float, float]] = []
-    nodes: list[GalaxyRepoNode] = []
-
-    min_x = box_x + 14.0
-    max_x = box_x + box_w - 14.0
-    min_y = sky_top + 8.0
-    max_y = sky_bottom - 8.0
-
-    # Determine unique labels across duplicates cleanly if encountered
-    name_counts: dict[str, int] = {}
+    repo_specs: list[dict[str, Any]] = []
     for idx, repo in enumerate(ordered_repos):
         raw_name = _clean_text(repo.get("name") or f"repo-{idx + 1}")
-        name_counts[raw_name] = name_counts.get(raw_name, 0) + 1
-        show_label = idx < max_visible_labels
-
-        r_idx = ring_assignments[idx]
-        orbit_r = base_rings[min(r_idx, len(base_rings) - 1)]
-        peers = per_ring_indices[r_idx]
-        pos_in_ring = peers.index(idx)
-        ring_count = len(peers)
-
         stars = max(0, int(repo.get("stars") or 0))
         is_empty = bool(repo.get("is_empty", False))
         archived = bool(repo.get("archived", False))
         primary_lang = _clean_text(repo.get("primary_language") or "") or "Unspecified"
-        color = get_language_color(primary_lang)
-        node_r = compute_node_radius(stars, is_empty=is_empty, archived=archived)
-        label_str = _truncate_label(raw_name, max_chars=21)
-        est_w = max(32.0, len(label_str) * 5.6 + 10.0)
-        est_h = 14.0
-
-        golden_bias = (idx * 137.508) % 360.0
-        base_angle = (
-            golden_bias
-            if ring_count == 1
-            else (ring_base_angles[r_idx % len(ring_base_angles)] + pos_in_ring * (360.0 / ring_count))
-        ) % 360.0
-
-        chosen_angle = base_angle
-        chosen_x = cx + orbit_r * math.cos(math.radians(base_angle))
-        chosen_y = cy + orbit_r * math.sin(math.radians(base_angle))
-        chosen_box: tuple[float, float, float, float] | None = None
-
-        if show_label:
-            best_penalty = float("inf")
-            # Search candidate angles every 10° globally, preferring clean quadrants with maximum clearance
-            candidate_offsets = [0.0]
-            for step in range(10, 181, 10):
-                candidate_offsets.extend([float(step), -float(step)])
-
-            for offset in candidate_offsets:
-                cand_ang = (base_angle + offset) % 360.0
-                rad = math.radians(cand_ang)
-                nx = cx + orbit_r * math.cos(rad)
-                ny = cy + orbit_r * math.sin(rad)
-                ly_top = ny + node_r + 3.0
-                cand_box = (nx - est_w / 2.0, ly_top, nx + est_w / 2.0, ly_top + est_h)
-
-                penalty = abs(offset) * 0.004
-                if cand_box[0] < min_x or cand_box[2] > max_x or cand_box[1] < min_y or cand_box[3] > max_y:
-                    penalty += 800.0
-                if _box_collides_core(cand_box, cx, cy, core_r=33.0):
-                    penalty += 500.0
-                for other_box in placed_label_boxes:
-                    if _boxes_overlap(cand_box, other_box, pad_x=10.0, pad_y=8.0):
-                        penalty += 220.0
-                for ox, oy, orad in placed_node_circles:
-                    n_box = (ox - orad - 4, oy - orad - 4, ox + orad + 4, oy + orad + 4)
-                    if _boxes_overlap(cand_box, n_box, pad_x=6.0, pad_y=6.0):
-                        penalty += 150.0
-                    # Penalize two planet dots sitting right on top of each other visually
-                    if math.hypot(nx - ox, ny - oy) < (node_r + orad + 20.0):
-                        penalty += 60.0
-
-                if penalty < best_penalty:
-                    best_penalty = penalty
-                    chosen_angle = cand_ang
-                    chosen_x = nx
-                    chosen_y = ny
-                    chosen_box = cand_box
-
-            if chosen_box is not None:
-                placed_label_boxes.append(chosen_box)
-
-        placed_node_circles.append((chosen_x, chosen_y, node_r))
-        desc = _clean_text(repo.get("description") or "") or "No description provided yet."
-
-        nodes.append(
-            GalaxyRepoNode(
-                index=idx,
-                name=raw_name,
-                display_label=label_str,
-                description=desc,
-                primary_language=primary_lang,
-                color=color,
-                stars=stars,
-                commit_count=commit_counts.get(raw_name, 0),
-                is_empty=is_empty,
-                archived=archived,
-                ring_index=r_idx,
-                orbit_radius=orbit_r,
-                angle_deg=round(chosen_angle, 2),
-                node_radius=node_r,
-                show_label=show_label,
-                static_x=round(chosen_x, 2),
-                static_y=round(chosen_y, 2),
-                label_box=chosen_box,
-            )
+        repo_specs.append(
+            {
+                "name": raw_name,
+                "description": _clean_text(repo.get("description") or "") or "No description provided yet.",
+                "primary_language": primary_lang,
+                "color": get_language_color(primary_lang),
+                "stars": stars,
+                "commit_count": commit_counts.get(raw_name, 0),
+                "is_empty": is_empty,
+                "archived": archived,
+                "node_radius": compute_node_radius(stars, is_empty=is_empty, archived=archived),
+            }
         )
 
-    # Active orbit rings with dominant language accent
-    orbit_radii: list[tuple[int, float, str]] = []
-    for r_idx, idxs in sorted(per_ring_indices.items()):
-        lang_color = nodes[idxs[0]].color if idxs else "#2c4178"
-        orbit_radii.append((r_idx, base_rings[r_idx], lang_color))
-
-    if not orbit_radii:
-        # Preserve empty decorative galaxy rings when repository count == 0
-        orbit_radii = [(0, base_rings[0], "#2c4178"), (1, base_rings[1], "#2c4178"), (2, base_rings[-1], "#2c4178")]
-
     legend = _compute_legend_languages(profile_data, ordered_repos, max_items=6)
-
-    return RepoGalaxyModel(
+    return _layout_galaxy_nodes(
+        repo_specs=repo_specs,
         username=username,
         total_stars=total_stars,
-        repo_count=num_repos,
-        nodes=tuple(nodes),
-        orbit_radii=tuple(orbit_radii),
-        legend_languages=legend,
+        legend=legend,
+        box_x=box_x,
+        box_y=box_y,
+        box_w=box_w,
+        box_h=box_h,
+        max_visible_labels=max_visible_labels,
+    )
+
+
+def reflow_repo_galaxy_model(
+    model: RepoGalaxyModel,
+    box_x: float,
+    box_y: float,
+    box_w: float,
+    box_h: float,
+    max_visible_labels: int = 12,
+) -> RepoGalaxyModel:
+    """Reflow an existing RepoGalaxyModel into a new viewport box while preserving order and commit stats."""
+    repo_specs = [
+        {
+            "name": node.name,
+            "description": node.description,
+            "primary_language": node.primary_language,
+            "color": node.color,
+            "stars": node.stars,
+            "commit_count": node.commit_count,
+            "is_empty": node.is_empty,
+            "archived": node.archived,
+            "node_radius": node.node_radius,
+        }
+        for node in model.nodes
+    ]
+    return _layout_galaxy_nodes(
+        repo_specs=repo_specs,
+        username=model.username,
+        total_stars=model.total_stars,
+        legend=model.legend_languages,
+        box_x=box_x,
+        box_y=box_y,
+        box_w=box_w,
+        box_h=box_h,
+        max_visible_labels=max_visible_labels,
     )
 
 
@@ -502,9 +649,14 @@ def render_repo_galaxy_group(
         label_markup = ""
         if node.show_label:
             pill_w = max(30.0, len(node.display_label) * 5.3 + 8.0)
-            ly = node.node_radius + 11.5
+            if node.label_above:
+                rect_y = -(node.node_radius + 14.3)
+                ly = rect_y + 9.2
+            else:
+                ly = node.node_radius + 11.5
+                rect_y = ly - 9.2
             label_markup = (
-                f'<rect x="{-pill_w / 2.0:.1f}" y="{ly - 9.2:.1f}" width="{pill_w:.1f}" height="12.0" '
+                f'<rect x="{-pill_w / 2.0:.1f}" y="{rect_y:.1f}" width="{pill_w:.1f}" height="12.0" '
                 f'rx="3" fill="#080c18" fill-opacity="0.90" stroke="#1e2d57" stroke-width="0.6" />'
                 f'<text x="0" y="{ly:.1f}" text-anchor="middle" font-size="8.4" '
                 f'fill="{("#8f99ad" if (node.archived or node.is_empty) else "#dce6ff")}">'

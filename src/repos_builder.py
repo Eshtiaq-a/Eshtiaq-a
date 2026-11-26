@@ -46,6 +46,16 @@ def normalize_repository(
     }
 
 
+def _parse_iso_ts(value: Any) -> float:
+    """Parse an ISO-8601 timestamp into a UTC epoch float, returning 0.0 if missing/invalid."""
+    if not value:
+        return 0.0
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return 0.0
+
+
 def sort_repositories(repos: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Deterministically sort repositories (non-archived, stars desc, pushed_at desc, name asc)."""
     return sorted(
@@ -54,7 +64,7 @@ def sort_repositories(repos: list[dict[str, Any]]) -> list[dict[str, Any]]:
             bool(r.get("archived", False)),
             bool(r.get("is_empty", False)),
             -int(r.get("stars", 0)),
-            -(datetime.fromisoformat(r["pushed_at"].replace("Z", "+00:00")).timestamp() if r.get("pushed_at") else 0.0),
+            -_parse_iso_ts(r.get("pushed_at")),
             str(r.get("name", "")).lower(),
             int(r.get("repository_id", 0)),
         ),

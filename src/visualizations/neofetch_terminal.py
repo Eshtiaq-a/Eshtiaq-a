@@ -9,8 +9,8 @@ from src.config import NEOFETCH_HEIGHT, NEOFETCH_PALETTE as P, NEOFETCH_WIDTH
 from src.neofetch_builder import DotRow, NeofetchModel
 from src.validators import validate_svg_document
 from src.visualizations.repo_galaxy import (
-    build_repo_galaxy_model,
     get_galaxy_css,
+    reflow_repo_galaxy_model,
     render_repo_galaxy_defs,
     render_repo_galaxy_group,
 )
@@ -127,27 +127,8 @@ def build_neofetch_terminal_svg(
     if layout == "compact":
         canvas_w = 560
         box_x, box_y, box_w, box_h = 24.0, 54.0, 512.0, 446.0
-        compact_galaxy = build_repo_galaxy_model(
-            repositories_data={"repositories": [
-                {
-                    "name": n.name,
-                    "description": n.description,
-                    "primary_language": n.primary_language,
-                    "stars": n.stars,
-                    "is_empty": n.is_empty,
-                    "archived": n.archived,
-                }
-                for n in model.galaxy.nodes
-            ]},
-            profile_data={
-                "username": model.galaxy.username,
-                "calculated_metrics": {
-                    "languages": [
-                        {"language": s.language, "percentage": s.percentage}
-                        for s in model.galaxy.legend_languages
-                    ]
-                },
-            },
+        compact_galaxy = reflow_repo_galaxy_model(
+            model.galaxy,
             box_x=box_x,
             box_y=box_y,
             box_w=box_w,

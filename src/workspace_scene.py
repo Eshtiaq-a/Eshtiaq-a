@@ -237,13 +237,16 @@ def _render_macbook_and_peripherals() -> str:
 
     return "\n    ".join(
         [
-            # USB-C Dock / External SSD next to MacBook + display cable routed cleanly to monitor stand
+            # USB-C Dock / External SSD next to MacBook + clear display cable routed cleanly to monitor underside
             f'<rect x="402" y="290" width="20" height="7" fill="{P["mac_dark"]}" />',
             f'<rect x="404" y="291" width="16" height="2" fill="{P["mac_edge"]}" />',
             f'<rect x="416" y="294" width="3" height="2" fill="#5aa9ff" />',
             f'<rect x="396" y="291" width="6" height="4" fill="{P["mac_aluminum"]}" />',
-            f'<rect x="422" y="292" width="118" height="3" fill="{P["cable"]}" />',
-            f'<rect x="538" y="284" width="3" height="11" fill="{P["cable"]}" />',
+            f'<rect x="422" y="293" width="71" height="1" fill="{P["cable_highlight"]}" />',
+            f'<rect x="422" y="294" width="71" height="2" fill="{P["cable"]}" />',
+            f'<rect x="490" y="286" width="3" height="10" fill="{P["cable"]}" />',
+            f'<rect x="490" y="287" width="1" height="7" fill="{P["cable_highlight"]}" />',
+            f'<rect x="489" y="286" width="5" height="3" fill="{P["mac_edge"]}" />',
             # MacBook open lid / display (x=304..388, y=236..288)
             f'<rect x="304" y="236" width="84" height="52" fill="{P["mac_edge"]}" />',
             f'<rect x="306" y="238" width="80" height="48" fill="{P["mac_dark"]}" />',
@@ -261,11 +264,11 @@ def _render_macbook_and_peripherals() -> str:
             f'<rect x="310" y="288" width="72" height="2" fill="{P["mac_dark"]}" />',
             f'<rect x="296" y="294" width="100" height="4" fill="{P["mac_edge"]}" />',
             f'<rect x="340" y="294" width="12" height="2" fill="{P["mac_dark"]}" />',
-            # Mini Raspberry Pi / Audio DAC box under left monitor edge (x=428..454, y=288..297)
-            f'<rect x="428" y="289" width="26" height="8" fill="{P["monitor_inner"]}" />',
-            f'<rect x="430" y="290" width="22" height="2" fill="{P["monitor_base"]}" />',
-            f'<rect x="432" y="294" width="3" height="2" fill="#73b88d" />',
-            f'<rect x="437" y="294" width="6" height="2" fill="#f2cb62" />',
+            # Mini Raspberry Pi / Audio DAC box under right monitor edge (x=610..636, y=289..297)
+            f'<rect x="610" y="289" width="26" height="8" fill="{P["monitor_inner"]}" />',
+            f'<rect x="612" y="290" width="22" height="2" fill="{P["monitor_base"]}" />',
+            f'<rect x="614" y="294" width="3" height="2" fill="#73b88d" />',
+            f'<rect x="619" y="294" width="6" height="2" fill="#f2cb62" />',
             # Mechanical Keyboard (front center of desk y=299..310, completely unobstructed)
             f'<rect x="504" y="294" width="3" height="6" fill="{P["cable"]}" />',
             f'<rect x="460" y="300" width="92" height="10" fill="{P["mac_dark"]}" />',
@@ -285,20 +288,20 @@ def _render_macbook_and_peripherals() -> str:
             f'<rect x="662" y="297" width="3" height="11" fill="{P["lamp_shade"]}" />',
             f'<rect x="662" y="296" width="3" height="2" fill="{P["mac_aluminum"]}" />',
             f'<rect x="662" y="308" width="3" height="2" fill="{P["plaque_border"]}" />',
-            # Studio Over-Ear Headphones on Sleek Aluminum Desk Stand (x=714..738, y=253..297)
-            f'<rect x="716" y="294" width="18" height="3" fill="{P["monitor_base"]}" />',
-            f'<rect x="723" y="260" width="4" height="34" fill="{P["mac_edge"]}" />',
-            f'<rect x="715" y="254" width="20" height="4" fill="{P["mac_dark"]}" />',
-            f'<rect x="717" y="255" width="16" height="2" fill="{P["chair_highlight"]}" />',
+            # Studio Over-Ear Headphones on Sleek Aluminum Desk Stand (x=717..741, y=253..297)
+            f'<rect x="720" y="294" width="18" height="3" fill="{P["monitor_base"]}" />',
+            f'<rect x="727" y="260" width="4" height="34" fill="{P["mac_edge"]}" />',
+            f'<rect x="719" y="254" width="20" height="4" fill="{P["mac_dark"]}" />',
+            f'<rect x="721" y="255" width="16" height="2" fill="{P["chair_highlight"]}" />',
             # Headband side arms connecting seamlessly down into earcups
-            f'<rect x="715" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
-            f'<rect x="733" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
-            f'<rect x="713" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
-            f'<rect x="719" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
-            f'<rect x="714" y="269" width="2" height="6" fill="#8294ea" />',
-            f'<rect x="729" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
-            f'<rect x="728" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
-            f'<rect x="734" y="269" width="2" height="6" fill="#8294ea" />',
+            f'<rect x="719" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
+            f'<rect x="737" y="258" width="2" height="7" fill="{P["mac_edge"]}" />',
+            f'<rect x="717" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
+            f'<rect x="723" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
+            f'<rect x="718" y="269" width="2" height="6" fill="#8294ea" />',
+            f'<rect x="733" y="264" width="8" height="16" fill="{P["monitor_outer"]}" />',
+            f'<rect x="732" y="266" width="3" height="12" fill="{P["chair_highlight"]}" />',
+            f'<rect x="738" y="269" width="2" height="6" fill="#8294ea" />',
         ]
     )
 
@@ -332,18 +335,18 @@ def _render_mug_and_chair() -> str:
     """Render coffee mug with rising animated steam + foreground desk chair below tabletop."""
     return "\n    ".join(
         [
-            # Coaster & Coffee mug cleanly to right of external monitor (x=678..708, y=274..297)
-            f'<rect x="678" y="295" width="24" height="3" fill="{P["wood_dark"]}" />',
-            f'<rect x="680" y="274" width="20" height="21" fill="{P["mug_cream"]}" />',
-            f'<rect x="682" y="274" width="16" height="2" fill="#4e3222" />',
-            f'<rect x="696" y="274" width="4" height="21" fill="{P["mug_shadow"]}" />',
-            f'<rect x="700" y="278" width="6" height="3" fill="{P["mug_cream"]}" />',
-            f'<rect x="703" y="281" width="3" height="7" fill="{P["mug_cream"]}" />',
-            f'<rect x="700" y="288" width="6" height="3" fill="{P["mug_cream"]}" />',
+            # Coaster & Coffee mug cleanly to right of external monitor (x=688..715, y=274..297)
+            f'<rect x="688" y="295" width="24" height="3" fill="{P["wood_dark"]}" />',
+            f'<rect x="690" y="274" width="20" height="21" fill="{P["mug_cream"]}" />',
+            f'<rect x="692" y="274" width="16" height="2" fill="#4e3222" />',
+            f'<rect x="706" y="274" width="4" height="21" fill="{P["mug_shadow"]}" />',
+            f'<rect x="710" y="278" width="5" height="3" fill="{P["mug_cream"]}" />',
+            f'<rect x="712" y="281" width="3" height="7" fill="{P["mug_cream"]}" />',
+            f'<rect x="710" y="288" width="5" height="3" fill="{P["mug_cream"]}" />',
             # Animated rising coffee steam wisps
-            f'<rect class="mug-steam-1" x="685" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
-            f'<rect class="mug-steam-2" x="691" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
-            f'<rect class="mug-steam-3" x="695" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
+            f'<rect class="mug-steam-1" x="695" y="264" width="2" height="6" fill="{P["mug_cream"]}" fill-opacity="0.55" />',
+            f'<rect class="mug-steam-2" x="701" y="260" width="2" height="8" fill="{P["mug_cream"]}" fill-opacity="0.45" />',
+            f'<rect class="mug-steam-3" x="705" y="265" width="2" height="5" fill="{P["mug_cream"]}" fill-opacity="0.35" />',
             # Ergonomic desk chair positioned cleanly below tabletop y=312 (zero overlap with keyboard/screen)
             f'<rect x="524" y="312" width="56" height="30" fill="{P["chair_main"]}" />',
             f'<rect x="528" y="312" width="48" height="4" fill="{P["chair_highlight"]}" />',

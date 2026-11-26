@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from src.config import README_PATH, atomic_write_text
-from src.explorer_builder import ExplorerModel, ExplorerRow
+from src.explorer_builder import SAFE_HTTP_URL_RE, ExplorerModel, ExplorerRow
 
 CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f]")
 SAFE_GITHUB_PROFILE_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+/?$")
@@ -23,7 +23,10 @@ def _esc_attr(value: Any) -> str:
 
 
 def _esc_md_table(value: Any) -> str:
-    return _esc_attr(value).replace("|", "\\|")
+    escaped = _esc_attr(value)
+    for ch in ("|", "[", "]", "`"):
+        escaped = escaped.replace(ch, f"\\{ch}")
+    return escaped
 
 
 def _safe_profile_url(profile_data: dict[str, Any], username: str) -> str:
@@ -57,7 +60,8 @@ def _render_accessible_directory(rows: tuple[ExplorerRow, ...]) -> str:
         repo_link = f"[`{_esc_md_table(row.name)}/`]({_esc_attr(row.html_url)})"
         desc_txt = _esc_md_table(row.description)
         langs_txt = _esc_md_table(", ".join(row.languages) if row.languages else row.primary_language)
-        live_cell = f"[Live]({_esc_attr(row.homepage)})" if row.homepage else "—"
+        safe_homepage = row.homepage if (row.homepage and SAFE_HTTP_URL_RE.match(row.homepage)) else None
+        live_cell = f"[Live]({_esc_attr(safe_homepage.replace('|', '%7C'))})" if safe_homepage else "—"
         lines.append(
             f"| {repo_link} | {desc_txt} | {langs_txt} | ★ {row.stars} | {_esc_md_table(row.updated_label)} | {live_cell} |"
         )

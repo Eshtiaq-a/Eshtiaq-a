@@ -9,7 +9,10 @@ from typing import Any
 from src.config import MAX_SVG_BYTES
 
 FORBIDDEN_SVG_TAGS = ("script", "foreignObject")
-FORBIDDEN_SVG_ATTR_RE = re.compile(r"\bon[a-z]+\s*=", re.IGNORECASE)
+FORBIDDEN_SVG_ATTR_RE = re.compile(
+    r"<(?![!?])(?:[^<>\"']|\"[^\"]*\"|'[^']*')*?\s+(?:[a-z0-9_.-]+:)?on[a-z]+\s*=",
+    re.IGNORECASE,
+)
 EXTERNAL_URL_RE = re.compile(r"https?://", re.IGNORECASE)
 SAFE_ANCHOR_URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/?$")
 
@@ -139,24 +142,27 @@ def validate_svg_document(svg_text: str, max_bytes: int = MAX_SVG_BYTES) -> ET.E
     if encoded_len > max_bytes:
         raise ValueError(f"SVG exceeds size budget: {encoded_len} > {max_bytes} bytes.")
 
+    if FORBIDDEN_SVG_ATTR_RE.search(svg_text):
+        raise ValueError("Forbidden inline event attribute pattern detected in SVG.")
+
     root = ET.fromstring(svg_text)
     if not root.tag.endswith("svg"):
         raise ValueError(f"Root XML tag must be <svg>, got {root.tag!r}.")
 
+    forbidden_lower = {tag.lower() for tag in FORBIDDEN_SVG_TAGS}
     for elem in root.iter():
         local_name = elem.tag.rsplit("}", 1)[-1]
-        if local_name in FORBIDDEN_SVG_TAGS:
+        if local_name.lower() in forbidden_lower:
             raise ValueError(f"Forbidden SVG tag detected: <{local_name}>.")
         for attr_name, attr_val in elem.attrib.items():
-            if attr_name.lower().startswith("on"):
+            attr_local = attr_name.rsplit("}", 1)[-1].lower()
+            if attr_local.startswith("on"):
                 raise ValueError(f"Forbidden event attribute detected: {attr_name!r}.")
-            if attr_name.lower().endswith("href"):
+            if attr_local.endswith("href"):
                 if local_name == "a":
                     if not SAFE_ANCHOR_URL_RE.match(attr_val.strip()):
                         raise ValueError(f"Unsafe SVG anchor href detected: {attr_val!r}.")
                 elif EXTERNAL_URL_RE.search(attr_val):
                     raise ValueError(f"External href not allowed in self-contained SVG: {attr_val!r}.")
 
-    if FORBIDDEN_SVG_ATTR_RE.search(svg_text):
-        raise ValueError("Forbidden inline event attribute pattern detected in SVG.")
     return root

@@ -17,7 +17,7 @@ ExplorerSortOrder = Literal["updated", "stars", "name"]
 
 CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f]")
 SAFE_GITHUB_URL_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*/?$")
-SAFE_HTTP_URL_RE = re.compile(r"^https?://[^\s<>'\"]+$", re.IGNORECASE)
+SAFE_HTTP_URL_RE = re.compile(r"^https?://[^\s<>'\"()\[\]`]+$", re.IGNORECASE)
 
 LANGUAGE_BADGE_MAP: dict[str, tuple[str, str, str, str]] = {
     # language_lower: (tag, bg_hex, border_hex, fg_hex)
@@ -277,7 +277,12 @@ def build_explorer_model(
             dir_mode = "drwx"
             status_badge = None
 
-        max_name_len = 22 if status_badge else 26
+        if status_badge == "ARCHIVED":
+            max_name_len = 17
+        elif status_badge:
+            max_name_len = 22
+        else:
+            max_name_len = 26
         display_name = _truncate_repo_dir(name, max_chars=max_name_len)
 
         raw_desc = _clean_text(repo.get("description"))

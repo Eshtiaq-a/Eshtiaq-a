@@ -73,17 +73,24 @@ def _render_language_icon(row: ExplorerRow, x: float, y: float) -> str:
     )
 
 
+STATUS_PILL_STYLES: dict[str, tuple[str, str, str, float]] = {
+    "LIVE": ("#112b22", "#357958", "#73b88d", 36.0),
+    "EMPTY": ("#171c28", "#343d52", "#7f8aa1", 40.0),
+    "ARCHIVED": ("#292018", "#61482c", "#d6a45c", 56.0),
+}
+DEFAULT_STATUS_PILL_STYLE: tuple[str, str, str, float] = ("#162238", "#345082", "#7aa6eb", 38.0)
+
+
+def _status_pill_width(status: str | None) -> float:
+    if not status:
+        return 0.0
+    return STATUS_PILL_STYLES.get(status, DEFAULT_STATUS_PILL_STYLE)[3]
+
+
 def _render_status_pill(status: str | None, x: float, y: float) -> str:
     if not status:
         return ""
-    if status == "LIVE":
-        bg, stroke, fg, w = "#112b22", "#357958", "#73b88d", 36.0
-    elif status == "EMPTY":
-        bg, stroke, fg, w = "#171c28", "#343d52", "#7f8aa1", 40.0
-    elif status == "ARCHIVED":
-        bg, stroke, fg, w = "#292018", "#61482c", "#d6a45c", 56.0
-    else:
-        bg, stroke, fg, w = "#162238", "#345082", "#7aa6eb", 38.0
+    bg, stroke, fg, w = STATUS_PILL_STYLES.get(status, DEFAULT_STATUS_PILL_STYLE)
     return (
         f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="15" rx="3.5" '
         f'fill="{bg}" stroke="{stroke}" stroke-width="0.8" />'
@@ -124,9 +131,20 @@ def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
     )
 
     # Compute safe x coordinate for optional status pill directly after repo name
-    est_name_w = len(row.display_name) * 7.5
-    pill_x = min(278.0, 110.0 + est_name_w + 8.0)
-    pill_svg = _render_status_pill(row.status_badge, pill_x, y + 11.5)
+    shown_name = row.display_name
+    pill_w = _status_pill_width(row.status_badge)
+    if row.status_badge:
+        max_pill_x = 326.0 - pill_w
+        est_name_w = len(shown_name) * 7.5
+        pill_x = min(max_pill_x, 110.0 + est_name_w + 8.0)
+        if 110.0 + est_name_w + 6.0 > pill_x:
+            max_chars = max(6, int((pill_x - 116.0) / 7.5))
+            if len(shown_name) > max_chars:
+                base = shown_name.rstrip("/…")
+                shown_name = f"{base[: max(4, max_chars - 2)].rstrip()}…/"
+        pill_svg = _render_status_pill(row.status_badge, pill_x, y + 11.5)
+    else:
+        pill_svg = ""
     icon_svg = _render_language_icon(row, 76.0, y + 8.0)
 
     return "\n      ".join(
@@ -138,7 +156,7 @@ def _render_desktop_row(row: ExplorerRow, index: int, y: float) -> str:
             f'    <rect class="exp-accent-bar" x="20" y="{y + 7:.1f}" width="3" height="24" rx="1.5" fill="{row.language_color}" fill-opacity="{0.28 if is_dim else 0.72}" />',
             f'    <text x="34" y="{y + 23:.1f}" font-size="11.5" fill="{mode_col}">{_esc(row.dir_mode)}</text>',
             f"    {icon_svg}",
-            f'    <text class="exp-repo-name" x="110" y="{y + 23:.1f}" font-size="12.5" font-weight="700" fill="{name_col}">{_esc(row.display_name)}</text>',
+            f'    <text class="exp-repo-name" x="110" y="{y + 23:.1f}" font-size="12.5" font-weight="700" fill="{name_col}">{_esc(shown_name)}</text>',
             f"    {pill_svg}" if pill_svg else "",
             f'    <text x="332" y="{y + 23:.1f}" font-size="11.5" fill="{desc_col}">{_esc(row.short_description)}</text>',
             f'    <circle cx="726" cy="{y + 19:.1f}" r="3.8" fill="{row.language_color}" />',
@@ -165,7 +183,12 @@ def _render_compact_row(row: ExplorerRow, index: int, y: float) -> str:
 
     icon_svg = _render_language_icon(row, 68.0, y + 8.0)
     est_name_w = len(compact_name) * 7.4
-    pill_svg = _render_status_pill(row.status_badge, min(420.0, 98.0 + est_name_w + 8.0), y + 11.0)
+    compact_pill_w = _status_pill_width(row.status_badge)
+    pill_svg = _render_status_pill(
+        row.status_badge,
+        min(466.0 - compact_pill_w, 98.0 + est_name_w + 8.0),
+        y + 11.0,
+    )
 
     extra_txt = f" (+{row.extra_language_count})" if row.extra_language_count > 0 else ""
     meta_line = f"{row.primary_language}{extra_txt} · Updated {row.updated_label}"
@@ -262,12 +285,31 @@ def build_explorer_svg(
     )
 
     prompt_prefix = f"{model.username.lower()}@github"
+    footer_prompt_prefix = (
+        f"{model.username.lower()[:24]}…@github"
+        if is_compact and len(prompt_prefix) > 34
+        else prompt_prefix
+    )
     window_title_svg = (
         f'<text x="{title_x:.1f}" y="27" text-anchor="middle" font-size="11.5" fill="{P["muted"]}"><tspan fill="{P["text"]}" font-weight="700">~/projects</tspan> — zsh</text>'
         if is_compact
         else f'<text x="{title_x:.1f}" y="27" text-anchor="middle" font-size="11.5" fill="{P["muted"]}">{_esc(prompt_prefix)} — <tspan fill="{P["text"]}" font-weight="700">~/projects</tspan> — zsh</text>'
     )
-    bottom_prompt = f"{prompt_prefix}:~/projects$"
+    top_prompt_svg = (
+        f'<text x="20" y="65" font-size="12.5" xml:space="preserve">'
+        f'<tspan fill="{P["dir_green"]}" font-weight="700">$</tspan>'
+        f'<tspan fill="{P["text"]}" font-weight="700"> ls ~/projects</tspan></text>'
+        if is_compact
+        else (
+            f'<text x="20" y="65" font-size="12.5" xml:space="preserve">'
+            f'<tspan fill="{P["dir_green"]}" font-weight="700">{_esc(prompt_prefix)}</tspan>'
+            f'<tspan fill="{P["muted"]}">:</tspan>'
+            f'<tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan>'
+            f'<tspan fill="{P["dir_green"]}" font-weight="700"> $</tspan>'
+            f'<tspan fill="{P["text"]}" font-weight="700"> ls ~/projects</tspan></text>'
+        )
+    )
+    bottom_prompt = f"{footer_prompt_prefix}:~/projects$"
     cursor_x = 22.0 + len(bottom_prompt) * 7.6 + 6.0
     footer_right = (
         f"synced {model.generated_at}"
@@ -334,7 +376,7 @@ def build_explorer_svg(
     <text x="{canvas_w - 18}" y="27" text-anchor="end" font-size="10.2" fill="{P["muted"]}">{_esc(header_pill)}</text>
 
     <!-- Terminal Command Prompt -->
-    <text x="20" y="65" font-size="12.5" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700"> $</tspan><tspan fill="{P["text"]}" font-weight="700"> ls ~/projects</tspan></text>
+    {top_prompt_svg}
     <text x="{canvas_w - 20}" y="65" text-anchor="end" font-size="10.8" fill="{P["muted"]}">{_esc(summary_text)}</text>
 
     <!-- Directory Listing Container -->
@@ -343,7 +385,7 @@ def build_explorer_svg(
     {rows_markup}
 
     <!-- Bottom Terminal Status Line -->
-    <text x="22" y="{footer_y:.1f}" font-size="12.0" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700">$</tspan></text>
+    <text x="22" y="{footer_y:.1f}" font-size="12.0" xml:space="preserve"><tspan fill="{P["dir_green"]}" font-weight="700">{_esc(footer_prompt_prefix)}</tspan><tspan fill="{P["muted"]}">:</tspan><tspan fill="{P["prompt_blue"]}" font-weight="700">~/projects</tspan><tspan fill="{P["dir_green"]}" font-weight="700">$</tspan></text>
     <rect class="exp-cursor" x="{cursor_x:.1f}" y="{footer_y - 12:.1f}" width="8" height="15" fill="{P["prompt_blue"]}" />
     <text x="{canvas_w - 20}" y="{footer_y:.1f}" text-anchor="end" font-size="10.2" fill="{P["dim"]}">{_esc(footer_right)}</text>
   </g>
