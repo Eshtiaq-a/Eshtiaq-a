@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-11-26T17:07:56Z",
+  "username": "Eshtiaq-a",
+  "is_sample_data": false,
+  "directly_sourced_profile": {
+    "login": "Eshtiaq-a",
+    "name": "Eshtiaq Ahmad",
+    "bio": "Software Engineering Student @ Daffodil International University | Learning Python, Data Science & Machine Learning | Aspiring AI/ML Engineer",
+    "location": "dhaka , bangladesh ",
+    "company": null,
+    "blog": null,
+    "html_url": "https://github.com/Eshtiaq-a",
+    "avatar_url": "https://avatars.githubusercontent.com/u/251981857?v=4",
+    "public_repos": 8,
+    "public_gists": 0,
+    "followers": 2,
+    "following": 4,
+    "created_at": "2025-12-29T09:03:03Z",
+    "updated_at": "2026-11-26T15:45:33Z"
+  },
+  "calculated_metrics": {
+    "uptime_months": 10,
+    "total_stars": 0,
+    "total_forks": 0,
+    "owned_public_repositories": 8,
+    "non_fork_repositories": 8,
+    "empty_repositories": 1,
+    "archived_repositories": 0,
+    "unique_public_commits_collected": 68,
+    "public_commit_active_days": 11,
+    "repositories_processed_for_commits": 7,
+    "branches_processed_for_commits": 10,
+    "total_language_bytes": 10008179,
+    "languages": [
+      {
+        "language": "Python",
+        "bytes": 7947150,
+        "percentage": 79.41
+      },
+      {
+        "language": "HTML",
+        "bytes": 1542269,
+        "percentage": 15.41
+      },
+      {
+        "language": "TypeScript",
+        "bytes": 333829,
+        "percentage": 3.34
+      },
+      {
+        "language": "JavaScript",
+        "bytes": 94607,
+        "percentage": 0.95
+      },
+      {
+        "language": "PLpgSQL",
+        "bytes": 49691,
+        "percentage": 0.5
+      },
+      {
+        "language": "CSS",
+        "bytes": 27010,
+        "percentage": 0.27
+      },
+      {
+        "language": "PowerShell",
+        "bytes": 8834,
+        "percentage": 0.09
+      },
+      {
+        "language": "Shell",
+        "bytes": 3774,
+        "percentage": 0.04
+      },
+      {
+        "language": "C",
+        "bytes": 659,
+        "percentage": 0.01
+      },
+      {
+        "language": "Go Template",
+        "bytes": 356,
+        "percentage": 0.0
+      }
+    ]
+  },
+  "contribution_stats": {
+    "available": false,
+    "source": "unauthenticated_rest_fallback_requires_github_token",
+    "total_contributions": null,
+    "active_days": null,
+    "current_streak_days": null,
+    "best_streak_days": null
+  },
+  "collection_warnings": []
+}

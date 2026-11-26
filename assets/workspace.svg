@@ -25,11 +25,11 @@
         transform: translateY(0px);
       }
       100% {
-        transform: translateY(-679px);
+        transform: translateY(-2640px);
       }
     }
     #credits-track {
-      animation: scrollCredits 33.95s linear infinite;
+      animation: scrollCredits 132.00s linear infinite;
       will-change: transform;
     }
   </style>
@@ -386,82 +386,388 @@
       <text x="552" y="44" text-anchor="middle" font-size="7.0" fill="#f2cb62" letter-spacing="1.2">A PRODUCTION BY</text>
       <text x="552" y="59" text-anchor="middle" font-size="11.0" fill="#f3e8d4" font-weight="700" letter-spacing="1.5">ESHTIAQ AHMAD</text>
       <text x="552" y="75" text-anchor="middle" font-size="8.0" fill="#93c8b2" font-weight="700" letter-spacing="1.0">GITHUB CHRONICLES</text>
-      <text x="552" y="88" text-anchor="middle" font-size="6.8" fill="#f2cb62" letter-spacing="0.6">[ SAMPLE DATA PROTOTYPE ]</text>
-      <line x1="484" y1="101" x2="620" y2="101" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="147" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-STARTER-WEB</text>
-      <text x="552" y="160" text-anchor="middle" font-size="7.8" fill="#e9ecf2">init: scaffold responsive layout &amp;</text>
-      <text x="552" y="171" text-anchor="middle" font-size="7.8" fill="#e9ecf2">starter page</text>
-      <text x="552" y="182" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-10  •  Eshtiaq Ahmad</text>
-      <text x="552" y="205" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-FINANCE-CLI</text>
-      <text x="552" y="218" text-anchor="middle" font-size="7.8" fill="#e9ecf2">feat: add monthly expense parser &amp;</text>
-      <text x="552" y="229" text-anchor="middle" font-size="7.8" fill="#e9ecf2">CSV export</text>
-      <text x="552" y="240" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-03-14  •  Eshtiaq Ahmad</text>
-      <text x="552" y="255" text-anchor="middle" font-size="7.8" fill="#e9ecf2">test: verify &lt;budget&gt; thresholds &amp;</text>
-      <text x="552" y="266" text-anchor="middle" font-size="7.8" fill="#e9ecf2">edge totals</text>
-      <text x="552" y="277" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-03-18  •  Eshtiaq Ahmad</text>
-      <text x="552" y="300" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-ML-NOTEBOOKS</text>
-      <text x="552" y="313" text-anchor="middle" font-size="7.8" fill="#e9ecf2">feat: implement feature scaling &amp;</text>
-      <text x="552" y="324" text-anchor="middle" font-size="7.8" fill="#e9ecf2">validation split</text>
-      <text x="552" y="335" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-06-02  •  Eshtiaq Ahmad</text>
-      <text x="552" y="350" text-anchor="middle" font-size="7.8" fill="#e9ecf2">docs: document confusion matrix</text>
-      <text x="552" y="361" text-anchor="middle" font-size="7.8" fill="#e9ecf2">metrics &amp; notes</text>
-      <text x="552" y="372" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-06-09  •  Eshtiaq Ahmad</text>
-      <text x="552" y="395" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-PORTFOLIO-UI</text>
-      <text x="552" y="408" text-anchor="middle" font-size="7.8" fill="#e9ecf2">style: refine dark navy theme &amp;</text>
-      <text x="552" y="419" text-anchor="middle" font-size="7.8" fill="#e9ecf2">keyboard navigation</text>
-      <text x="552" y="430" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-09-21  •  Eshtiaq Ahmad</text>
-      <text x="552" y="445" text-anchor="middle" font-size="7.8" fill="#e9ecf2">merge: ship dual-screen project</text>
-      <text x="552" y="456" text-anchor="middle" font-size="7.8" fill="#e9ecf2">preview section</text>
-      <text x="552" y="467" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-10-05  •  Eshtiaq Ahmad  •  MERGE</text>
-      <text x="552" y="482" text-anchor="middle" font-size="7.8" fill="#e9ecf2">chore: polish release build 1.00</text>
-      <text x="552" y="493" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-18  •  Eshtiaq Ahmad</text>
-      <line x1="484" y1="520" x2="620" y2="520" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="538" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
-      <text x="552" y="551" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 8 COMMITS  •  4 REPOS</text>
-      <text x="552" y="573" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
-      <text x="552" y="588" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
-      <line x1="484" y1="608" x2="620" y2="608" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <line x1="484" y1="88" x2="620" y2="88" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="134" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">TEST</text>
+      <text x="552" y="147" text-anchor="middle" font-size="7.8" fill="#e9ecf2">first form</text>
+      <text x="552" y="158" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-09  •  Eshtiaq-a</text>
+      <text x="552" y="181" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">ASSIGNMENT_1</text>
+      <text x="552" y="194" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added header</text>
+      <text x="552" y="205" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-11  •  Eshtiaq-a</text>
+      <text x="552" y="220" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fixed nav bar</text>
+      <text x="552" y="231" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-11  •  Eshtiaq-a</text>
+      <text x="552" y="254" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">STASH-MONEY-MANAGER</text>
+      <text x="552" y="267" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit from Create Next App</text>
+      <text x="552" y="278" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-06  •  Eshtiaq-a</text>
+      <text x="552" y="293" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial Release: Stash Student</text>
+      <text x="552" y="304" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Money Manager v1.0</text>
+      <text x="552" y="315" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-06  •  Eshtiaq-a</text>
+      <text x="552" y="330" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Added Facebook Auth integration</text>
+      <text x="552" y="341" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="356" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added avatar feature and high</text>
+      <text x="552" y="367" text-anchor="middle" font-size="7.8" fill="#e9ecf2">expences zone</text>
+      <text x="552" y="378" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="393" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fixed hook order and SSR hydration</text>
+      <text x="552" y="404" text-anchor="middle" font-size="7.8" fill="#e9ecf2">errors</text>
+      <text x="552" y="415" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="430" text-anchor="middle" font-size="7.8" fill="#e9ecf2">resized avatar</text>
+      <text x="552" y="441" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="456" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added seo and responsive audit</text>
+      <text x="552" y="467" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="482" text-anchor="middle" font-size="7.8" fill="#e9ecf2">bugs fixed</text>
+      <text x="552" y="493" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="508" text-anchor="middle" font-size="7.8" fill="#e9ecf2">facebook auh removed</text>
+      <text x="552" y="519" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="534" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Strategic Update: PWA, Google Auth,</text>
+      <text x="552" y="545" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and SEO Operational</text>
+      <text x="552" y="556" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="571" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added leaderboard , ui enhancement</text>
+      <text x="552" y="582" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="597" text-anchor="middle" font-size="7.8" fill="#e9ecf2">redesigned ui</text>
+      <text x="552" y="608" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="623" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Install Vercel Web Analytics</text>
+      <text x="552" y="634" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Vercel</text>
+      <text x="552" y="649" text-anchor="middle" font-size="7.8" fill="#e9ecf2">tier badges,lifeline added,mode</text>
+      <text x="552" y="660" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added</text>
+      <text x="552" y="671" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="686" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Install Vercel Web Analytics</text>
+      <text x="552" y="697" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Vercel</text>
+      <text x="552" y="712" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed positions</text>
+      <text x="552" y="723" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="746" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">WRECHSHIP</text>
+      <text x="552" y="759" text-anchor="middle" font-size="7.8" fill="#e9ecf2">code commit</text>
+      <text x="552" y="770" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="785" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add README for wreck-ship project</text>
+      <text x="552" y="796" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="811" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Enhance project description in</text>
+      <text x="552" y="822" text-anchor="middle" font-size="7.8" fill="#e9ecf2">README.md</text>
+      <text x="552" y="833" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="848" text-anchor="middle" font-size="7.8" fill="#e9ecf2">updated for mobile ui</text>
+      <text x="552" y="859" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="874" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added many new datas of ship wreck</text>
+      <text x="552" y="885" text-anchor="middle" font-size="7.8" fill="#e9ecf2">, updated the ui</text>
+      <text x="552" y="896" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="911" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Revise project description and</text>
+      <text x="552" y="922" text-anchor="middle" font-size="7.8" fill="#e9ecf2">dataset details</text>
+      <text x="552" y="933" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="948" text-anchor="middle" font-size="7.8" fill="#e9ecf2">database optimization</text>
+      <text x="552" y="959" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="974" text-anchor="middle" font-size="7.8" fill="#e9ecf2">data catagorized and parsed</text>
+      <text x="552" y="985" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1000" text-anchor="middle" font-size="7.8" fill="#e9ecf2">map issue solve</text>
+      <text x="552" y="1011" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1026" text-anchor="middle" font-size="7.8" fill="#e9ecf2">adsense addition</text>
+      <text x="552" y="1037" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1052" text-anchor="middle" font-size="7.8" fill="#e9ecf2">privacy policy added</text>
+      <text x="552" y="1063" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1078" text-anchor="middle" font-size="7.8" fill="#e9ecf2">ad</text>
+      <text x="552" y="1089" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1104" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add ads.txt for Google AdSense</text>
+      <text x="552" y="1115" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller verification</text>
+      <text x="552" y="1126" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1141" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix page links to use relative</text>
+      <text x="552" y="1152" text-anchor="middle" font-size="7.8" fill="#e9ecf2">paths for local disk and subpath...</text>
+      <text x="552" y="1163" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1178" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Integrate navigation links into</text>
+      <text x="552" y="1189" text-anchor="middle" font-size="7.8" fill="#e9ecf2">descriptive footer paragraph at...</text>
+      <text x="552" y="1200" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1215" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Update sidebar footer links to</text>
+      <text x="552" y="1226" text-anchor="middle" font-size="7.8" fill="#e9ecf2">explicit index.html targets...</text>
+      <text x="552" y="1237" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1252" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Remove right side floating footer</text>
+      <text x="552" y="1263" text-anchor="middle" font-size="7.8" fill="#e9ecf2">overlay and move full links into...</text>
+      <text x="552" y="1274" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1289" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add centered styling and explicit</text>
+      <text x="552" y="1300" text-anchor="middle" font-size="7.8" fill="#e9ecf2">onclick redirection handlers for...</text>
+      <text x="552" y="1311" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1326" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Restore instant search dropdown box</text>
+      <text x="552" y="1337" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and add Google Earth style...</text>
+      <text x="552" y="1348" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1363" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix 100% pinpoint camera centering</text>
+      <text x="552" y="1374" text-anchor="middle" font-size="7.8" fill="#e9ecf2">on vessel lat/lon and reduce...</text>
+      <text x="552" y="1385" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1400" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Automatically pause globe auto-</text>
+      <text x="552" y="1411" text-anchor="middle" font-size="7.8" fill="#e9ecf2">rotation when searching or...</text>
+      <text x="552" y="1422" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1437" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Clicking &#x27;All&#x27; filter chip resets</text>
+      <text x="552" y="1448" text-anchor="middle" font-size="7.8" fill="#e9ecf2">search input, closes detail...</text>
+      <text x="552" y="1459" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1474" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fixed a bug on earth rotation</text>
+      <text x="552" y="1485" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1500" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added transition features for</text>
+      <text x="552" y="1511" text-anchor="middle" font-size="7.8" fill="#e9ecf2">selection tool</text>
+      <text x="552" y="1522" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1537" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Keep current rotation and resume</text>
+      <text x="552" y="1548" text-anchor="middle" font-size="7.8" fill="#e9ecf2">auto-rotate on closeDetail</text>
+      <text x="552" y="1559" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1574" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add WWI, WWII, and regional</text>
+      <text x="552" y="1585" text-anchor="middle" font-size="7.8" fill="#e9ecf2">shipwrecks and fix overlay layout</text>
+      <text x="552" y="1596" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1611" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Implement interactive On This Day</text>
+      <text x="552" y="1622" text-anchor="middle" font-size="7.8" fill="#e9ecf2">map tour with controls HUD</text>
+      <text x="552" y="1633" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1648" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Configure single-play tour</text>
+      <text x="552" y="1659" text-anchor="middle" font-size="7.8" fill="#e9ecf2">behavior, snappier delay, and...</text>
+      <text x="552" y="1670" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1685" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Reset camera to default position on</text>
+      <text x="552" y="1696" text-anchor="middle" font-size="7.8" fill="#e9ecf2">tour completion or exit</text>
+      <text x="552" y="1707" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1722" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix &#x27;On This Day&#x27; tour navigation</text>
+      <text x="552" y="1733" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and camera default reset</text>
+      <text x="552" y="1744" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-27  •  Eshtiaq_Ah</text>
+      <text x="552" y="1759" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fix: prevent map rotation from</text>
+      <text x="552" y="1770" text-anchor="middle" font-size="7.8" fill="#e9ecf2">resuming automatically if...</text>
+      <text x="552" y="1781" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-27  •  Eshtiaq_Ah</text>
+      <text x="552" y="1804" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">C-CODE-PRACTICES-</text>
+      <text x="552" y="1817" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Universal 1st practice</text>
+      <text x="552" y="1828" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-05  •  Eshtiaq_Ah</text>
+      <text x="552" y="1843" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added README.md</text>
+      <text x="552" y="1854" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-05  •  Eshtiaq_Ah</text>
+      <text x="552" y="1869" text-anchor="middle" font-size="7.8" fill="#e9ecf2">learned variables format specifiers</text>
+      <text x="552" y="1880" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-06  •  Eshtiaq_Ah</text>
+      <text x="552" y="1903" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">CLEAR-CUT-</text>
+      <text x="552" y="1916" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit</text>
+      <text x="552" y="1927" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq Ahmad</text>
+      <text x="552" y="1942" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit from Create Next App</text>
+      <text x="552" y="1953" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="1976" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">PORTFOLIO-MAIN</text>
+      <text x="552" y="1989" text-anchor="middle" font-size="7.8" fill="#e9ecf2">build 1.00</text>
+      <text x="552" y="2000" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2023" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">CLEAR-CUT-</text>
+      <text x="552" y="2036" text-anchor="middle" font-size="7.8" fill="#e9ecf2">system design, architecure and</text>
+      <text x="552" y="2047" text-anchor="middle" font-size="7.8" fill="#e9ecf2">major frontend and ui ux is done</text>
+      <text x="552" y="2058" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2073" text-anchor="middle" font-size="7.8" fill="#e9ecf2">database integration in the system</text>
+      <text x="552" y="2084" text-anchor="middle" font-size="7.8" fill="#e9ecf2">for sellers and buyers</text>
+      <text x="552" y="2095" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2110" text-anchor="middle" font-size="7.8" fill="#e9ecf2">migrating SQL ,audit and</text>
+      <text x="552" y="2121" text-anchor="middle" font-size="7.8" fill="#e9ecf2">correntions</text>
+      <text x="552" y="2132" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2147" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added login feature and database</text>
+      <text x="552" y="2158" text-anchor="middle" font-size="7.8" fill="#e9ecf2">integration</text>
+      <text x="552" y="2169" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2184" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller account added ,api</text>
+      <text x="552" y="2195" text-anchor="middle" font-size="7.8" fill="#e9ecf2">integration of seller dashboard</text>
+      <text x="552" y="2206" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2221" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller workspace layout</text>
+      <text x="552" y="2232" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed,polished ui</text>
+      <text x="552" y="2243" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2258" text-anchor="middle" font-size="7.8" fill="#e9ecf2">implemented cart api , cod</text>
+      <text x="552" y="2269" text-anchor="middle" font-size="7.8" fill="#e9ecf2">checkout,database bug fixed</text>
+      <text x="552" y="2280" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2295" text-anchor="middle" font-size="7.8" fill="#e9ecf2">implemented rule based pricing</text>
+      <text x="552" y="2306" text-anchor="middle" font-size="7.8" fill="#e9ecf2">engine</text>
+      <text x="552" y="2317" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2332" text-anchor="middle" font-size="7.8" fill="#e9ecf2">massive overhaul on pricing</text>
+      <text x="552" y="2343" text-anchor="middle" font-size="7.8" fill="#e9ecf2">engine,bugs on my order fixed</text>
+      <text x="552" y="2354" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2369" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller dashboard changed and fixed</text>
+      <text x="552" y="2380" text-anchor="middle" font-size="7.8" fill="#e9ecf2">bugs on main landing page</text>
+      <text x="552" y="2391" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2406" text-anchor="middle" font-size="7.8" fill="#e9ecf2">checked and changed , patched</text>
+      <text x="552" y="2417" text-anchor="middle" font-size="7.8" fill="#e9ecf2">security flaws</text>
+      <text x="552" y="2428" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2443" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added new feature</text>
+      <text x="552" y="2454" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <line x1="484" y1="2481" x2="620" y2="2481" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2499" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
+      <text x="552" y="2512" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 68 COMMITS  •  7 REPOS</text>
+      <text x="552" y="2534" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
+      <text x="552" y="2549" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
+      <line x1="484" y1="2569" x2="620" y2="2569" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
         </g>
-        <g transform="translate(0, 811)">
+        <g transform="translate(0, 2772)">
           <line x1="484" y1="26" x2="620" y2="26" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
       <text x="552" y="44" text-anchor="middle" font-size="7.0" fill="#f2cb62" letter-spacing="1.2">A PRODUCTION BY</text>
       <text x="552" y="59" text-anchor="middle" font-size="11.0" fill="#f3e8d4" font-weight="700" letter-spacing="1.5">ESHTIAQ AHMAD</text>
       <text x="552" y="75" text-anchor="middle" font-size="8.0" fill="#93c8b2" font-weight="700" letter-spacing="1.0">GITHUB CHRONICLES</text>
-      <text x="552" y="88" text-anchor="middle" font-size="6.8" fill="#f2cb62" letter-spacing="0.6">[ SAMPLE DATA PROTOTYPE ]</text>
-      <line x1="484" y1="101" x2="620" y2="101" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="147" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-STARTER-WEB</text>
-      <text x="552" y="160" text-anchor="middle" font-size="7.8" fill="#e9ecf2">init: scaffold responsive layout &amp;</text>
-      <text x="552" y="171" text-anchor="middle" font-size="7.8" fill="#e9ecf2">starter page</text>
-      <text x="552" y="182" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-10  •  Eshtiaq Ahmad</text>
-      <text x="552" y="205" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-FINANCE-CLI</text>
-      <text x="552" y="218" text-anchor="middle" font-size="7.8" fill="#e9ecf2">feat: add monthly expense parser &amp;</text>
-      <text x="552" y="229" text-anchor="middle" font-size="7.8" fill="#e9ecf2">CSV export</text>
-      <text x="552" y="240" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-03-14  •  Eshtiaq Ahmad</text>
-      <text x="552" y="255" text-anchor="middle" font-size="7.8" fill="#e9ecf2">test: verify &lt;budget&gt; thresholds &amp;</text>
-      <text x="552" y="266" text-anchor="middle" font-size="7.8" fill="#e9ecf2">edge totals</text>
-      <text x="552" y="277" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-03-18  •  Eshtiaq Ahmad</text>
-      <text x="552" y="300" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-ML-NOTEBOOKS</text>
-      <text x="552" y="313" text-anchor="middle" font-size="7.8" fill="#e9ecf2">feat: implement feature scaling &amp;</text>
-      <text x="552" y="324" text-anchor="middle" font-size="7.8" fill="#e9ecf2">validation split</text>
-      <text x="552" y="335" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-06-02  •  Eshtiaq Ahmad</text>
-      <text x="552" y="350" text-anchor="middle" font-size="7.8" fill="#e9ecf2">docs: document confusion matrix</text>
-      <text x="552" y="361" text-anchor="middle" font-size="7.8" fill="#e9ecf2">metrics &amp; notes</text>
-      <text x="552" y="372" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-06-09  •  Eshtiaq Ahmad</text>
-      <text x="552" y="395" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">SAMPLE-PORTFOLIO-UI</text>
-      <text x="552" y="408" text-anchor="middle" font-size="7.8" fill="#e9ecf2">style: refine dark navy theme &amp;</text>
-      <text x="552" y="419" text-anchor="middle" font-size="7.8" fill="#e9ecf2">keyboard navigation</text>
-      <text x="552" y="430" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-09-21  •  Eshtiaq Ahmad</text>
-      <text x="552" y="445" text-anchor="middle" font-size="7.8" fill="#e9ecf2">merge: ship dual-screen project</text>
-      <text x="552" y="456" text-anchor="middle" font-size="7.8" fill="#e9ecf2">preview section</text>
-      <text x="552" y="467" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-10-05  •  Eshtiaq Ahmad  •  MERGE</text>
-      <text x="552" y="482" text-anchor="middle" font-size="7.8" fill="#e9ecf2">chore: polish release build 1.00</text>
-      <text x="552" y="493" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-18  •  Eshtiaq Ahmad</text>
-      <line x1="484" y1="520" x2="620" y2="520" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="538" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
-      <text x="552" y="551" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 8 COMMITS  •  4 REPOS</text>
-      <text x="552" y="573" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
-      <text x="552" y="588" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
-      <line x1="484" y1="608" x2="620" y2="608" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <line x1="484" y1="88" x2="620" y2="88" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="134" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">TEST</text>
+      <text x="552" y="147" text-anchor="middle" font-size="7.8" fill="#e9ecf2">first form</text>
+      <text x="552" y="158" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-09  •  Eshtiaq-a</text>
+      <text x="552" y="181" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">ASSIGNMENT_1</text>
+      <text x="552" y="194" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added header</text>
+      <text x="552" y="205" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-11  •  Eshtiaq-a</text>
+      <text x="552" y="220" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fixed nav bar</text>
+      <text x="552" y="231" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-01-11  •  Eshtiaq-a</text>
+      <text x="552" y="254" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">STASH-MONEY-MANAGER</text>
+      <text x="552" y="267" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit from Create Next App</text>
+      <text x="552" y="278" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-06  •  Eshtiaq-a</text>
+      <text x="552" y="293" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial Release: Stash Student</text>
+      <text x="552" y="304" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Money Manager v1.0</text>
+      <text x="552" y="315" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-06  •  Eshtiaq-a</text>
+      <text x="552" y="330" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Added Facebook Auth integration</text>
+      <text x="552" y="341" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="356" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added avatar feature and high</text>
+      <text x="552" y="367" text-anchor="middle" font-size="7.8" fill="#e9ecf2">expences zone</text>
+      <text x="552" y="378" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="393" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fixed hook order and SSR hydration</text>
+      <text x="552" y="404" text-anchor="middle" font-size="7.8" fill="#e9ecf2">errors</text>
+      <text x="552" y="415" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="430" text-anchor="middle" font-size="7.8" fill="#e9ecf2">resized avatar</text>
+      <text x="552" y="441" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="456" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added seo and responsive audit</text>
+      <text x="552" y="467" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="482" text-anchor="middle" font-size="7.8" fill="#e9ecf2">bugs fixed</text>
+      <text x="552" y="493" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="508" text-anchor="middle" font-size="7.8" fill="#e9ecf2">facebook auh removed</text>
+      <text x="552" y="519" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="534" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Strategic Update: PWA, Google Auth,</text>
+      <text x="552" y="545" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and SEO Operational</text>
+      <text x="552" y="556" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="571" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added leaderboard , ui enhancement</text>
+      <text x="552" y="582" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="597" text-anchor="middle" font-size="7.8" fill="#e9ecf2">redesigned ui</text>
+      <text x="552" y="608" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="623" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Install Vercel Web Analytics</text>
+      <text x="552" y="634" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Vercel</text>
+      <text x="552" y="649" text-anchor="middle" font-size="7.8" fill="#e9ecf2">tier badges,lifeline added,mode</text>
+      <text x="552" y="660" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added</text>
+      <text x="552" y="671" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="686" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Install Vercel Web Analytics</text>
+      <text x="552" y="697" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Vercel</text>
+      <text x="552" y="712" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed positions</text>
+      <text x="552" y="723" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-05-07  •  Eshtiaq-a</text>
+      <text x="552" y="746" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">WRECHSHIP</text>
+      <text x="552" y="759" text-anchor="middle" font-size="7.8" fill="#e9ecf2">code commit</text>
+      <text x="552" y="770" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="785" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add README for wreck-ship project</text>
+      <text x="552" y="796" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="811" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Enhance project description in</text>
+      <text x="552" y="822" text-anchor="middle" font-size="7.8" fill="#e9ecf2">README.md</text>
+      <text x="552" y="833" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="848" text-anchor="middle" font-size="7.8" fill="#e9ecf2">updated for mobile ui</text>
+      <text x="552" y="859" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="874" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added many new datas of ship wreck</text>
+      <text x="552" y="885" text-anchor="middle" font-size="7.8" fill="#e9ecf2">, updated the ui</text>
+      <text x="552" y="896" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq_Ah</text>
+      <text x="552" y="911" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Revise project description and</text>
+      <text x="552" y="922" text-anchor="middle" font-size="7.8" fill="#e9ecf2">dataset details</text>
+      <text x="552" y="933" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-24  •  Eshtiaq Ahmad</text>
+      <text x="552" y="948" text-anchor="middle" font-size="7.8" fill="#e9ecf2">database optimization</text>
+      <text x="552" y="959" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="974" text-anchor="middle" font-size="7.8" fill="#e9ecf2">data catagorized and parsed</text>
+      <text x="552" y="985" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1000" text-anchor="middle" font-size="7.8" fill="#e9ecf2">map issue solve</text>
+      <text x="552" y="1011" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1026" text-anchor="middle" font-size="7.8" fill="#e9ecf2">adsense addition</text>
+      <text x="552" y="1037" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1052" text-anchor="middle" font-size="7.8" fill="#e9ecf2">privacy policy added</text>
+      <text x="552" y="1063" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1078" text-anchor="middle" font-size="7.8" fill="#e9ecf2">ad</text>
+      <text x="552" y="1089" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1104" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add ads.txt for Google AdSense</text>
+      <text x="552" y="1115" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller verification</text>
+      <text x="552" y="1126" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1141" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix page links to use relative</text>
+      <text x="552" y="1152" text-anchor="middle" font-size="7.8" fill="#e9ecf2">paths for local disk and subpath...</text>
+      <text x="552" y="1163" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1178" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Integrate navigation links into</text>
+      <text x="552" y="1189" text-anchor="middle" font-size="7.8" fill="#e9ecf2">descriptive footer paragraph at...</text>
+      <text x="552" y="1200" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1215" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Update sidebar footer links to</text>
+      <text x="552" y="1226" text-anchor="middle" font-size="7.8" fill="#e9ecf2">explicit index.html targets...</text>
+      <text x="552" y="1237" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1252" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Remove right side floating footer</text>
+      <text x="552" y="1263" text-anchor="middle" font-size="7.8" fill="#e9ecf2">overlay and move full links into...</text>
+      <text x="552" y="1274" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1289" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add centered styling and explicit</text>
+      <text x="552" y="1300" text-anchor="middle" font-size="7.8" fill="#e9ecf2">onclick redirection handlers for...</text>
+      <text x="552" y="1311" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1326" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Restore instant search dropdown box</text>
+      <text x="552" y="1337" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and add Google Earth style...</text>
+      <text x="552" y="1348" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1363" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix 100% pinpoint camera centering</text>
+      <text x="552" y="1374" text-anchor="middle" font-size="7.8" fill="#e9ecf2">on vessel lat/lon and reduce...</text>
+      <text x="552" y="1385" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1400" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Automatically pause globe auto-</text>
+      <text x="552" y="1411" text-anchor="middle" font-size="7.8" fill="#e9ecf2">rotation when searching or...</text>
+      <text x="552" y="1422" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1437" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Clicking &#x27;All&#x27; filter chip resets</text>
+      <text x="552" y="1448" text-anchor="middle" font-size="7.8" fill="#e9ecf2">search input, closes detail...</text>
+      <text x="552" y="1459" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1474" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fixed a bug on earth rotation</text>
+      <text x="552" y="1485" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1500" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added transition features for</text>
+      <text x="552" y="1511" text-anchor="middle" font-size="7.8" fill="#e9ecf2">selection tool</text>
+      <text x="552" y="1522" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1537" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Keep current rotation and resume</text>
+      <text x="552" y="1548" text-anchor="middle" font-size="7.8" fill="#e9ecf2">auto-rotate on closeDetail</text>
+      <text x="552" y="1559" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1574" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Add WWI, WWII, and regional</text>
+      <text x="552" y="1585" text-anchor="middle" font-size="7.8" fill="#e9ecf2">shipwrecks and fix overlay layout</text>
+      <text x="552" y="1596" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1611" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Implement interactive On This Day</text>
+      <text x="552" y="1622" text-anchor="middle" font-size="7.8" fill="#e9ecf2">map tour with controls HUD</text>
+      <text x="552" y="1633" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1648" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Configure single-play tour</text>
+      <text x="552" y="1659" text-anchor="middle" font-size="7.8" fill="#e9ecf2">behavior, snappier delay, and...</text>
+      <text x="552" y="1670" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1685" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Reset camera to default position on</text>
+      <text x="552" y="1696" text-anchor="middle" font-size="7.8" fill="#e9ecf2">tour completion or exit</text>
+      <text x="552" y="1707" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="1722" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Fix &#x27;On This Day&#x27; tour navigation</text>
+      <text x="552" y="1733" text-anchor="middle" font-size="7.8" fill="#e9ecf2">and camera default reset</text>
+      <text x="552" y="1744" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-27  •  Eshtiaq_Ah</text>
+      <text x="552" y="1759" text-anchor="middle" font-size="7.8" fill="#e9ecf2">fix: prevent map rotation from</text>
+      <text x="552" y="1770" text-anchor="middle" font-size="7.8" fill="#e9ecf2">resuming automatically if...</text>
+      <text x="552" y="1781" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-07-27  •  Eshtiaq_Ah</text>
+      <text x="552" y="1804" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">C-CODE-PRACTICES-</text>
+      <text x="552" y="1817" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Universal 1st practice</text>
+      <text x="552" y="1828" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-05  •  Eshtiaq_Ah</text>
+      <text x="552" y="1843" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added README.md</text>
+      <text x="552" y="1854" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-05  •  Eshtiaq_Ah</text>
+      <text x="552" y="1869" text-anchor="middle" font-size="7.8" fill="#e9ecf2">learned variables format specifiers</text>
+      <text x="552" y="1880" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-08-06  •  Eshtiaq_Ah</text>
+      <text x="552" y="1903" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">CLEAR-CUT-</text>
+      <text x="552" y="1916" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit</text>
+      <text x="552" y="1927" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq Ahmad</text>
+      <text x="552" y="1942" text-anchor="middle" font-size="7.8" fill="#e9ecf2">Initial commit from Create Next App</text>
+      <text x="552" y="1953" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="1976" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">PORTFOLIO-MAIN</text>
+      <text x="552" y="1989" text-anchor="middle" font-size="7.8" fill="#e9ecf2">build 1.00</text>
+      <text x="552" y="2000" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2023" text-anchor="middle" font-size="8.5" fill="#93c8b2" font-weight="700" letter-spacing="0.8">CLEAR-CUT-</text>
+      <text x="552" y="2036" text-anchor="middle" font-size="7.8" fill="#e9ecf2">system design, architecure and</text>
+      <text x="552" y="2047" text-anchor="middle" font-size="7.8" fill="#e9ecf2">major frontend and ui ux is done</text>
+      <text x="552" y="2058" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2073" text-anchor="middle" font-size="7.8" fill="#e9ecf2">database integration in the system</text>
+      <text x="552" y="2084" text-anchor="middle" font-size="7.8" fill="#e9ecf2">for sellers and buyers</text>
+      <text x="552" y="2095" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2110" text-anchor="middle" font-size="7.8" fill="#e9ecf2">migrating SQL ,audit and</text>
+      <text x="552" y="2121" text-anchor="middle" font-size="7.8" fill="#e9ecf2">correntions</text>
+      <text x="552" y="2132" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-19  •  Eshtiaq_Ah</text>
+      <text x="552" y="2147" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added login feature and database</text>
+      <text x="552" y="2158" text-anchor="middle" font-size="7.8" fill="#e9ecf2">integration</text>
+      <text x="552" y="2169" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2184" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller account added ,api</text>
+      <text x="552" y="2195" text-anchor="middle" font-size="7.8" fill="#e9ecf2">integration of seller dashboard</text>
+      <text x="552" y="2206" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2221" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller workspace layout</text>
+      <text x="552" y="2232" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed,polished ui</text>
+      <text x="552" y="2243" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2258" text-anchor="middle" font-size="7.8" fill="#e9ecf2">implemented cart api , cod</text>
+      <text x="552" y="2269" text-anchor="middle" font-size="7.8" fill="#e9ecf2">checkout,database bug fixed</text>
+      <text x="552" y="2280" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2295" text-anchor="middle" font-size="7.8" fill="#e9ecf2">implemented rule based pricing</text>
+      <text x="552" y="2306" text-anchor="middle" font-size="7.8" fill="#e9ecf2">engine</text>
+      <text x="552" y="2317" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2332" text-anchor="middle" font-size="7.8" fill="#e9ecf2">massive overhaul on pricing</text>
+      <text x="552" y="2343" text-anchor="middle" font-size="7.8" fill="#e9ecf2">engine,bugs on my order fixed</text>
+      <text x="552" y="2354" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2369" text-anchor="middle" font-size="7.8" fill="#e9ecf2">seller dashboard changed and fixed</text>
+      <text x="552" y="2380" text-anchor="middle" font-size="7.8" fill="#e9ecf2">bugs on main landing page</text>
+      <text x="552" y="2391" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2406" text-anchor="middle" font-size="7.8" fill="#e9ecf2">checked and changed , patched</text>
+      <text x="552" y="2417" text-anchor="middle" font-size="7.8" fill="#e9ecf2">security flaws</text>
+      <text x="552" y="2428" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <text x="552" y="2443" text-anchor="middle" font-size="7.8" fill="#e9ecf2">added new feature</text>
+      <text x="552" y="2454" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-20  •  Eshtiaq_Ah</text>
+      <line x1="484" y1="2481" x2="620" y2="2481" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2499" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
+      <text x="552" y="2512" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 68 COMMITS  •  7 REPOS</text>
+      <text x="552" y="2534" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
+      <text x="552" y="2549" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
+      <line x1="484" y1="2569" x2="620" y2="2569" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
         </g>
       </g>
       <rect x="429" y="132" width="246" height="14" fill="url(#screen-top-fade)" />

@@ -129,12 +129,13 @@ class GitHubClient:
         allow_statuses: frozenset[int] = frozenset(),
     ) -> ApiResponse:
         """Execute a JSON HTTP request with bounded retry/backoff and safe error handling."""
+        resolved_url = url if url.startswith("http") else f"{self.base_url}{url}"
         payload_bytes = json.dumps(body).encode("utf-8") if body is not None else None
         extra_headers = {"Content-Type": "application/json"} if body is not None else None
 
         for attempt in range(self.max_retries + 1):
             req = urllib.request.Request(
-                url=url,
+                url=resolved_url,
                 data=payload_bytes,
                 headers=self._build_headers(extra_headers),
                 method=method,
@@ -260,7 +261,7 @@ class GitHubClient:
         enc_owner = urllib.parse.quote(owner, safe="")
         enc_repo = urllib.parse.quote(repo, safe="")
         resp = self.request_json(
-            f"/repos/{enc_owner}/{enc_repo}/languages",
+            f"{self.base_url}/repos/{enc_owner}/{enc_repo}/languages",
             allow_statuses=frozenset({404, 409}),
         )
         if isinstance(resp.data, dict):

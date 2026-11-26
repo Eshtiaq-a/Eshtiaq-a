@@ -20,6 +20,8 @@ REPOSITORIES_PATH = DATA_DIR / "repositories.json"
 PROFILE_DATA_PATH = DATA_DIR / "profile_data.json"
 WORKSPACE_SVG_PATH = ASSETS_DIR / "workspace.svg"
 WORKSPACE_GIF_PATH = ASSETS_DIR / "workspace.gif"
+ASCII_PORTRAIT_PATH = ASSETS_DIR / "ascii_portrait.txt"
+NEOFETCH_SVG_PATH = ASSETS_DIR / "neofetch.svg"
 
 GITHUB_API_BASE = "https://api.github.com"
 GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
@@ -83,6 +85,24 @@ MAX_GIF_BYTES = 1_500_000
 WORKSPACE_WIDTH = 988
 WORKSPACE_HEIGHT = 504
 MONITOR_SCREEN_BOX = (429, 132, 246, 142)  # (x, y, width, height)
+
+NEOFETCH_WIDTH = 1009
+NEOFETCH_HEIGHT = 610
+NEOFETCH_PALETTE: dict[str, str] = {
+    "bg": "#0d0f14",
+    "border": "#5582bc",
+    "prompt_user": "#5aa9ff",
+    "prompt_path": "#888b92",
+    "prompt_cmd": "#ebf0f4",
+    "ascii_green": "#73b88d",
+    "header_blue": "#5aa9ff",
+    "label_blue": "#5aa9ff",
+    "dots": "#6e737d",
+    "divider": "#41444b",
+    "text": "#ebf0f4",
+    "muted": "#9aa1ad",
+    "cursor": "#4c9aff",
+}
 
 
 @dataclass(frozen=True)

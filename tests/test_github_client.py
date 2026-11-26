@@ -127,6 +127,18 @@ class GitHubClientTests(unittest.TestCase):
         self.assertEqual(profile["login"], "Eshtiaq-a")
         self.assertEqual(sleeps, [2.0, 3.0])
 
+    def test_get_repository_languages_resolves_full_url(self) -> None:
+        seen_urls: list[str] = []
+
+        def fake_opener(req: Any, _timeout: int) -> _FakeHttpResponse:
+            seen_urls.append(req.full_url)
+            return _FakeHttpResponse(200, {"Python": 1200})
+
+        client = GitHubClient(token="", opener=fake_opener, sleep_fn=lambda _: None)
+        langs = client.get_repository_languages("Eshtiaq-a", "Wrechship")
+        self.assertEqual(langs, {"Python": 1200})
+        self.assertEqual(seen_urls, ["https://api.github.com/repos/Eshtiaq-a/Wrechship/languages"])
+
     def test_5xx_and_network_timeout_retry_then_raise(self) -> None:
         sleeps: list[float] = []
         attempts = 0

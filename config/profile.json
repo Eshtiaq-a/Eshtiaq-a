@@ -14,5 +14,11 @@
     "show_human_character": false,
     "human_character_gender": "none",
     "watermark": null
+  },
+  "neofetch": {
+    "identity": "Software Engineering Student @ DIU",
+    "focus": "Python, Data Science & AI/ML Engineering",
+    "max_languages": 4,
+    "contact_links": []
   }
 }
