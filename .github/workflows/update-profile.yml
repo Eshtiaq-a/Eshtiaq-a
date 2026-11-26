@@ -1,0 +1,297 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Eshtiaq Developer Universe — Automated Profile Update
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Triggers:
+#   • Scheduled: every 6 hours (adjustable below)
+#   • Manual:    workflow_dispatch with optional sort_by override
+#
+# Architecture:
+#   1. Collect live GitHub data (repos, branches, commits, stats, GraphQL
+#      contribution calendar) via GITHUB_TOKEN
+#   2. Validate JSON datasets
+#   3. Regenerate all SVG assets + explorer slices + README
+#   4. Commit & push only if any tracked file actually changed
+#   5. Concurrency guard prevents overlapping runs
+#
+# Required secrets:    none beyond the automatic GITHUB_TOKEN
+# Required variables:  none
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: Update Profile
+
+on:
+  schedule:
+    # Every 6 hours — adjust cron expression to change frequency.
+    # GitHub minimum is every 5 minutes; profile data rarely changes faster
+    # than once per day, so 6 h is a good balance between freshness and quota.
+    - cron: "0 */6 * * *"
+
+  workflow_dispatch:
+    inputs:
+      sort_by:
+        description: "Project Explorer sort order (leave blank for default)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - updated
+          - stars
+          - name
+      dry_run:
+        description: "Dry-run: regenerate assets but do NOT commit"
+        required: false
+        default: false
+        type: boolean
+
+# ── Concurrency ────────────────────────────────────────────────────────────────
+# If a new run is triggered while one is already in progress, cancel the
+# in-progress run so we never have two writers touching the same files.
+concurrency:
+  group: profile-update
+  cancel-in-progress: true
+
+# ── Minimal permissions ────────────────────────────────────────────────────────
+# contents:write  — push the updated assets/README back to main
+# actions:read    — required to cancel in-progress runs (via concurrency)
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  update-profile:
+    name: Collect data → Regenerate SVGs → Commit if changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # The automatic GITHUB_TOKEN is scoped to this repository and is
+      # never printed; src/github_client.py reads it via os.environ.get("GITHUB_TOKEN").
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PYTHON_VERSION: "3.12"
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so git diff and git log work correctly
+          fetch-depth: 0
+
+      # ── 2. Set up Python ────────────────────────────────────────────────────
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          # Cache pip dependencies across runs (project uses stdlib only,
+          # but pip cache still speeds up setup-python itself)
+          cache: pip
+
+      # ── 3. Install dependencies ─────────────────────────────────────────────
+      # The pipeline uses only the Python standard library.
+      # Install nothing beyond what setup-python provides.
+      # If Pillow is ever needed for GIF fallback it will be added here.
+      - name: Verify no external runtime dependencies required
+        run: |
+          python -c "
+          import sys, importlib
+          stdlib_only = [
+              'json', 'pathlib', 'urllib.request', 'urllib.parse',
+              'urllib.error', 're', 'os', 'time', 'socket', 'dataclasses',
+              'typing', 'argparse', 'hashlib', 'collections',
+          ]
+          for mod in stdlib_only:
+              importlib.import_module(mod)
+          print(f'Python {sys.version}')
+          print('All required stdlib modules available.')
+          "
+
+      # ── 4. Validate token is available ─────────────────────────────────────
+      # Print presence/absence without printing the value.
+      - name: Validate GITHUB_TOKEN presence
+        run: |
+          python - <<'PYEOF'
+          import os
+          tok = os.environ.get("GITHUB_TOKEN", "")
+          if not tok.strip():
+              print("WARNING: GITHUB_TOKEN is empty — unauthenticated requests will apply.")
+          else:
+              print(f"GITHUB_TOKEN is set ({len(tok)} chars). Value is NOT printed.")
+          PYEOF
+
+      # ── 5. Run unit tests ───────────────────────────────────────────────────
+      - name: Run unit test suite
+        run: |
+          python -m unittest discover -s tests -v 2>&1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 6. Run live integration tests (token-gated) ─────────────────────────
+      # These exercise the real GitHub REST and GraphQL APIs.
+      # They are skipped automatically when RUN_LIVE_GITHUB_TESTS is unset.
+      - name: Run live GitHub integration tests
+        run: |
+          RUN_LIVE_GITHUB_TESTS=1 python -m unittest \
+            tests.test_stats_builder.StatsAndPipelineTests.test_live_public_github_integration_eshtiaq_a \
+            -v 2>&1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_LIVE_GITHUB_TESTS: "1"
+        # Don't fail the whole workflow if the live test hits a transient GitHub
+        # API error (e.g. 503 during maintenance). The pipeline itself will
+        # handle rate-limiting and retries.
+        continue-on-error: true
+
+      # ── 7. Collect live data & regenerate all assets ────────────────────────
+      - name: Collect GitHub data and regenerate profile assets
+        id: generate
+        run: |
+          # Build the CLI arguments from workflow inputs
+          ARGS=""
+
+          # sort_by from manual dispatch (empty string = default)
+          SORT="${{ github.event.inputs.sort_by }}"
+          if [ -n "$SORT" ]; then
+            ARGS="$ARGS --sort-by $SORT"
+          fi
+
+          # dry_run flag (only relevant on manual dispatch)
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+
+          echo "Running: python -m src.main $ARGS"
+          python -m src.main $ARGS 2>&1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 8. Validate generated SVGs ──────────────────────────────────────────
+      - name: Validate all generated SVG files
+        run: |
+          python - <<'PYEOF'
+          from pathlib import Path
+          from src.validators import validate_svg_document
+
+          svg_paths = [
+              Path("assets/workspace.svg"),
+              Path("assets/neofetch.svg"),
+              Path("assets/explorer.svg"),
+          ]
+          # Also validate every explorer row slice
+          slices_dir = Path("assets/explorer")
+          if slices_dir.is_dir():
+              svg_paths += sorted(slices_dir.rglob("*.svg"))
+
+          errors = []
+          for p in svg_paths:
+              if not p.exists():
+                  errors.append(f"MISSING: {p}")
+                  continue
+              try:
+                  validate_svg_document(p.read_text(encoding="utf-8"))
+                  print(f"  OK  {p}  ({p.stat().st_size} bytes)")
+              except Exception as exc:
+                  errors.append(f"INVALID {p}: {exc}")
+
+          if errors:
+              print("\nSVG validation FAILURES:")
+              for e in errors:
+                  print(f"  {e}")
+              raise SystemExit(1)
+          else:
+              print(f"\nAll {len(svg_paths)} SVG files valid.")
+          PYEOF
+
+      # ── 9. Validate JSON datasets ───────────────────────────────────────────
+      - name: Validate JSON datasets
+        run: |
+          python - <<'PYEOF'
+          import json
+          from pathlib import Path
+          from src.validators import (
+              validate_repositories_payload,
+              validate_commits_payload,
+              validate_profile_data_payload,
+          )
+
+          datasets = {
+              "data/repositories.json": validate_repositories_payload,
+              "data/commits.json":       validate_commits_payload,
+              "data/profile_data.json":  validate_profile_data_payload,
+          }
+          for path_str, validator in datasets.items():
+              p = Path(path_str)
+              data = json.loads(p.read_text(encoding="utf-8"))
+              validator(data)
+              print(f"  OK  {path_str}")
+          print("All JSON datasets valid.")
+          PYEOF
+
+      # ── 10. Detect whether any tracked file actually changed ────────────────
+      - name: Check for file changes
+        id: changes
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No tracked files changed — skipping commit."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git diff --cached --name-only
+          fi
+
+      # ── 11. Commit & push (only when files changed and not dry-run) ─────────
+      - name: Commit and push updated profile assets
+        if: >-
+          steps.changes.outputs.changed == 'true' &&
+          github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Collect a human-readable summary for the commit message
+          REPO_COUNT=$(python -c "
+          import json
+          d = json.load(open('data/repositories.json'))
+          print(d.get('total_public_repositories', '?'))
+          ")
+          COMMIT_COUNT=$(python -c "
+          import json
+          d = json.load(open('data/commits.json'))
+          print(d.get('total_unique_commits', '?'))
+          ")
+
+          git commit -m "chore: auto-update profile [${REPO_COUNT} repos, ${COMMIT_COUNT} commits]
+
+          Generated by GitHub Actions on $(date -u '+%Y-%m-%dT%H:%M:%SZ')
+          Workflow: ${{ github.workflow }} / Run #${{ github.run_number }}
+          Trigger: ${{ github.event_name }}"
+
+          git push origin HEAD:main
+
+      # ── 12. Summary ─────────────────────────────────────────────────────────
+      - name: Print run summary
+        if: always()
+        run: |
+          echo "════════════════════════════════════════"
+          echo "  Eshtiaq Developer Universe — Run done "
+          echo "════════════════════════════════════════"
+          echo "  Trigger  : ${{ github.event_name }}"
+          echo "  Run #    : ${{ github.run_number }}"
+          echo "  Changed  : ${{ steps.changes.outputs.changed }}"
+          DRY="${{ github.event.inputs.dry_run }}"
+          echo "  Dry-run  : ${DRY:-false}"
+          echo "  Timestamp: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          echo ""
+          echo "Asset sizes:"
+          for f in assets/workspace.svg assets/neofetch.svg assets/explorer.svg; do
+            if [ -f "$f" ]; then
+              printf "  %-30s %s bytes\n" "$f" "$(wc -c < $f | tr -d ' ')"
+            fi
+          done
+          SLICES=$(find assets/explorer -name '*.svg' 2>/dev/null | wc -l | tr -d ' ')
+          echo "  Explorer slices: $SLICES SVG files"
+          echo "════════════════════════════════════════"
