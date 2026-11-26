@@ -1,0 +1,18 @@
+{
+  "username": "Eshtiaq-a",
+  "display_name": "Eshtiaq Ahmad",
+  "location": "Dhaka, Bangladesh",
+  "timezone": "Asia/Dhaka",
+  "optional_decorations": {
+    "enable_weather": false,
+    "enable_live_clock": false,
+    "enable_language_bookshelf": false
+  },
+  "workspace": {
+    "scroll_speed_px_per_sec": 20.0,
+    "include_second_desk_or_shelf_plant": true,
+    "show_human_character": false,
+    "human_character_gender": "none",
+    "watermark": null
+  }
+}
