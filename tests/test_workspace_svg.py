@@ -92,9 +92,10 @@ class WorkspaceSvgTests(unittest.TestCase):
     def test_monstera_deliciosa_and_vertical_only_coffee_steam(self) -> None:
         night_svg = build_workspace_svg(self.payload, self.config, theme="night")
         validate_svg_document(night_svg)
-        # Monstera fenestrations & multiple stems present
-        self.assertIn("#46c25b", night_svg)
-        self.assertIn("#3ac456", night_svg)
+        # Monstera fenestrations, light back leaf & rounded cream pot present
+        self.assertIn("#56c95e", night_svg)
+        self.assertIn("#73dc78", night_svg)
+        self.assertIn("#7a4a2b", night_svg)
 
         # Steam animations must go straight up (translateY only, zero scaleX/translateX drift)
         steam_blocks = re.findall(r"@keyframes\s+(?:steamRise|steamPuff)\s*\{\{?(.*?)\}\}", night_svg, re.S)

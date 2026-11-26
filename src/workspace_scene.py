@@ -75,6 +75,34 @@ def _render_pixel_text(text: str, start_x: int, start_y: int, px: int, color: st
     return "\n    ".join(rects)
 
 
+def _render_pixel_sprite(
+    origin_x: int,
+    origin_y: int,
+    px: int,
+    rows: tuple[str, ...],
+    palette: dict[str, str],
+) -> list[str]:
+    """Emit horizontal run-merged pixel rectangles onto an integer SVG grid."""
+    rects: list[str] = []
+    for ry, row in enumerate(rows):
+        rx = 0
+        row_len = len(row)
+        while rx < row_len:
+            ch = row[rx]
+            if ch not in palette:
+                rx += 1
+                continue
+            run = 1
+            while rx + run < row_len and row[rx + run] == ch:
+                run += 1
+            rects.append(
+                f'<rect x="{origin_x + rx * px}" y="{origin_y + ry * px}" '
+                f'width="{run * px}" height="{px}" fill="{palette[ch]}" />'
+            )
+            rx += run
+    return rects
+
+
 def _render_wall_and_floor() -> str:
     """Render navy striped wallpaper, baseboard molding, wooden plank floor, and ambient shadows."""
     parts: list[str] = [
@@ -504,80 +532,108 @@ def _render_mug_and_chair() -> str:
 
 
 def _render_indoor_plants(include_second_plant: bool) -> str:
-    """Render large floor Monstera deliciosa plant beside desk plus optional shelf succulent."""
-    parts = [
-        # Plant 1: Big floor Monstera deliciosa beside left of desk (x=76..218, base at y=404)
-        # Sturdy terracotta pot & rich soil
-        f'<rect x="118" y="354" width="50" height="8" fill="{P["plant_pot"]}" />',
-        f'<rect x="122" y="362" width="42" height="4" fill="{P["plant_pot_rim"]}" />',
-        f'<rect x="124" y="366" width="38" height="38" fill="{P["plant_pot"]}" />',
-        f'<rect x="154" y="366" width="8" height="38" fill="{P["plant_pot_rim"]}" />',
-        f'<rect x="122" y="352" width="42" height="3" fill="#472f1e" />',
-        # Arching petioles/stems branching from soil + subtle aerial root
-        f'<rect x="140" y="306" width="6" height="46" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="120" y="320" width="22" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="144" y="318" width="24" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="116" y="340" width="24" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="144" y="338" width="22" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="134" y="348" width="2" height="6" fill="#856343" />',
-        # Crown top-center fenestrated Monstera leaf (x=120..170, y=276..310)
-        f'<rect x="130" y="276" width="28" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="122" y="280" width="44" height="6" fill="{P["plant_leaf"]}" />',
-        # Fenestration slit row 1 (open gaps on left/right sides)
-        f'<rect x="120" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="138" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="156" y="286" width="12" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="122" y="290" width="44" height="6" fill="{P["plant_leaf"]}" />',
-        # Fenestration slit row 2
-        f'<rect x="124" y="296" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="140" y="296" width="8" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="154" y="296" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="132" y="300" width="24" height="6" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="143" y="280" width="2" height="24" fill="#46c25b" />',
-        # Large upper-left fenestrated Monstera leaf (x=76..126, y=290..326)
-        f'<rect x="84" y="290" width="28" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="78" y="294" width="42" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="76" y="300" width="12" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="94" y="300" width="14" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="114" y="300" width="12" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="80" y="304" width="44" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="84" y="310" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="100" y="310" width="8" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="112" y="310" width="10" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="92" y="314" width="28" height="6" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="98" y="294" width="2" height="22" fill="#46c25b" />',
-        # Large upper-right fenestrated Monstera leaf (x=166..218, y=288..324)
-        f'<rect x="178" y="288" width="28" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="170" y="292" width="44" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="166" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="186" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="204" y="298" width="14" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="168" y="302" width="46" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="170" y="308" width="12" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="186" y="308" width="10" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="200" y="308" width="12" height="4" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="176" y="312" width="30" height="6" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="190" y="292" width="2" height="22" fill="#46c25b" />',
-        # Lower-left Monstera leaf with fenestration notch (x=82..128, y=326..354)
-        f'<rect x="88" y="326" width="32" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="82" y="330" width="14" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="102" y="330" width="22" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="84" y="334" width="42" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="92" y="340" width="32" height="6" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="102" y="330" width="2" height="12" fill="#46c25b" />',
-        # Lower-right Monstera leaf with fenestration notch (x=162..208, y=324..352)
-        f'<rect x="168" y="324" width="32" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="162" y="328" width="22" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="190" y="328" width="16" height="4" fill="{P["plant_leaf"]}" />',
-        f'<rect x="164" y="332" width="42" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="166" y="338" width="34" height="6" fill="{P["plant_leaf_dark"]}" />',
-        f'<rect x="184" y="328" width="2" height="12" fill="#46c25b" />',
-        # Young foreground Monstera sprout leaf above pot rim (x=132..156, y=324..348)
-        f'<rect x="136" y="324" width="16" height="4" fill="#3ac456" />',
-        f'<rect x="132" y="328" width="24" height="8" fill="#3ac456" />',
-        f'<rect x="136" y="336" width="16" height="6" fill="{P["plant_leaf"]}" />',
-        f'<rect x="143" y="326" width="2" height="14" fill="#7be08e" />',
-    ]
+    """Render reference-shaped floor Monstera deliciosa beside desk plus optional shelf succulent."""
+    monstera_palette = {
+        "L": "#56c95e",  # sunlit / young upper leaf green
+        "V": "#73dc78",  # crisp vein & lobe highlight
+        "G": P["plant_leaf"],       # #2ca042 rich main leaf green
+        "D": P["plant_leaf_dark"],  # #217a32 deep leaf shadow
+        "F": "#185925",  # darkest leaf crease shadow
+        "S": "#2b8238",  # main slender stems
+        "T": "#1d5e28",  # shaded stem edge
+        "P": "#7a4a2b",  # warm petiole base sheath accent (like reference photo)
+        "B": "#36261d",  # dark potting soil rim
+        "H": "#f5efe4",  # ceramic highlight
+        "C": P["mug_cream"],        # #ebe0cf ceramic cylinder pot
+        "M": P["mug_shadow"],       # #cfc3b2 ceramic right shadow
+        "W": "#a3998b",  # subtle pot edge / base grounding
+    }
+    # 78-col x 76-row 2px pixel sprite -> 156x152px anchored at (66, 252), pot grounded at y=404
+    monstera_rows: tuple[str, ...] = (
+        ".................................LLLLLL.......................................",
+        "...............................LLLLVVLLLL.....................................",
+        "..............................LLLVLLLLLLLL....................................",
+        ".............................LLLL.LLLLL.LLL...................................",
+        ".............................LLL..LLLLL..LLL..................................",
+        ".........................GG.....LLLL..LLLL....................................",
+        ".......................GGGGGG..LLLLL..LLLLL...................................",
+        ".....................GGGGVVGGGG..LLL.LLL......................................",
+        "...................GGGGGGVVGGGGGG.LLLLLL............GGGGGG....................",
+        "................GGGGGGGGGGVGGGGGG.LLLLLL..........GGGGVVGGGGGG................",
+        "..............GGGGGGGGGGGGVGGGGGGDLLLLL..........GGGGVVGGGGGGGGG..............",
+        ".............GGGG....GGGGGVGGGGGGGDLL...........GGGGGVGGGGGGGGGGGG............",
+        "...........GGGGGGGGGGGGGGGGVGGGGGGGDD..........GGGGGGVGGGGGG....GGGG..........",
+        ".........GGGGGGGGGGGGGGGGGGVGGGGGGGGD.........GGGGGGGVGGGGGGGGGGGGGGG.........",
+        "........GGGG.....GGGGGGGGGGVGGGGGGGGD.........GGGGGGGVGGGGGGGGGGGGGGGG........",
+        ".......GGGGGGGGGGGGGGGGGGGGVGGGGGGGDD........GGGGGGGGVGGGGGG.....GGGGGG.......",
+        "......GGGGGGGGGGGGGGGGGGGGGVGGGGGGGDD........GGGGGGGGVGGGGGGGGGGGGGGGGGG......",
+        ".....GGGGGG......GGGGGGGGGGVGGGGGGGDD.......GGGGGGGGGVGGGGGGGGGGGGGGGGGGG.....",
+        "....GGGGGGGGGGGGGGGGGGGGGGGVGGGGGGGDD.......GGGGGGGGGGGGGGGGGG......GGGGGG....",
+        "....GGGGGGGGGGGGG..GGGGGGGGVVGGGGGGDD......GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG....",
+        ".....GGGG........GGGGGGGGGGVGGGGGGGDD......GGGGGGGGGGGG..GGGGGGGGGGGGGGGGG....",
+        "......GGGGGGGGGGGGGGGGGGGGGVGGGGGGGDD......GGGGGGGGGGGGGGGGGG........GGGG.....",
+        ".......GGGGGGGGGGGGGGGGGGGGVGGGGGGGDD......GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG.....",
+        "........GGGG....GGGGGGGGGGGVGGGGGGGDD.......GGGGGGGGGGG..GGGGGGGGGGGGGGG......",
+        ".........GGGGGGGGGGGGGGGGGGVGGGGGGDDD.......GGGGGGGGGGGGGGGGGGGG..GGGG........",
+        "..........GGGGGGGGGGGGGGGGGGGGGGGGDDD........GGGGGGGGGGGGGGGGGGGGGGGG.........",
+        "...........GGGG....GGGGGGGGGGGGGGDDD.........GGGGGG....GGGGGGGGGGGGGG.........",
+        "............GGGGGGGGGGGGGGGGGGGGDDDD..........GGGGGG....GGGGGGGGGGGG..........",
+        ".............GGGGGGGGGGGGGGGGGGGDDD............GGGGGG....GGGGGGGGGG...........",
+        "..............GGGG....GGGGGGGGGDDD..............GGGGG.....GGGGGGGG............",
+        "...............GG.....GGGGGGGGDDDD...............GGGG......GGGGGG.............",
+        ".......................GGGGGGGDD.D................GGG.......GGGG..............",
+        "........................GGGGGGDD..................GGG........GG...............",
+        ".........................GGGGDD...................SS..........................",
+        "..........................SSST.S..................SS..........................",
+        "..........................SST..ST................SST..........................",
+        "...........................SST.ST...............SST...........................",
+        "...........................SST.ST..............SST............................",
+        "............................SSTST.............SST.............................",
+        "............................SSTST............SST..............................",
+        ".............................SSST...........SSPT..............................",
+        ".............................SSST..........SSPT...............................",
+        "..............................SSST.........SPT................................",
+        "..............................SSST........SSPT................................",
+        "...............................SSST......SSPT.................................",
+        "...............................SSST.....SSPT..................................",
+        "................................SSST....SPT...................................",
+        "................................SSST...SSPT...................................",
+        ".................................SSST.SSPT....................................",
+        ".................................SSSTSSPT.....................................",
+        "..................................SSSTPT......................................",
+        "..................................SSSPT.......................................",
+        "...................................SSPT.......................................",
+        "...........................BBBBBBBBBBBBBBBBBBBBBBBB...........................",
+        "...........................HBBBBBBBBBBBBBBBBBBBBBBM...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMM...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMM...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMM...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMM...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "...........................HHCCCCCCCCCCCCCCCCCCCCMW...........................",
+        "............................HCCCCCCCCCCCCCCCCCCCMW............................",
+        "............................HHCCCCCCCCCCCCCCCCCCMW............................",
+        ".............................HCCCCCCCCCCCCCCCCCMW.............................",
+        "..............................MMMMMMMMMMMMMMMMWW..............................",
+        "................................WWWWWWWWWWWWWW................................",
+    )
+    parts = _render_pixel_sprite(
+        origin_x=66,
+        origin_y=252,
+        px=2,
+        rows=monstera_rows,
+        palette=monstera_palette,
+    )
     if include_second_plant:
         # Plant 2: Small potted succulent on left end of bottom right shelf (y=279)
         parts.extend(
