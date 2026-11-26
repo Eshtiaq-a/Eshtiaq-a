@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from src.config import ASSETS_DIR
-from src.validators import sanitize_github_repo_url
+from src.validators import make_repo_slug, sanitize_github_repo_url
 
 GALAXY_CSS_PATH = ASSETS_DIR / "galaxy" / "galaxy_styles.css"
 
@@ -91,6 +91,8 @@ class GalaxyRepoNode:
     label_box: tuple[float, float, float, float] | None
     label_above: bool = False
     html_url: str | None = None
+    repository_id: int = 0
+    card_slug: str = ""
 
 
 @dataclass(frozen=True)
@@ -429,6 +431,8 @@ def _layout_galaxy_nodes(
                 label_box=chosen_box,
                 label_above=chosen_above,
                 html_url=spec.get("html_url"),
+                repository_id=int(spec.get("repository_id") or 0),
+                card_slug=str(spec.get("card_slug") or ""),
             )
         )
 
@@ -486,17 +490,34 @@ def build_repo_galaxy_model(
         )
 
     ordered_repos = sorted(raw_repos, key=sort_key)
-    total_stars = sum(max(0, int(r.get("stars") or 0)) for r in ordered_repos)
 
     repo_specs: list[dict[str, Any]] = []
+    seen_dedup_keys: set[tuple[str, Any]] = set()
+    used_slugs: set[str] = set()
+    total_stars = 0
+
     for idx, repo in enumerate(ordered_repos):
+        if repo.get("private"):
+            continue
         raw_name = _clean_text(repo.get("name") or f"repo-{idx + 1}")
+        raw_id = repo.get("repository_id") or repo.get("id")
+        dedup_key = ("id", int(raw_id)) if raw_id else ("name", raw_name.lower())
+        if dedup_key in seen_dedup_keys:
+            continue
+        seen_dedup_keys.add(dedup_key)
+
+        repo_id = int(raw_id) if raw_id else (idx + 1)
+
         stars = max(0, int(repo.get("stars") or 0))
+        total_stars += stars
         is_empty = bool(repo.get("is_empty", False))
         archived = bool(repo.get("archived", False))
         primary_lang = _clean_text(repo.get("primary_language") or "") or "Unspecified"
+        card_slug = make_repo_slug(raw_name, repo_id, used_slugs)
         repo_specs.append(
             {
+                "repository_id": repo_id,
+                "card_slug": card_slug,
                 "name": raw_name,
                 "description": _clean_text(repo.get("description") or "") or "No description provided yet.",
                 "primary_language": primary_lang,
@@ -545,6 +566,8 @@ def reflow_repo_galaxy_model(
             "archived": node.archived,
             "node_radius": node.node_radius,
             "html_url": node.html_url,
+            "repository_id": node.repository_id,
+            "card_slug": node.card_slug,
         }
         for node in model.nodes
     ]
@@ -785,3 +808,107 @@ def render_repo_galaxy_group(
         "</g>",
     ]
     return "\n    ".join(parts)
+
+
+def build_repo_galaxy_card_svg(node: GalaxyRepoNode, username: str) -> str:
+    """Render an individual Repo Galaxy repository card SVG matching the dark orbital aesthetic."""
+    w, h = 498, 78
+    slug_id = re.sub(r"[^a-z0-9_-]", "-", (node.card_slug or node.name).lower()).strip("-") or "repo"
+    title_str = _truncate_label(node.name, max_chars=28)
+    desc_raw = _clean_text(node.description) or "No description provided yet."
+    desc_str = _truncate_label(desc_raw, max_chars=56)
+
+    dot_opacity = "0.55" if node.archived else ("0.65" if node.is_empty else "0.98")
+    planet_attrs = (
+        f'stroke="{node.color}" stroke-width="1.2" stroke-dasharray="2 2" fill="#080c18" fill-opacity="0.35"'
+        if node.is_empty
+        else f'fill="{node.color}" fill-opacity="{dot_opacity}" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.7"'
+    )
+    title_fill = "#8f99ad" if (node.archived or node.is_empty) else "#dce6ff"
+    star_fill = "#f2cb62" if node.stars > 0 else "#75819c"
+    commit_label = "commit" if node.commit_count == 1 else "commits"
+    path_hint = _truncate_label(f"github.com/{username}/{node.name}", max_chars=34)
+
+    badge_elems: list[str] = [
+        f'<text x="482" y="25.5" text-anchor="end" font-size="11.5" font-weight="700" fill="#5aa9ff">↗</text>'
+    ]
+    star_text = f"★ {node.stars}"
+    star_pill_w = max(36.0, len(star_text) * 6.8 + 12.0)
+    star_pill_x = 466.0 - star_pill_w
+    badge_elems.append(
+        f'<rect x="{star_pill_x:.1f}" y="12.5" width="{star_pill_w:.1f}" height="17" rx="4" '
+        f'fill="#0d152a" stroke="#1e2d57" stroke-width="0.8" />'
+    )
+    badge_elems.append(
+        f'<text x="{star_pill_x + star_pill_w / 2.0:.1f}" y="24.2" text-anchor="middle" '
+        f'font-size="9.5" font-weight="600" fill="{star_fill}">{_esc(star_text)}</text>'
+    )
+    if node.archived:
+        arch_w = 56.0
+        arch_x = star_pill_x - arch_w - 6.0
+        badge_elems.append(
+            f'<rect x="{arch_x:.1f}" y="12.5" width="{arch_w:.1f}" height="17" rx="4" '
+            f'fill="#1c2436" stroke="#3b4866" stroke-width="0.8" />'
+        )
+        badge_elems.append(
+            f'<text x="{arch_x + arch_w / 2.0:.1f}" y="24.2" text-anchor="middle" '
+            f'font-size="8.6" font-weight="700" fill="#8f99ad">ARCHIVED</text>'
+        )
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="{_esc(node.name)} repository card — {_esc(node.primary_language)}">
+  <defs>
+    <clipPath id="card-clip-{_esc(slug_id)}">
+      <rect x="1" y="1" width="{w - 2}" height="{h - 2}" rx="10" ry="10" />
+    </clipPath>
+    <radialGradient id="card-glow-{_esc(slug_id)}" cx="10%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="{node.color}" stop-opacity="0.22" />
+      <stop offset="55%" stop-color="#0b1530" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#080c18" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <style>
+    .gx-card-mono {{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }}
+  </style>
+  <rect x="1" y="1" width="{w - 2}" height="{h - 2}" rx="10" ry="10" fill="#080c18" stroke="#2a3c70" stroke-width="1.2" />
+  <g clip-path="url(#card-clip-{_esc(slug_id)})" class="gx-card-mono">
+    <rect x="1" y="1" width="{w - 2}" height="{h - 2}" fill="url(#card-glow-{_esc(slug_id)})" />
+    <circle cx="430" cy="14" r="0.9" fill="#c9d8ff" fill-opacity="0.45" />
+    <circle cx="468" cy="44" r="1.1" fill="#c9d8ff" fill-opacity="0.35" />
+    <circle cx="386" cy="56" r="0.8" fill="#c9d8ff" fill-opacity="0.30" />
+    <g transform="translate(27, 39)">
+      <circle cx="0" cy="0" r="15.5" fill="none" stroke="{node.color}" stroke-width="0.8" stroke-opacity="0.30" stroke-dasharray="2 3" />
+      <circle cx="0" cy="0" r="11.5" fill="{node.color}" fill-opacity="0.22" />
+      <circle cx="0" cy="0" r="6.2" {planet_attrs} />
+      <circle cx="-1.9" cy="-1.9" r="1.5" fill="#ffffff" fill-opacity="0.72" />
+    </g>
+    <text x="53" y="25.5" font-size="12.6" font-weight="700" fill="{title_fill}">{_esc(title_str)}</text>
+    {"".join(badge_elems)}
+    <text x="53" y="45.0" font-size="10.4" fill="#8b96ad">{_esc(desc_str)}</text>
+    <line x1="53" y1="53.5" x2="482" y2="53.5" stroke="#182548" stroke-width="0.8" stroke-dasharray="2 3" />
+    <circle cx="57" cy="64.5" r="3.4" fill="{node.color}" />
+    <text x="65" y="68.0" font-size="10.0" fill="#cdd7ec">{_esc(node.primary_language)} <tspan fill="#75819c">· {node.commit_count} {_esc(commit_label)}</tspan></text>
+    <text x="482" y="68.0" text-anchor="end" font-size="9.4" fill="#5aa9ff">{_esc(path_hint)}</text>
+  </g>
+</svg>
+'''
+
+
+def build_repo_galaxy_cards(model: RepoGalaxyModel) -> list[tuple[GalaxyRepoNode, str]]:
+    """Build individual SVG cards for every repository node in the galaxy model."""
+    used_slugs: set[str] = set()
+    cards: list[tuple[GalaxyRepoNode, str]] = []
+    for idx, node in enumerate(model.nodes):
+        slug = node.card_slug or make_repo_slug(node.name, node.repository_id or (idx + 1), used_slugs)
+        if node.card_slug and slug in used_slugs:
+            slug = make_repo_slug(node.name, node.repository_id or (idx + 1), used_slugs)
+        else:
+            used_slugs.add(slug)
+        resolved_node = (
+            node
+            if node.card_slug == slug
+            else GalaxyRepoNode(**{**node.__dict__, "card_slug": slug})
+        )
+        cards.append((resolved_node, build_repo_galaxy_card_svg(resolved_node, model.username)))
+    return cards

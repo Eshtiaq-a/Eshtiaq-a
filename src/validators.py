@@ -41,6 +41,21 @@ def sanitize_github_repo_url(raw_url: Any, username: Any, repo_name: Any) -> str
     return None
 
 
+def make_repo_slug(name: Any, repo_id: Any, used_slugs: set[str] | None = None) -> str:
+    """Create a deterministic, collision-free ASCII filename slug for a repository."""
+    base = re.sub(r"[^a-z0-9._-]+", "-", str(name or "").lower()).strip("-") or f"repo-{repo_id}"
+    slug = base
+    if used_slugs is not None:
+        if slug in used_slugs:
+            slug = f"{base}-{repo_id}"
+        counter = 2
+        while slug in used_slugs:
+            slug = f"{base}-{repo_id}-{counter}"
+            counter += 1
+        used_slugs.add(slug)
+    return slug
+
+
 def validate_commits_payload(payload: dict[str, Any]) -> None:
     """Verify either Phase 1 sample commit schema or Phase 2 canonical commit schema."""
     if not isinstance(payload, dict) or "commits" not in payload:

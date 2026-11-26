@@ -199,11 +199,12 @@ jobs:
               Path("assets/workspace.svg"),
               Path("assets/neofetch.svg"),
               Path("assets/explorer.svg"),
+              Path("assets/divider.svg"),
           ]
-          # Also validate every explorer row slice
-          slices_dir = Path("assets/explorer")
-          if slices_dir.is_dir():
-              svg_paths += sorted(slices_dir.rglob("*.svg"))
+          # Also validate every explorer row slice and galaxy repo card
+          for extra_dir in (Path("assets/explorer"), Path("assets/repos")):
+              if extra_dir.is_dir():
+                  svg_paths += sorted(extra_dir.rglob("*.svg"))
 
           errors = []
           for p in svg_paths:

@@ -10,6 +10,8 @@ from typing import Any
 
 from src.config import README_PATH, atomic_write_text
 from src.explorer_builder import SAFE_HTTP_URL_RE, ExplorerModel, ExplorerRow
+from src.validators import make_repo_slug, sanitize_github_repo_url
+from src.visualizations.repo_galaxy import RepoGalaxyModel
 
 CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f]")
 SAFE_GITHUB_PROFILE_RE = re.compile(r"^https://github\.com/[A-Za-z0-9._-]+/?$")
@@ -47,6 +49,58 @@ def _render_repo_link_strip(prefix_label: str, rows: tuple[ExplorerRow, ...]) ->
         for row in linked
     ]
     return f"<sub><b>{_esc_attr(prefix_label)}:</b> " + " · ".join(anchors) + "</sub>"
+
+
+def _render_galaxy_cards_block(
+    username: str,
+    galaxy_model: RepoGalaxyModel | None,
+    explorer_model: ExplorerModel,
+) -> str:
+    """Render a 2-column grid of individually clickable dark-galaxy repository cards."""
+    entries: list[tuple[str, str, str, str, str]] = []
+    seen_slugs: set[str] = set()
+    used_slugs: set[str] = set()
+
+    if galaxy_model is not None:
+        for idx, node in enumerate(galaxy_model.nodes):
+            url = sanitize_github_repo_url(node.html_url, username, node.name)
+            if not url:
+                continue
+            slug = node.card_slug or make_repo_slug(node.name, node.repository_id or (idx + 1), used_slugs)
+            if slug in seen_slugs:
+                continue
+            seen_slugs.add(slug)
+            used_slugs.add(slug)
+            entries.append((node.name, slug, url, node.description, node.primary_language))
+    else:
+        for idx, row in enumerate(explorer_model.rows):
+            url = sanitize_github_repo_url(row.html_url, username, row.name)
+            if not url:
+                continue
+            slug = row.row_slug or make_repo_slug(row.name, row.repository_id or (idx + 1), used_slugs)
+            if slug in seen_slugs:
+                continue
+            seen_slugs.add(slug)
+            used_slugs.add(slug)
+            entries.append((row.name, slug, url, row.description, row.primary_language))
+
+    if not entries:
+        return ""
+
+    anchors: list[str] = []
+    for name, slug, url, desc, primary_lang in entries:
+        anchors.append(
+            f'<a href="{_esc_attr(url)}" target="_blank" rel="noopener noreferrer" '
+            f'title="{_esc_attr(name)} — {_esc_attr(desc)}">'
+            f'<img src="assets/repos/{_esc_attr(slug)}.svg" width="49%" '
+            f'alt="{_esc_attr(name)} repository card — {_esc_attr(primary_lang)}" /></a>'
+        )
+
+    rows_html: list[str] = []
+    for i in range(0, len(anchors), 2):
+        pair = " ".join(anchors[i : i + 2])
+        rows_html.append(f"  {pair}")
+    return "<br />\n".join(rows_html)
 
 
 def _render_explorer_slices_block(model: ExplorerModel, repos_tab_url: str) -> str:
@@ -118,6 +172,7 @@ def build_readme_markdown(
     commits_data: dict[str, Any],
     explorer_model: ExplorerModel,
     use_gif_workspace: bool = False,
+    galaxy_model: RepoGalaxyModel | None = None,
 ) -> str:
     """Assemble the complete sanitized three-section README.md cleanly."""
     username = _clean(explorer_model.username or profile_data.get("username") or "Eshtiaq-a")
@@ -129,6 +184,7 @@ def build_readme_markdown(
     branches_count = int(commits_data.get("branches_processed") or 0)
     repos_processed = int(commits_data.get("repositories_processed") or explorer_model.total_repositories)
 
+    galaxy_cards_block = _render_galaxy_cards_block(username, galaxy_model, explorer_model)
     galaxy_links = _render_repo_link_strip("Repo Galaxy", explorer_model.rows)
     explorer_block = _render_explorer_slices_block(explorer_model, repos_tab_url)
     quick_links = _render_repo_link_strip("~/projects", explorer_model.rows)
@@ -150,25 +206,40 @@ def build_readme_markdown(
         "</p>",
         "",
         '<p align="center">',
-        f'  <img src="assets/neofetch.svg" width="100%" alt="{_esc_attr(username)} animated Repo Galaxy and Neofetch developer terminal" />',
-        "</p>",
-        "",
-        '<p align="center">',
-        f"  {galaxy_links}",
-        "</p>",
-        "",
-        '<p align="center">',
-        '  <img src="assets/divider.svg" width="100%" alt="" />',
-        "</p>",
-        "",
-        '<p align="center">',
-        f"  {explorer_block}",
-        "</p>",
-        "",
-        '<p align="center">',
-        f"  {quick_links}",
+        f'  <a href="{_esc_attr(repos_tab_url)}" target="_blank" rel="noopener noreferrer" title="Browse {_esc_attr(username)} public repositories on GitHub"><img src="assets/neofetch.svg" width="100%" alt="{_esc_attr(username)} animated Repo Galaxy and Neofetch developer terminal" /></a>',
         "</p>",
     ]
+
+    if galaxy_cards_block:
+        sections.extend(
+            [
+                "",
+                '<p align="center">',
+                galaxy_cards_block,
+                "</p>",
+            ]
+        )
+
+    sections.extend(
+        [
+            "",
+            '<p align="center">',
+            f"  {galaxy_links}",
+            "</p>",
+            "",
+            '<p align="center">',
+            '  <img src="assets/divider.svg" width="100%" alt="" />',
+            "</p>",
+            "",
+            '<p align="center">',
+            f"  {explorer_block}",
+            "</p>",
+            "",
+            '<p align="center">',
+            f"  {quick_links}",
+            "</p>",
+        ]
+    )
 
     if accessible_dir:
         sections.extend(["", accessible_dir])

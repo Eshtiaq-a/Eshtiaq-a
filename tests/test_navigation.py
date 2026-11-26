@@ -17,9 +17,10 @@ from src.main import run_full_profile_pipeline
 from src.neofetch_builder import build_neofetch_model, load_phase2_inputs
 from src.readme_builder import build_readme_markdown
 from src.svg_explorer import write_explorer_slices
-from src.svg_neofetch import build_neofetch_svg
+from src.svg_neofetch import build_neofetch_svg, build_standalone_galaxy_html
 from src.validators import validate_svg_document
 from src.visualizations.project_explorer import build_explorer_slice_svgs, build_explorer_svg
+from src.visualizations.repo_galaxy import build_repo_galaxy_cards
 
 
 class ProjectExplorerAndGalaxyNavigationTests(unittest.TestCase):
@@ -247,6 +248,146 @@ class ProjectExplorerAndGalaxyNavigationTests(unittest.TestCase):
                 for el in ET.fromstring(rendered).iter()
                 if el.tag.rsplit("}", 1)[-1] == "a"
             ])
+
+    def test_repo_galaxy_cards_provide_clickable_github_links_in_readme_and_preserve_animation(self) -> None:
+        neofetch_model = build_neofetch_model(self.profile_data, self.repos_data, self.commits_data, self.config_raw)
+        explorer_model = build_explorer_model(self.repos_data, self.commits_data, self.config_raw)
+        galaxy_svg = build_neofetch_svg(neofetch_model)
+        cards = build_repo_galaxy_cards(neofetch_model.galaxy)
+        readme = build_readme_markdown(
+            self.profile_data,
+            self.commits_data,
+            explorer_model,
+            galaxy_model=neofetch_model.galaxy,
+        )
+
+        # Every repository has a valid HTTPS html_url and receives one unique card SVG
+        self.assertEqual(len(cards), len(self.repos_data["repositories"]))
+        card_slugs = [node.card_slug for node, _ in cards]
+        self.assertEqual(len(card_slugs), len(set(card_slugs)))
+
+        for node, card_svg in cards:
+            validate_svg_document(card_svg)
+            self.assertIsNotNone(node.html_url)
+            self.assertTrue(node.html_url.startswith("https://github.com/"))  # type: ignore[union-attr]
+            self.assertNotIn("/assets/", node.html_url)  # type: ignore[arg-type]
+
+            card_img = f'src="assets/repos/{node.card_slug}.svg"'
+            self.assertIn(card_img, readme)
+            card_idx = readme.index(card_img)
+            preceding = readme[max(0, card_idx - 350) : card_idx]
+            self.assertIn(f'href="{node.html_url}"', preceding)
+
+        # Clicking the galaxy overview image itself must not point to assets/neofetch.svg
+        galaxy_img_idx = readme.index('src="assets/neofetch.svg"')
+        galaxy_preceding = readme[max(0, galaxy_img_idx - 250) : galaxy_img_idx]
+        self.assertIn('href="https://github.com/Eshtiaq-a?tab=repositories"', galaxy_preceding)
+        self.assertNotIn("assets/neofetch.svg\"", galaxy_preceding.split("<a ")[-1] if "<a " in galaxy_preceding else "")
+
+        # No href anywhere in README points to assets/
+        for href in re.findall(r'href="([^"]+)"', readme):
+            self.assertNotIn("assets/", href)
+            self.assertTrue(href.startswith("https://"))
+
+        # Existing galaxy SVG animation and standalone GitHub Pages wrapper remain intact
+        for marker in ("@keyframes gxCoreSpin", "gx-orbit-0", "gx-star-a", "gx-core-pulse"):
+            self.assertIn(marker, galaxy_svg)
+        standalone_html = build_standalone_galaxy_html(galaxy_svg, "Eshtiaq-a")
+        self.assertIn('class="gx-repo-link"', standalone_html)
+        self.assertIn("https://github.com/Eshtiaq-a/Wrechship", standalone_html)
+
+        # Deterministic README output
+        readme_repeat = build_readme_markdown(
+            self.profile_data,
+            self.commits_data,
+            explorer_model,
+            galaxy_model=neofetch_model.galaxy,
+        )
+        self.assertEqual(readme, readme_repeat)
+
+    def test_repo_galaxy_cards_deduplicate_add_and_prune_dynamically(self) -> None:
+        dup_repos = copy.deepcopy(self.repos_data)
+        dup_repos["repositories"].append(copy.deepcopy(dup_repos["repositories"][0]))
+        dup_model = build_neofetch_model(self.profile_data, dup_repos, self.commits_data, self.config_raw)
+        self.assertEqual(len(dup_model.galaxy.nodes), len(self.repos_data["repositories"]))
+        self.assertEqual(len(build_repo_galaxy_cards(dup_model.galaxy)), len(self.repos_data["repositories"]))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            t = Path(tmp)
+            repos_file = t / "repositories.json"
+            commits_file = t / "commits.json"
+            profile_file = t / "profile_data.json"
+            cards_dir = t / "assets" / "repos"
+            pages_html = t / "docs" / "index.html"
+            readme_file = t / "README.md"
+
+            added_repos = copy.deepcopy(self.repos_data)
+            added_repos["repositories"].append(
+                {
+                    "repository_id": 777123,
+                    "name": "galaxy-nav-new-repo",
+                    "full_name": "Eshtiaq-a/galaxy-nav-new-repo",
+                    "description": "Newly discovered repository for galaxy cards",
+                    "primary_language": "Rust",
+                    "languages": {"Rust": 3100},
+                    "stars": 4,
+                    "forks": 0,
+                    "html_url": "https://github.com/Eshtiaq-a/galaxy-nav-new-repo",
+                    "homepage": None,
+                    "archived": False,
+                    "is_fork": False,
+                    "is_empty": False,
+                    "updated_at": "2026-12-02T00:00:00Z",
+                    "created_at": "2026-12-02T00:00:00Z",
+                    "pushed_at": "2026-12-02T00:00:00Z",
+                }
+            )
+            added_repos["total_public_repositories"] = len(added_repos["repositories"])
+            repos_file.write_text(json.dumps(added_repos), encoding="utf-8")
+            commits_file.write_text(json.dumps(self.commits_data), encoding="utf-8")
+            profile_file.write_text(json.dumps(self.profile_data), encoding="utf-8")
+
+            run_full_profile_pipeline(
+                repositories_path=repos_file,
+                commits_path=commits_file,
+                profile_data_path=profile_file,
+                workspace_svg_path=t / "workspace.svg",
+                neofetch_svg_path=t / "neofetch.svg",
+                repo_cards_dir=cards_dir,
+                galaxy_pages_path=pages_html,
+                explorer_svg_path=t / "explorer.svg",
+                explorer_slices_dir=t / "explorer",
+                divider_svg_path=t / "divider.svg",
+                readme_path=readme_file,
+                from_cache=True,
+            )
+
+            new_card = cards_dir / "galaxy-nav-new-repo.svg"
+            self.assertTrue(new_card.exists())
+            validate_svg_document(new_card.read_text(encoding="utf-8"))
+            self.assertTrue(pages_html.exists())
+            readme_added = readme_file.read_text(encoding="utf-8")
+            self.assertIn('src="assets/repos/galaxy-nav-new-repo.svg"', readme_added)
+            self.assertIn('href="https://github.com/Eshtiaq-a/galaxy-nav-new-repo"', readme_added)
+
+            # Remove repository -> card SVG pruned & README anchor removed
+            repos_file.write_text(json.dumps(self.repos_data), encoding="utf-8")
+            run_full_profile_pipeline(
+                repositories_path=repos_file,
+                commits_path=commits_file,
+                profile_data_path=profile_file,
+                workspace_svg_path=t / "workspace.svg",
+                neofetch_svg_path=t / "neofetch.svg",
+                repo_cards_dir=cards_dir,
+                galaxy_pages_path=pages_html,
+                explorer_svg_path=t / "explorer.svg",
+                explorer_slices_dir=t / "explorer",
+                divider_svg_path=t / "divider.svg",
+                readme_path=readme_file,
+                from_cache=True,
+            )
+            self.assertFalse(new_card.exists())
+            self.assertNotIn("galaxy-nav-new-repo", readme_file.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

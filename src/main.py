@@ -17,6 +17,8 @@ from src.config import (
     NEOFETCH_SVG_PATH,
     PROFILE_DATA_PATH,
     README_PATH,
+    REPO_GALAXY_PAGES_HTML_PATH,
+    REPOS_CARDS_DIR,
     REPOSITORIES_PATH,
     WORKSPACE_SVG_PATH,
     atomic_write_text,
@@ -30,7 +32,7 @@ from src.readme_builder import build_readme_markdown, write_readme_markdown
 from src.repos_builder import build_repositories_payload, write_repositories_json
 from src.stats_builder import build_profile_data_payload, write_profile_data_json
 from src.svg_explorer import write_explorer_slices
-from src.svg_neofetch import build_neofetch_svg
+from src.svg_neofetch import build_neofetch_svg, write_repo_galaxy_cards, write_standalone_galaxy_page
 from src.svg_workspace import build_workspace_svg
 from src.validators import (
     validate_commits_payload,
@@ -43,6 +45,7 @@ from src.visualizations.project_explorer import (
     build_explorer_svg,
     build_section_divider_svg,
 )
+from src.visualizations.repo_galaxy import build_repo_galaxy_cards
 
 
 def _render_and_validate_profile_assets(
@@ -72,6 +75,10 @@ def _render_and_validate_profile_assets(
     neofetch_svg = build_neofetch_svg(neofetch_model)
     validate_svg_document(neofetch_svg)
 
+    repo_cards = build_repo_galaxy_cards(neofetch_model.galaxy)
+    for _, card_svg in repo_cards:
+        validate_svg_document(card_svg)
+
     explorer_model = build_explorer_model(
         repositories_data=repos_payload,
         commits_data=commits_payload,
@@ -89,17 +96,44 @@ def _render_and_validate_profile_assets(
         profile_data=profile_payload,
         commits_data=commits_payload,
         explorer_model=explorer_model,
+        galaxy_model=neofetch_model.galaxy,
     )
 
     return {
         "workspace_svg": workspace_svg,
         "neofetch_svg": neofetch_svg,
+        "neofetch_model": neofetch_model,
+        "repo_cards": repo_cards,
         "explorer_svg": explorer_svg,
         "explorer_slices": explorer_slices,
         "divider_svg": divider_svg,
         "readme_md": readme_md,
         "explorer_model": explorer_model,
     }
+
+
+def _resolve_repo_cards_dir(
+    repo_cards_dir: Path | None,
+    readme_path: Path | None,
+) -> Path | None:
+    if repo_cards_dir is not None:
+        return repo_cards_dir
+    if readme_path is None:
+        return None
+    if readme_path == README_PATH:
+        return REPOS_CARDS_DIR
+    return readme_path.parent / "assets" / "repos"
+
+
+def _resolve_galaxy_pages_path(
+    galaxy_pages_path: Path | None,
+    readme_path: Path | None,
+) -> Path | None:
+    if galaxy_pages_path is not None:
+        return galaxy_pages_path
+    if readme_path == README_PATH:
+        return REPO_GALAXY_PAGES_HTML_PATH
+    return None
 
 
 def run_phase2_pipeline(
@@ -109,6 +143,8 @@ def run_phase2_pipeline(
     profile_data_path: Path = PROFILE_DATA_PATH,
     workspace_svg_path: Path = WORKSPACE_SVG_PATH,
     neofetch_svg_path: Path | None = None,
+    repo_cards_dir: Path | None = None,
+    galaxy_pages_path: Path | None = None,
     explorer_svg_path: Path | None = None,
     explorer_slices_dir: Path | None = None,
     divider_svg_path: Path | None = None,
@@ -146,6 +182,9 @@ def run_phase2_pipeline(
         sort_by=sort_by,
     )
 
+    effective_cards_dir = _resolve_repo_cards_dir(repo_cards_dir, readme_path)
+    effective_pages_path = _resolve_galaxy_pages_path(galaxy_pages_path, readme_path)
+
     if not dry_run:
         write_repositories_json(repos_payload, repositories_path)
         write_commits_json(commits_payload, commits_path)
@@ -153,6 +192,14 @@ def run_phase2_pipeline(
         atomic_write_text(workspace_svg_path, rendered["workspace_svg"])
         if neofetch_svg_path is not None:
             atomic_write_text(neofetch_svg_path, rendered["neofetch_svg"])
+        if effective_cards_dir is not None:
+            write_repo_galaxy_cards(rendered["neofetch_model"].galaxy, cards_dir=effective_cards_dir)
+        if effective_pages_path is not None:
+            write_standalone_galaxy_page(
+                rendered["neofetch_svg"],
+                profile_cfg.username,
+                output_path=effective_pages_path,
+            )
         if explorer_svg_path is not None:
             atomic_write_text(explorer_svg_path, rendered["explorer_svg"])
         if explorer_slices_dir is not None:
@@ -168,6 +215,7 @@ def run_phase2_pipeline(
         "profile_data": profile_payload,
         "svg_bytes": len(rendered["workspace_svg"].encode("utf-8")),
         "neofetch_bytes": len(rendered["neofetch_svg"].encode("utf-8")),
+        "repo_cards_count": len(rendered["repo_cards"]),
         "explorer_bytes": len(rendered["explorer_svg"].encode("utf-8")),
         "requests_made": gh_client.requests_made,
         "rate_limit_remaining": gh_client.last_rate_limit_remaining,
@@ -181,6 +229,8 @@ def run_full_profile_pipeline(
     profile_data_path: Path = PROFILE_DATA_PATH,
     workspace_svg_path: Path = WORKSPACE_SVG_PATH,
     neofetch_svg_path: Path = NEOFETCH_SVG_PATH,
+    repo_cards_dir: Path | None = None,
+    galaxy_pages_path: Path | None = None,
     explorer_svg_path: Path = EXPLORER_SVG_PATH,
     explorer_slices_dir: Path = EXPLORER_SLICES_DIR,
     divider_svg_path: Path = DIVIDER_SVG_PATH,
@@ -200,6 +250,8 @@ def run_full_profile_pipeline(
             profile_data_path=profile_data_path,
             workspace_svg_path=workspace_svg_path,
             neofetch_svg_path=neofetch_svg_path,
+            repo_cards_dir=repo_cards_dir,
+            galaxy_pages_path=galaxy_pages_path,
             explorer_svg_path=explorer_svg_path,
             explorer_slices_dir=explorer_slices_dir,
             divider_svg_path=divider_svg_path,
@@ -226,9 +278,20 @@ def run_full_profile_pipeline(
         sort_by=sort_by,
     )
 
+    effective_cards_dir = _resolve_repo_cards_dir(repo_cards_dir, readme_path)
+    effective_pages_path = _resolve_galaxy_pages_path(galaxy_pages_path, readme_path)
+
     if not dry_run:
         atomic_write_text(workspace_svg_path, rendered["workspace_svg"])
         atomic_write_text(neofetch_svg_path, rendered["neofetch_svg"])
+        if effective_cards_dir is not None:
+            write_repo_galaxy_cards(rendered["neofetch_model"].galaxy, cards_dir=effective_cards_dir)
+        if effective_pages_path is not None:
+            write_standalone_galaxy_page(
+                rendered["neofetch_svg"],
+                profile_cfg.username,
+                output_path=effective_pages_path,
+            )
         atomic_write_text(explorer_svg_path, rendered["explorer_svg"])
         write_explorer_slices(rendered["explorer_slices"], slices_dir=explorer_slices_dir)
         atomic_write_text(divider_svg_path, rendered["divider_svg"])
@@ -240,6 +303,7 @@ def run_full_profile_pipeline(
         "profile_data": profile_payload,
         "svg_bytes": len(rendered["workspace_svg"].encode("utf-8")),
         "neofetch_bytes": len(rendered["neofetch_svg"].encode("utf-8")),
+        "repo_cards_count": len(rendered["repo_cards"]),
         "explorer_bytes": len(rendered["explorer_svg"].encode("utf-8")),
         "requests_made": 0,
         "rate_limit_remaining": None,

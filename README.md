@@ -13,7 +13,14 @@
 </p>
 
 <p align="center">
-  <img src="assets/neofetch.svg" width="100%" alt="Eshtiaq-a animated Repo Galaxy and Neofetch developer terminal" />
+  <a href="https://github.com/Eshtiaq-a?tab=repositories" target="_blank" rel="noopener noreferrer" title="Browse Eshtiaq-a public repositories on GitHub"><img src="assets/neofetch.svg" width="100%" alt="Eshtiaq-a animated Repo Galaxy and Neofetch developer terminal" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Eshtiaq-a/Wrechship" target="_blank" rel="noopener noreferrer" title="Wrechship — WrechShip is a shipwreck and maritime-disaster dataset till 2026, with vessel names, loss dates, available times, vessel types, incident details, and wreck coordinates."><img src="assets/repos/wrechship.svg" width="49%" alt="Wrechship repository card — Python" /></a> <a href="https://github.com/Eshtiaq-a/stash-money-manager" target="_blank" rel="noopener noreferrer" title="stash-money-manager — this is a money management app for university going students who tends to save money regularly , making it a bit fun to save money ."><img src="assets/repos/stash-money-manager.svg" width="49%" alt="stash-money-manager repository card — TypeScript" /></a><br />
+  <a href="https://github.com/Eshtiaq-a/Clear-Cut-" target="_blank" rel="noopener noreferrer" title="Clear-Cut- — a platform where you can see discounted products from many companies around the globe"><img src="assets/repos/clear-cut.svg" width="49%" alt="Clear-Cut- repository card — TypeScript" /></a> <a href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer" title="Eshtiaq-a — No description provided yet."><img src="assets/repos/eshtiaq-a.svg" width="49%" alt="Eshtiaq-a repository card — Python" /></a><br />
+  <a href="https://github.com/Eshtiaq-a/C-code-Practices-" target="_blank" rel="noopener noreferrer" title="C-code-Practices- — here i will store all the problems i solved in C . as C is one of the mother language , i am trying to master it ."><img src="assets/repos/c-code-practices.svg" width="49%" alt="C-code-Practices- repository card — C" /></a> <a href="https://github.com/Eshtiaq-a/assignment_1" target="_blank" rel="noopener noreferrer" title="assignment_1 — No description provided yet."><img src="assets/repos/assignment_1.svg" width="49%" alt="assignment_1 repository card — HTML" /></a><br />
+  <a href="https://github.com/Eshtiaq-a/Portfolio-main" target="_blank" rel="noopener noreferrer" title="Portfolio-main — this is my portfolio site where ill be sharing my works"><img src="assets/repos/portfolio-main.svg" width="49%" alt="Portfolio-main repository card — TypeScript" /></a> <a href="https://github.com/Eshtiaq-a/test" target="_blank" rel="noopener noreferrer" title="test — No description provided yet."><img src="assets/repos/test.svg" width="49%" alt="test repository card — HTML" /></a>
 </p>
 
 <p align="center">

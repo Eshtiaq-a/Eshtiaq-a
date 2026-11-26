@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from src.config import COMMITS_PATH, CONFIG_PATH, REPOSITORIES_PATH
-from src.validators import sanitize_github_repo_url
+from src.validators import make_repo_slug, sanitize_github_repo_url
 from src.visualizations.repo_galaxy import get_language_color
 
 ExplorerSortOrder = Literal["updated", "stars", "name"]
@@ -78,15 +78,6 @@ def _truncate_repo_dir(name: str, max_chars: int) -> str:
         return label
     keep = max(4, max_chars - 2)
     return f"{name[:keep].rstrip()}…/"
-
-
-def _make_row_slug(name: str, repo_id: int, used_slugs: set[str]) -> str:
-    base = re.sub(r"[^a-z0-9._-]+", "-", name.lower()).strip("-") or f"repo-{repo_id}"
-    slug = base
-    if slug in used_slugs:
-        slug = f"{base}-{repo_id}"
-    used_slugs.add(slug)
-    return slug
 
 
 def _sanitize_homepage_url(raw_url: Any) -> str | None:
@@ -254,7 +245,7 @@ def build_explorer_model(
     for idx, repo in enumerate(ordered):
         repo_id = int(repo.get("repository_id") or repo.get("id") or (idx + 1))
         name = _clean_text(repo.get("name"))
-        row_slug = _make_row_slug(name, repo_id, used_slugs)
+        row_slug = make_repo_slug(name, repo_id, used_slugs)
         full_name = _clean_text(repo.get("full_name")) or f"{username}/{name}"
         html_url = sanitize_github_repo_url(repo.get("html_url"), username, name)
         homepage = _sanitize_homepage_url(repo.get("homepage"))
