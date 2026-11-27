@@ -167,14 +167,43 @@ def _render_accessible_directory(rows: tuple[ExplorerRow, ...]) -> str:
     return "\n".join(lines)
 
 
+def _render_city_summary(
+    contributions_data: dict[str, Any] | None,
+    profile_data: dict[str, Any],
+    commits_data: dict[str, Any],
+) -> str:
+    """Render concise Contribution City caption strictly from real dataset metrics."""
+    if contributions_data:
+        total = int(contributions_data.get("total_contributions") or 0)
+        active = int(contributions_data.get("active_days") or 0)
+        busiest = contributions_data.get("busiest_day") or {}
+        busiest_txt = (
+            f" · Peak: {_esc_attr(busiest['date'])} ({int(busiest['count'])})"
+            if busiest.get("date") and int(busiest.get("count") or 0) > 0
+            else ""
+        )
+        src_note = " · <i>(commits fallback)</i>" if contributions_data.get("is_fallback") else ""
+        return f"<sub><b>3D Contribution City:</b> {total} contributions across {active} active days{busiest_txt}{src_note}</sub>"
+
+    cstats = profile_data.get("contribution_stats") or {}
+    if cstats.get("available") and cstats.get("total_contributions") is not None:
+        total = int(cstats.get("total_contributions") or 0)
+        active = int(cstats.get("active_days") or 0)
+        return f"<sub><b>3D Contribution City:</b> {total} contributions across {active} active days</sub>"
+
+    commit_total = int(commits_data.get("total_unique_commits") or len(commits_data.get("commits") or []))
+    return f"<sub><b>3D Contribution City:</b> {commit_total} public-branch commits visualized</sub>"
+
+
 def build_readme_markdown(
     profile_data: dict[str, Any],
     commits_data: dict[str, Any],
     explorer_model: ExplorerModel,
     use_gif_workspace: bool = False,
     galaxy_model: RepoGalaxyModel | None = None,
+    contributions_data: dict[str, Any] | None = None,
 ) -> str:
-    """Assemble the complete sanitized three-section README.md cleanly."""
+    """Assemble the complete sanitized four-section README.md cleanly."""
     username = _clean(explorer_model.username or profile_data.get("username") or "Eshtiaq-a")
     profile_url = _safe_profile_url(profile_data, username).rstrip("/")
     repos_tab_url = f"{profile_url}?tab=repositories"
@@ -186,6 +215,7 @@ def build_readme_markdown(
 
     galaxy_cards_block = _render_galaxy_cards_block(username, galaxy_model, explorer_model)
     galaxy_links = _render_repo_link_strip("Repo Galaxy", explorer_model.rows)
+    city_summary = _render_city_summary(contributions_data, profile_data, commits_data)
     explorer_block = _render_explorer_slices_block(explorer_model, repos_tab_url)
     quick_links = _render_repo_link_strip("~/projects", explorer_model.rows)
     accessible_dir = _render_accessible_directory(explorer_model.rows)
@@ -225,6 +255,18 @@ def build_readme_markdown(
             "",
             '<p align="center">',
             f"  {galaxy_links}",
+            "</p>",
+            "",
+            '<p align="center">',
+            '  <img src="assets/divider.svg" width="100%" alt="" />',
+            "</p>",
+            "",
+            '<p align="center">',
+            f'  <a href="{_esc_attr(profile_url)}" target="_blank" rel="noopener noreferrer" title="View {_esc_attr(username)} GitHub contribution activity"><img src="assets/contribution_city.svg" width="100%" alt="{_esc_attr(username)} 3D isometric GitHub Contribution City" /></a>',
+            "</p>",
+            "",
+            '<p align="center">',
+            f"  {city_summary}",
             "</p>",
             "",
             '<p align="center">',

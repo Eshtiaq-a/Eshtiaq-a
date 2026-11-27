@@ -175,6 +175,73 @@ def validate_profile_data_payload(payload: dict[str, Any]) -> None:
             raise ValueError(f"Profile data payload missing key '{key}'.")
 
 
+def validate_contributions_payload(payload: dict[str, Any]) -> None:
+    """Verify `data/contributions.json` calendar schema, date formatting, and totals."""
+    required_top = (
+        "schema_version",
+        "generated_at",
+        "username",
+        "source",
+        "graphql_available",
+        "is_sample_data",
+        "total_contributions",
+        "active_days",
+        "max_daily_contributions",
+        "date_range",
+        "weeks",
+    )
+    for key in required_top:
+        if key not in payload:
+            raise ValueError(f"Contributions payload missing top-level key '{key}'.")
+
+    weeks = payload["weeks"]
+    if not isinstance(weeks, list):
+        raise ValueError("Contributions payload 'weeks' must be a list.")
+
+    iso_date_re = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+    sum_counts = 0
+    count_active = 0
+    observed_max = 0
+    seen_dates: set[str] = set()
+
+    for w_idx, week in enumerate(weeks):
+        if not isinstance(week, dict) or not isinstance(week.get("days"), list):
+            raise ValueError(f"Contribution week {w_idx} must be a dict with 'days' list.")
+        for d_idx, day in enumerate(week["days"]):
+            if not isinstance(day, dict):
+                raise ValueError(f"Contribution day ({w_idx},{d_idx}) must be a dict.")
+            date_str = str(day.get("date") or "")
+            if not iso_date_re.match(date_str):
+                raise ValueError(f"Invalid contribution date format: {date_str!r}.")
+            if date_str in seen_dates:
+                raise ValueError(f"Duplicate contribution date detected: {date_str!r}.")
+            seen_dates.add(date_str)
+            cnt = int(day.get("count", -1))
+            lvl = int(day.get("level", -1))
+            if cnt < 0:
+                raise ValueError(f"Negative contribution count on {date_str}: {cnt}.")
+            if lvl not in (0, 1, 2, 3, 4):
+                raise ValueError(f"Invalid contribution intensity level on {date_str}: {lvl}.")
+            sum_counts += cnt
+            if cnt > 0:
+                count_active += 1
+            if cnt > observed_max:
+                observed_max = cnt
+
+    if int(payload["total_contributions"]) != sum_counts:
+        raise ValueError(
+            f"total_contributions ({payload['total_contributions']}) != sum of daily counts ({sum_counts})."
+        )
+    if int(payload["active_days"]) != count_active:
+        raise ValueError(
+            f"active_days ({payload['active_days']}) != active days count ({count_active})."
+        )
+    if int(payload["max_daily_contributions"]) != observed_max:
+        raise ValueError(
+            f"max_daily_contributions ({payload['max_daily_contributions']}) != max ({observed_max})."
+        )
+
+
 def validate_svg_document(svg_text: str, max_bytes: int = MAX_SVG_BYTES) -> ET.Element:
     """Parse SVG XML and verify GitHub Camo safety, size budget, and animation structure."""
     encoded_len = len(svg_text.encode("utf-8"))

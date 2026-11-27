@@ -84,7 +84,7 @@ def build_standalone_galaxy_html(neofetch_svg: str, username: str) -> str:
 <body>
   <main>
     {neofetch_svg}
-    <p class="hint">Interactive orbital nodes link directly to GitHub repositories · <a href="https://github.com/{safe_user}">Back to @{safe_user} profile</a></p>
+    <p class="hint">Interactive orbital nodes link directly to GitHub repositories · <a href="city.html">3D Contribution City</a> · <a href="https://github.com/{safe_user}">Back to @{safe_user} profile</a></p>
   </main>
 </body>
 </html>

@@ -214,6 +214,7 @@ jobs:
           svg_paths = [
               Path("assets/workspace.svg"),
               Path("assets/neofetch.svg"),
+              Path("assets/contribution_city.svg"),
               Path("assets/explorer.svg"),
               Path("assets/divider.svg"),
           ]
@@ -252,12 +253,14 @@ jobs:
               validate_repositories_payload,
               validate_commits_payload,
               validate_profile_data_payload,
+              validate_contributions_payload,
           )
 
           datasets = {
-              "data/repositories.json": validate_repositories_payload,
+              "data/repositories.json":  validate_repositories_payload,
               "data/commits.json":       validate_commits_payload,
               "data/profile_data.json":  validate_profile_data_payload,
+              "data/contributions.json": validate_contributions_payload,
           }
           for path_str, validator in datasets.items():
               p = Path(path_str)
@@ -325,7 +328,7 @@ jobs:
           echo "  Timestamp: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
           echo ""
           echo "Asset sizes:"
-          for f in assets/workspace.svg assets/neofetch.svg assets/explorer.svg; do
+          for f in assets/workspace.svg assets/neofetch.svg assets/contribution_city.svg assets/explorer.svg; do
             if [ -f "$f" ]; then
               printf "  %-30s %s bytes\n" "$f" "$(wc -c < $f | tr -d ' ')"
             fi

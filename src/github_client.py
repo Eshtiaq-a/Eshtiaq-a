@@ -281,6 +281,7 @@ class GitHubClient:
                 weeks {
                   contributionDays {
                     contributionCount
+                    contributionLevel
                     date
                   }
                 }
