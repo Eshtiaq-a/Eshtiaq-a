@@ -339,7 +339,7 @@
       <g class="gx-orbit-2" pointer-events="none">
           <g transform="rotate(225.00) translate(98.9, 0)" pointer-events="none">
             <a class="gx-repo-link" href="https://github.com/Eshtiaq-a/Eshtiaq-a" target="_blank" rel="noopener noreferrer" pointer-events="all" aria-label="Open Eshtiaq-a repository on GitHub">
-              <title>Eshtiaq-a · Python · 0★ · 8 commits — No description provided yet.</title>
+              <title>Eshtiaq-a · Python · 0★ · 13 commits — No description provided yet.</title>
               <circle class="gx-node-hit" cx="0" cy="0" r="13.0" fill="#080c18" fill-opacity="0.001" />
               <circle class="gx-node-halo" cx="0" cy="0" r="9.89" fill="#4b8bbe" />
               <circle class="gx-node-dot" cx="0" cy="0" r="4.60" fill="#4b8bbe" fill-opacity="0.98" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6" />
@@ -410,7 +410,7 @@
         </g>
         <line x1="40.0" y1="474.0" x2="430.0" y2="474.0" stroke="#1d2b53" stroke-width="1" stroke-dasharray="3 3" pointer-events="none" />
         <text x="42.0" y="490.0" font-size="8.8" font-weight="700" letter-spacing="1.4" fill="#6f7c99" pointer-events="none">ARM / LANGUAGE</text>
-        <circle cx="46.0" cy="504.5" r="3.6" fill="#4b8bbe" pointer-events="none" /><text x="55.0" y="508.0" font-size="10.0" fill="#cdd7ec" pointer-events="none">Python <tspan fill="#75819c">· 80.0%</tspan></text>
+        <circle cx="46.0" cy="504.5" r="3.6" fill="#4b8bbe" pointer-events="none" /><text x="55.0" y="508.0" font-size="10.0" fill="#cdd7ec" pointer-events="none">Python <tspan fill="#75819c">· 80.1%</tspan></text>
     <circle cx="239.0" cy="504.5" r="3.6" fill="#e3623a" pointer-events="none" /><text x="248.0" y="508.0" font-size="10.0" fill="#cdd7ec" pointer-events="none">HTML <tspan fill="#75819c">· 14.9%</tspan></text>
     <circle cx="46.0" cy="521.5" r="3.6" fill="#3b82f6" pointer-events="none" /><text x="55.0" y="525.0" font-size="10.0" fill="#cdd7ec" pointer-events="none">TypeScript <tspan fill="#75819c">· 3.2%</tspan></text>
     <circle cx="239.0" cy="521.5" r="3.6" fill="#f1e05a" pointer-events="none" /><text x="248.0" y="525.0" font-size="10.0" fill="#cdd7ec" pointer-events="none">JavaScript <tspan fill="#75819c">· 0.9%</tspan></text>
@@ -440,21 +440,22 @@
       <text x="468.0" y="346.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> Contact</text>
     <line x1="548.6" y1="342.0" x2="978.0" y2="342.0" stroke="#41444b" stroke-width="1" />
       <text x="468.0" y="364.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ GitHub: </tspan><tspan fill="#6e737d">......................................</tspan><tspan fill="#ebf0f4"> github.com/Eshtiaq-a</tspan></text>
-      <text x="468.0" y="389.0" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> GitHub Stats</text>
-    <line x1="585.6" y1="385.0" x2="978.0" y2="385.0" stroke="#41444b" stroke-width="1" />
-      <text x="468.0" y="407.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Repos: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 8</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Stars: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan></text>
-      <text x="468.0" y="425.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Commits: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> 76</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Branches: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 11</tspan></text>
-      <text x="468.0" y="442.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Followers: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 2</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Following: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 4</tspan></text>
-      <text x="468.0" y="460.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Contributions: </tspan><tspan fill="#6e737d">.............</tspan><tspan fill="#ebf0f4"> 80</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Active days: </tspan><tspan fill="#6e737d">...............</tspan><tspan fill="#ebf0f4"> 16</tspan></text>
-      <text x="468.0" y="477.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Streak: </tspan><tspan fill="#6e737d">....................</tspan><tspan fill="#ebf0f4"> 1d</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Best streak: </tspan><tspan fill="#6e737d">...............</tspan><tspan fill="#ebf0f4"> 5d</tspan></text>
-      <rect x="468.0" y="505.0" width="24" height="12" rx="2" fill="#1d2333" />
-      <rect x="496.0" y="505.0" width="24" height="12" rx="2" fill="#e3623a" />
-      <rect x="524.0" y="505.0" width="24" height="12" rx="2" fill="#73b88d" />
-      <rect x="552.0" y="505.0" width="24" height="12" rx="2" fill="#f1e05a" />
-      <rect x="580.0" y="505.0" width="24" height="12" rx="2" fill="#5aa9ff" />
-      <rect x="608.0" y="505.0" width="24" height="12" rx="2" fill="#8294ea" />
-      <rect x="636.0" y="505.0" width="24" height="12" rx="2" fill="#4b8bbe" />
-      <rect x="664.0" y="505.0" width="24" height="12" rx="2" fill="#ebf0f4" />
+      <text x="468.0" y="382.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Web: </tspan><tspan fill="#6e737d">............................</tspan><tspan fill="#ebf0f4"> portfolio-main-gilt-nu.vercel.app</tspan></text>
+      <text x="468.0" y="406.5" font-size="12.2" font-weight="700" fill="#5aa9ff" xml:space="preserve"><tspan fill="#73b88d">-</tspan> GitHub Stats</text>
+    <line x1="585.6" y1="402.5" x2="978.0" y2="402.5" stroke="#41444b" stroke-width="1" />
+      <text x="468.0" y="425.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Repos: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 8</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Stars: </tspan><tspan fill="#6e737d">......................</tspan><tspan fill="#ebf0f4"> 0</tspan></text>
+      <text x="468.0" y="442.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Commits: </tspan><tspan fill="#6e737d">...................</tspan><tspan fill="#ebf0f4"> 81</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Branches: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 11</tspan></text>
+      <text x="468.0" y="460.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Followers: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 5</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Following: </tspan><tspan fill="#6e737d">..................</tspan><tspan fill="#ebf0f4"> 8</tspan></text>
+      <text x="468.0" y="477.5" xml:space="preserve"><tspan fill="#5aa9ff">▪ Contributions: </tspan><tspan fill="#6e737d">.............</tspan><tspan fill="#ebf0f4"> 89</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Active days: </tspan><tspan fill="#6e737d">...............</tspan><tspan fill="#ebf0f4"> 17</tspan></text>
+      <text x="468.0" y="495.0" xml:space="preserve"><tspan fill="#5aa9ff">▪ Streak: </tspan><tspan fill="#6e737d">....................</tspan><tspan fill="#ebf0f4"> 2d</tspan><tspan fill="#41444b"> | </tspan><tspan fill="#5aa9ff">▪ Best streak: </tspan><tspan fill="#6e737d">...............</tspan><tspan fill="#ebf0f4"> 5d</tspan></text>
+      <rect x="468.0" y="522.5" width="24" height="12" rx="2" fill="#1d2333" />
+      <rect x="496.0" y="522.5" width="24" height="12" rx="2" fill="#e3623a" />
+      <rect x="524.0" y="522.5" width="24" height="12" rx="2" fill="#73b88d" />
+      <rect x="552.0" y="522.5" width="24" height="12" rx="2" fill="#f1e05a" />
+      <rect x="580.0" y="522.5" width="24" height="12" rx="2" fill="#5aa9ff" />
+      <rect x="608.0" y="522.5" width="24" height="12" rx="2" fill="#8294ea" />
+      <rect x="636.0" y="522.5" width="24" height="12" rx="2" fill="#4b8bbe" />
+      <rect x="664.0" y="522.5" width="24" height="12" rx="2" fill="#ebf0f4" />
     </g>
 
     <text x="24" y="586" font-size="12.5" xml:space="preserve"><tspan fill="#73b88d" font-weight="700">eshtiaq-a@github</tspan><tspan fill="#888b92">:~$</tspan></text>

@@ -30,7 +30,7 @@
         transform: translateY(0px);
       }
       100% {
-        transform: translateY(-2902px);
+        transform: translateY(-3054px);
       }
     }
     @keyframes clockSpin {
@@ -162,7 +162,7 @@
       }
     }
     #credits-track {
-      animation: scrollCredits 145.10s linear infinite;
+      animation: scrollCredits 152.70s linear infinite;
       will-change: transform;
     }
     .clock-min-hand {
@@ -1455,14 +1455,26 @@
       <text x="552" y="2690" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
       <text x="552" y="2705" text-anchor="middle" font-size="7.8" fill="#e9ecf2">github workflow error fix</text>
       <text x="552" y="2716" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
-      <line x1="484" y1="2743" x2="620" y2="2743" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="2761" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
-      <text x="552" y="2774" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 76 COMMITS  •  8 REPOS</text>
-      <text x="552" y="2796" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
-      <text x="552" y="2811" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
-      <line x1="484" y1="2831" x2="620" y2="2831" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2731" text-anchor="middle" font-size="7.8" fill="#e9ecf2">chore: auto-update profile [8</text>
+      <text x="552" y="2742" text-anchor="middle" font-size="7.8" fill="#e9ecf2">repos, 76 commits]</text>
+      <text x="552" y="2753" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  github-actions[bot]</text>
+      <text x="552" y="2768" text-anchor="middle" font-size="7.8" fill="#e9ecf2">galaxy animation problem fixed</text>
+      <text x="552" y="2779" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2794" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed the plant to monstera ,</text>
+      <text x="552" y="2805" text-anchor="middle" font-size="7.8" fill="#e9ecf2">coffee fog physics fix,detailed...</text>
+      <text x="552" y="2816" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2831" text-anchor="middle" font-size="7.8" fill="#e9ecf2">planted new monstera :)</text>
+      <text x="552" y="2842" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2857" text-anchor="middle" font-size="7.8" fill="#e9ecf2">contribution city builded</text>
+      <text x="552" y="2868" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-27  •  Eshtiaq_Ah</text>
+      <line x1="484" y1="2895" x2="620" y2="2895" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2913" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
+      <text x="552" y="2926" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 81 COMMITS  •  8 REPOS</text>
+      <text x="552" y="2948" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
+      <text x="552" y="2963" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
+      <line x1="484" y1="2983" x2="620" y2="2983" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
         </g>
-        <g transform="translate(0, 3034)">
+        <g transform="translate(0, 3186)">
           <line x1="484" y1="26" x2="620" y2="26" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
       <text x="552" y="44" text-anchor="middle" font-size="7.0" fill="#f2cb62" letter-spacing="1.2">A PRODUCTION BY</text>
       <text x="552" y="59" text-anchor="middle" font-size="11.0" fill="#f3e8d4" font-weight="700" letter-spacing="1.5">ESHTIAQ AHMAD</text>
@@ -1669,12 +1681,24 @@
       <text x="552" y="2690" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
       <text x="552" y="2705" text-anchor="middle" font-size="7.8" fill="#e9ecf2">github workflow error fix</text>
       <text x="552" y="2716" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
-      <line x1="484" y1="2743" x2="620" y2="2743" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
-      <text x="552" y="2761" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
-      <text x="552" y="2774" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 76 COMMITS  •  8 REPOS</text>
-      <text x="552" y="2796" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
-      <text x="552" y="2811" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
-      <line x1="484" y1="2831" x2="620" y2="2831" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2731" text-anchor="middle" font-size="7.8" fill="#e9ecf2">chore: auto-update profile [8</text>
+      <text x="552" y="2742" text-anchor="middle" font-size="7.8" fill="#e9ecf2">repos, 76 commits]</text>
+      <text x="552" y="2753" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  github-actions[bot]</text>
+      <text x="552" y="2768" text-anchor="middle" font-size="7.8" fill="#e9ecf2">galaxy animation problem fixed</text>
+      <text x="552" y="2779" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2794" text-anchor="middle" font-size="7.8" fill="#e9ecf2">changed the plant to monstera ,</text>
+      <text x="552" y="2805" text-anchor="middle" font-size="7.8" fill="#e9ecf2">coffee fog physics fix,detailed...</text>
+      <text x="552" y="2816" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2831" text-anchor="middle" font-size="7.8" fill="#e9ecf2">planted new monstera :)</text>
+      <text x="552" y="2842" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-26  •  Eshtiaq_Ah</text>
+      <text x="552" y="2857" text-anchor="middle" font-size="7.8" fill="#e9ecf2">contribution city builded</text>
+      <text x="552" y="2868" text-anchor="middle" font-size="6.6" fill="#88a8b5">2026-11-27  •  Eshtiaq_Ah</text>
+      <line x1="484" y1="2895" x2="620" y2="2895" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="552" y="2913" text-anchor="middle" font-size="6.8" fill="#88a8b5" letter-spacing="0.6">FILMED IN DHAKA, BANGLADESH</text>
+      <text x="552" y="2926" text-anchor="middle" font-size="6.8" fill="#93c8b2" letter-spacing="0.5">CAST: 81 COMMITS  •  8 REPOS</text>
+      <text x="552" y="2948" text-anchor="middle" font-size="10.5" fill="#f2cb62" font-weight="700" letter-spacing="1.4">THE END?</text>
+      <text x="552" y="2963" text-anchor="middle" font-size="8.6" fill="#f3e8d4" font-weight="700" letter-spacing="0.9">THE JOURNEY CONTINUES.</text>
+      <line x1="484" y1="2983" x2="620" y2="2983" stroke="#2c4966" stroke-width="1" stroke-dasharray="3 2" />
         </g>
       </g>
       <rect x="429" y="132" width="246" height="14" fill="url(#screen-top-fade)" />

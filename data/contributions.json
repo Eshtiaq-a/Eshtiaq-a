@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-27T06:51:33Z",
+  "generated_at": "2026-11-27T07:46:20Z",
   "username": "Eshtiaq-a",
-  "source": "public_branch_commits_fallback",
-  "graphql_available": false,
-  "is_fallback": true,
+  "source": "github_graphql_contributions_collection",
+  "graphql_available": true,
+  "is_fallback": false,
   "is_sample_data": false,
-  "total_contributions": 76,
-  "active_days": 12,
-  "current_streak_days": 1,
-  "best_streak_days": 2,
+  "total_contributions": 89,
+  "active_days": 17,
+  "current_streak_days": 2,
+  "best_streak_days": 5,
   "max_daily_contributions": 23,
   "busiest_day": {
     "date": "2026-07-26",
@@ -376,7 +376,7 @@
     {
       "week_index": 5,
       "start_date": "2025-12-28",
-      "total_contributions": 0,
+      "total_contributions": 1,
       "days": [
         {
           "date": "2025-12-28",
@@ -389,9 +389,9 @@
         },
         {
           "date": "2025-12-29",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 1,
+          "level": 1,
+          "intensity_label": "Low",
           "week_index": 5,
           "weekday": 1,
           "weekday_name": "Mon"
@@ -446,7 +446,7 @@
     {
       "week_index": 6,
       "start_date": "2026-01-04",
-      "total_contributions": 1,
+      "total_contributions": 2,
       "days": [
         {
           "date": "2026-01-04",
@@ -495,7 +495,7 @@
         },
         {
           "date": "2026-01-09",
-          "count": 1,
+          "count": 2,
           "level": 1,
           "intensity_label": "Low",
           "week_index": 6,
@@ -516,11 +516,11 @@
     {
       "week_index": 7,
       "start_date": "2026-01-11",
-      "total_contributions": 2,
+      "total_contributions": 3,
       "days": [
         {
           "date": "2026-01-11",
-          "count": 2,
+          "count": 1,
           "level": 1,
           "intensity_label": "Low",
           "week_index": 7,
@@ -529,9 +529,9 @@
         },
         {
           "date": "2026-01-12",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 2,
+          "level": 1,
+          "intensity_label": "Low",
           "week_index": 7,
           "weekday": 1,
           "weekday_name": "Mon"
@@ -1636,7 +1636,7 @@
     {
       "week_index": 23,
       "start_date": "2026-05-03",
-      "total_contributions": 16,
+      "total_contributions": 15,
       "days": [
         {
           "date": "2026-05-03",
@@ -1667,7 +1667,7 @@
         },
         {
           "date": "2026-05-06",
-          "count": 2,
+          "count": 1,
           "level": 1,
           "intensity_label": "Low",
           "week_index": 23,
@@ -1677,8 +1677,8 @@
         {
           "date": "2026-05-07",
           "count": 14,
-          "level": 3,
-          "intensity_label": "High",
+          "level": 4,
+          "intensity_label": "Peak",
           "week_index": 23,
           "weekday": 4,
           "weekday_name": "Thu"
@@ -2406,7 +2406,7 @@
     {
       "week_index": 34,
       "start_date": "2026-07-19",
-      "total_contributions": 6,
+      "total_contributions": 8,
       "days": [
         {
           "date": "2026-07-19",
@@ -2456,17 +2456,17 @@
         {
           "date": "2026-07-24",
           "count": 6,
-          "level": 2,
-          "intensity_label": "Moderate",
+          "level": 3,
+          "intensity_label": "High",
           "week_index": 34,
           "weekday": 5,
           "weekday_name": "Fri"
         },
         {
           "date": "2026-07-25",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 2,
+          "level": 1,
+          "intensity_label": "Low",
           "week_index": 34,
           "weekday": 6,
           "weekday_name": "Sat"
@@ -2489,7 +2489,7 @@
         },
         {
           "date": "2026-07-27",
-          "count": 2,
+          "count": 1,
           "level": 1,
           "intensity_label": "Low",
           "week_index": 35,
@@ -2498,9 +2498,9 @@
         },
         {
           "date": "2026-07-28",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 1,
+          "level": 1,
+          "intensity_label": "Low",
           "week_index": 35,
           "weekday": 2,
           "weekday_name": "Tue"
@@ -2546,7 +2546,7 @@
     {
       "week_index": 36,
       "start_date": "2026-08-02",
-      "total_contributions": 3,
+      "total_contributions": 4,
       "days": [
         {
           "date": "2026-08-02",
@@ -2577,27 +2577,27 @@
         },
         {
           "date": "2026-08-05",
-          "count": 2,
-          "level": 1,
-          "intensity_label": "Low",
+          "count": 3,
+          "level": 2,
+          "intensity_label": "Moderate",
           "week_index": 36,
           "weekday": 3,
           "weekday_name": "Wed"
         },
         {
           "date": "2026-08-06",
-          "count": 1,
-          "level": 1,
-          "intensity_label": "Low",
+          "count": 0,
+          "level": 0,
+          "intensity_label": "None",
           "week_index": 36,
           "weekday": 4,
           "weekday_name": "Thu"
         },
         {
           "date": "2026-08-07",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 1,
+          "level": 1,
+          "intensity_label": "Low",
           "week_index": 36,
           "weekday": 5,
           "weekday_name": "Fri"
@@ -3596,7 +3596,7 @@
     {
       "week_index": 51,
       "start_date": "2026-11-15",
-      "total_contributions": 15,
+      "total_contributions": 18,
       "days": [
         {
           "date": "2026-11-15",
@@ -3636,7 +3636,7 @@
         },
         {
           "date": "2026-11-19",
-          "count": 6,
+          "count": 3,
           "level": 2,
           "intensity_label": "Moderate",
           "week_index": 51,
@@ -3645,9 +3645,9 @@
         },
         {
           "date": "2026-11-20",
-          "count": 9,
-          "level": 2,
-          "intensity_label": "Moderate",
+          "count": 15,
+          "level": 4,
+          "intensity_label": "Peak",
           "week_index": 51,
           "weekday": 5,
           "weekday_name": "Fri"
@@ -3666,7 +3666,7 @@
     {
       "week_index": 52,
       "start_date": "2026-11-22",
-      "total_contributions": 8,
+      "total_contributions": 13,
       "days": [
         {
           "date": "2026-11-22",
@@ -3706,7 +3706,7 @@
         },
         {
           "date": "2026-11-26",
-          "count": 8,
+          "count": 4,
           "level": 2,
           "intensity_label": "Moderate",
           "week_index": 52,
@@ -3715,9 +3715,9 @@
         },
         {
           "date": "2026-11-27",
-          "count": 0,
-          "level": 0,
-          "intensity_label": "None",
+          "count": 9,
+          "level": 4,
+          "intensity_label": "Peak",
           "week_index": 52,
           "weekday": 5,
           "weekday_name": "Fri"
