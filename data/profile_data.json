@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-27T07:46:20Z",
+  "generated_at": "2026-11-27T20:57:36Z",
   "username": "Eshtiaq-a",
   "is_sample_data": false,
   "directly_sourced_profile": {
@@ -12,7 +12,7 @@
     "blog": "https://portfolio-main-gilt-nu.vercel.app/",
     "html_url": "https://github.com/Eshtiaq-a",
     "avatar_url": "https://avatars.githubusercontent.com/u/251981857?v=4",
-    "public_repos": 8,
+    "public_repos": 9,
     "public_gists": 0,
     "followers": 5,
     "following": 8,
@@ -23,60 +23,65 @@
     "uptime_months": 10,
     "total_stars": 0,
     "total_forks": 0,
-    "owned_public_repositories": 8,
-    "non_fork_repositories": 8,
+    "owned_public_repositories": 9,
+    "non_fork_repositories": 9,
     "empty_repositories": 0,
     "archived_repositories": 0,
-    "unique_public_commits_collected": 81,
+    "unique_public_commits_collected": 87,
     "public_commit_active_days": 13,
-    "repositories_processed_for_commits": 8,
-    "branches_processed_for_commits": 11,
-    "total_language_bytes": 10379649,
+    "repositories_processed_for_commits": 9,
+    "branches_processed_for_commits": 13,
+    "total_language_bytes": 10863649,
     "languages": [
       {
         "language": "Python",
-        "bytes": 8314998,
-        "percentage": 80.11
+        "bytes": 8403271,
+        "percentage": 77.35
       },
       {
         "language": "HTML",
-        "bytes": 1542269,
-        "percentage": 14.86
+        "bytes": 1562000,
+        "percentage": 14.38
       },
       {
         "language": "TypeScript",
-        "bytes": 333829,
-        "percentage": 3.22
+        "bytes": 612381,
+        "percentage": 5.64
       },
       {
         "language": "JavaScript",
-        "bytes": 94607,
-        "percentage": 0.91
+        "bytes": 145958,
+        "percentage": 1.34
+      },
+      {
+        "language": "CSS",
+        "bytes": 74211,
+        "percentage": 0.68
       },
       {
         "language": "PLpgSQL",
         "bytes": 49691,
-        "percentage": 0.48
-      },
-      {
-        "language": "CSS",
-        "bytes": 30632,
-        "percentage": 0.3
+        "percentage": 0.46
       },
       {
         "language": "PowerShell",
         "bytes": 8834,
-        "percentage": 0.09
+        "percentage": 0.08
       },
       {
         "language": "Shell",
-        "bytes": 3774,
-        "percentage": 0.04
+        "bytes": 5844,
+        "percentage": 0.05
       },
       {
         "language": "C",
         "bytes": 659,
         "percentage": 0.01
+      },
+      {
+        "language": "Dockerfile",
+        "bytes": 444,
+        "percentage": 0.0
       },
       {
         "language": "Go Template",
@@ -88,7 +93,7 @@
   "contribution_stats": {
     "available": true,
     "source": "github_graphql_contributions_collection",
-    "total_contributions": 89,
+    "total_contributions": 93,
     "active_days": 17,
     "current_streak_days": 2,
     "best_streak_days": 5
