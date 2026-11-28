@@ -139,7 +139,8 @@ class VisualAuditFixesTests(unittest.TestCase):
         )
         self._assert_galaxy_collision_free(crowded_compact, 24.0, 54.0, 512.0, 446.0)
 
-        # Real 8 repositories keep all 8 visible labels cleanly on both desktop and compact
+        # Real repositories keep all visible labels cleanly on both desktop and compact
+        expected_count = len(self.repos_data["repositories"])
         real_desktop = build_repo_galaxy_model(
             repositories_data=self.repos_data,
             profile_data=self.profile_data,
@@ -149,7 +150,7 @@ class VisualAuditFixesTests(unittest.TestCase):
             box_w=422.0,
             box_h=506.0,
         )
-        self.assertEqual(sum(1 for n in real_desktop.nodes if n.show_label), 8)
+        self.assertEqual(sum(1 for n in real_desktop.nodes if n.show_label), expected_count)
         self._assert_galaxy_collision_free(real_desktop, 24.0, 54.0, 422.0, 506.0)
 
         real_compact = reflow_repo_galaxy_model(
@@ -159,7 +160,7 @@ class VisualAuditFixesTests(unittest.TestCase):
             box_w=512.0,
             box_h=446.0,
         )
-        self.assertEqual(sum(1 for n in real_compact.nodes if n.show_label), 8)
+        self.assertEqual(sum(1 for n in real_compact.nodes if n.show_label), expected_count)
         self._assert_galaxy_collision_free(real_compact, 24.0, 54.0, 512.0, 446.0)
 
     def test_neofetch_compact_preserves_commit_counts_tooltips_and_ring_order(self) -> None:

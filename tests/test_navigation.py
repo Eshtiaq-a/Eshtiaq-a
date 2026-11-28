@@ -38,13 +38,14 @@ class ProjectExplorerAndGalaxyNavigationTests(unittest.TestCase):
         slices = build_explorer_slice_svgs(model)
         readme = build_readme_markdown(self.profile_data, self.commits_data, model)
 
-        # Verify all 8 repositories in unified SVG
+        # Verify all discovered repositories in unified SVG
+        expected_count = len(self.repos_data["repositories"])
         svg_anchors = [
             el
             for el in root.iter()
             if el.tag.rsplit("}", 1)[-1] == "a"
         ]
-        self.assertEqual(len(svg_anchors), 8)
+        self.assertEqual(len(svg_anchors), expected_count)
         expected_urls = {r["html_url"] for r in self.repos_data["repositories"]}
         self.assertEqual({a.attrib.get("href") for a in svg_anchors}, expected_urls)
         for anchor in svg_anchors:
@@ -53,7 +54,7 @@ class ProjectExplorerAndGalaxyNavigationTests(unittest.TestCase):
             self.assertNotIn("/assets/", anchor.attrib.get("href", ""))
 
         # Verify every clickable row slice in README wraps its image in <a href="repo_html_url" ...>
-        self.assertEqual(len(slices["rows"]), 8)  # type: ignore[arg-type]
+        self.assertEqual(len(slices["rows"]), expected_count)  # type: ignore[arg-type]
         for row in model.rows:
             expected_slice_img = f'src="assets/explorer/rows/{row.row_slug}.svg"'
             expected_anchor_prefix = (
@@ -173,7 +174,8 @@ class ProjectExplorerAndGalaxyNavigationTests(unittest.TestCase):
             for el in root.iter()
             if el.tag.rsplit("}", 1)[-1] == "a" and "gx-repo-link" in el.attrib.get("class", "")
         ]
-        self.assertEqual(len(links), 8)
+        expected_count = len(self.repos_data["repositories"])
+        self.assertEqual(len(links), expected_count)
         expected_urls = {r["html_url"] for r in self.repos_data["repositories"]}
         self.assertEqual({lnk.attrib.get("href") for lnk in links}, expected_urls)
 

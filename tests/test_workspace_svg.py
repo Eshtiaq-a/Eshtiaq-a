@@ -121,19 +121,26 @@ class WorkspaceSvgTests(unittest.TestCase):
         validate_svg_document(day_svg)
         validate_svg_document(night_svg)
 
-        # Day: lamp glow cone element omitted (light off), sunny sky + sun + clouds rendered
+        # Day: lamp glow cone element omitted (light off), sunny sky + sun + clouds + sunbeam rendered
         self.assertNotIn('<polygon class="lamp-glow-cone"', day_svg)
+        self.assertIn('<polygon class="day-sunbeam"', day_svg)
         self.assertIn('fill="#4ca8f5"', day_svg)
         self.assertIn('fill="#ffd94a"', day_svg)
         self.assertIn('<g class="cloud-drift-1">', day_svg)
         self.assertIn('<g class="cloud-drift-2">', day_svg)
         self.assertNotIn('<line class="shooting-star-1"', day_svg)
 
-        # Night: lamp glow cone element present (light on), dark night sky + moon + shooting stars
+        # Night: lamp glow cone element present (light on), sunbeam omitted, dark night sky + moon + shooting stars
         self.assertIn('<polygon class="lamp-glow-cone"', night_svg)
+        self.assertNotIn('<polygon class="day-sunbeam"', night_svg)
         self.assertIn('fill="#0a1a39"', night_svg)
         self.assertIn('<line class="shooting-star-1"', night_svg)
         self.assertNotIn('<g class="cloud-drift-1">', night_svg)
+
+        # <clipPath id="win-sky-clip"> lives inside <defs> and cat tail pivots continuously around its root
+        self.assertLess(day_svg.index('id="win-sky-clip"'), day_svg.index("</defs>"))
+        self.assertIn("transform-box: fill-box;", day_svg)
+        self.assertIn("transform-origin: 100% 50%;", day_svg)
 
 
 if __name__ == "__main__":

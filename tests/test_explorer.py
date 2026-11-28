@@ -36,7 +36,8 @@ class ExplorerAndReadmeTests(unittest.TestCase):
         svg = build_explorer_svg(model)
         root = validate_svg_document(svg)
 
-        self.assertEqual(model.total_repositories, 8)
+        expected_count = len(self.repos_data["repositories"])
+        self.assertEqual(model.total_repositories, expected_count)
         self.assertEqual(model.sort_by, "updated")
         self.assertEqual(root.attrib.get("width"), "1009")
 
@@ -59,9 +60,11 @@ class ExplorerAndReadmeTests(unittest.TestCase):
         self.assertIn("stash-money-manager/", svg)
 
         # Default updated sorting places most recently updated repository first
-        self.assertEqual(model.rows[0].name, "Eshtiaq-a")
-        self.assertEqual(model.rows[1].name, "Clear-Cut-")
-        self.assertEqual(model.rows[2].name, "Portfolio-main")
+        expected_order = [
+            r["name"]
+            for r in sort_explorer_repositories(self.repos_data["repositories"], sort_by="updated")
+        ]
+        self.assertEqual([r.name for r in model.rows], expected_order)
 
     def test_sorting_modes_updated_stars_name_and_deduplication(self) -> None:
         sample_repos = [
@@ -131,11 +134,12 @@ class ExplorerAndReadmeTests(unittest.TestCase):
                 "pushed_at": "2026-12-05T12:00:00Z",
             }
         )
+        base_count = len(self.repos_data["repositories"])
         model_added = build_explorer_model(added_repos, self.commits_data, self.config_raw)
         svg_added = build_explorer_svg(model_added)
         validate_svg_document(svg_added)
 
-        self.assertEqual(model_added.total_repositories, 9)
+        self.assertEqual(model_added.total_repositories, base_count + 1)
         self.assertEqual(model_added.rows[0].name, "neural-notes-cli")
         self.assertIn("neural-notes-cli/", svg_added)
         self.assertIn("★ 19", svg_added)
@@ -149,7 +153,7 @@ class ExplorerAndReadmeTests(unittest.TestCase):
         model_removed = build_explorer_model(removed_repos, self.commits_data, self.config_raw)
         svg_removed = build_explorer_svg(model_removed)
         validate_svg_document(svg_removed)
-        self.assertEqual(model_removed.total_repositories, 8)
+        self.assertEqual(model_removed.total_repositories, base_count)
         self.assertNotIn("https://github.com/Eshtiaq-a/test", svg_removed)
 
     def test_missing_fields_escaping_long_descriptions_empty_dataset_and_compact_layout(self) -> None:

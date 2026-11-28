@@ -55,13 +55,13 @@ class VisualRefinementAndGalaxyTests(unittest.TestCase):
         galaxy = model.galaxy
 
         expected_count = len(self.repos_data["repositories"])
-        self.assertEqual(expected_count, 8)
-        self.assertEqual(galaxy.repo_count, 8)
-        self.assertEqual(len(galaxy.nodes), 8)
+        self.assertGreaterEqual(expected_count, 8)
+        self.assertEqual(galaxy.repo_count, expected_count)
+        self.assertEqual(len(galaxy.nodes), expected_count)
 
         # Ensure zero pairwise label collisions in static/initial layout
         labeled_boxes = [n.label_box for n in galaxy.nodes if n.show_label and n.label_box is not None]
-        self.assertEqual(len(labeled_boxes), 8)
+        self.assertEqual(len(labeled_boxes), expected_count)
         for i in range(len(labeled_boxes)):
             for j in range(i + 1, len(labeled_boxes)):
                 self.assertFalse(
@@ -105,8 +105,9 @@ class VisualRefinementAndGalaxyTests(unittest.TestCase):
         )
         extended_repos["total_public_repositories"] = len(extended_repos["repositories"])
 
+        base_count = len(self.repos_data["repositories"])
         model_added = build_neofetch_model(self.profile_data, extended_repos, self.commits_data, self.config_raw)
-        self.assertEqual(model_added.galaxy.repo_count, 9)
+        self.assertEqual(model_added.galaxy.repo_count, base_count + 1)
         self.assertEqual(model_added.galaxy.total_stars, 42)
         names_added = {n.name for n in model_added.galaxy.nodes}
         self.assertIn("quantum-search-engine", names_added)
@@ -123,7 +124,7 @@ class VisualRefinementAndGalaxyTests(unittest.TestCase):
         ]
         shrunk_repos["total_public_repositories"] = len(shrunk_repos["repositories"])
         model_removed = build_neofetch_model(self.profile_data, shrunk_repos, self.commits_data, self.config_raw)
-        self.assertEqual(model_removed.galaxy.repo_count, 7)
+        self.assertEqual(model_removed.galaxy.repo_count, base_count - 1)
         self.assertNotIn("test", {n.name for n in model_removed.galaxy.nodes})
 
     def test_zero_star_min_size_distinct_language_colors_and_missing_fields(self) -> None:

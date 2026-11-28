@@ -148,13 +148,13 @@ def _render_wall_and_floor() -> str:
                 f'<rect x="{jx}" y="{row_top}" width="2" height="{row_h}" fill="{P["floor_seam"]}" />'
             )
 
-    # Ambient floor shadows under plant, desk, chair, and cat for grounded depth
+    # Ambient floor shadows under plant, desk, chair, and bed for grounded depth
     parts.extend(
         [
             f'<rect x="118" y="402" width="50" height="5" fill="{P["floor_shadow"]}" />',
             f'<rect x="264" y="399" width="464" height="6" fill="{P["floor_shadow"]}" fill-opacity="0.65" />',
             f'<rect x="520" y="402" width="64" height="5" fill="{P["floor_shadow"]}" />',
-            f'<rect x="762" y="402" width="114" height="5" fill="{P["floor_shadow"]}" />',
+            f'<rect x="748" y="396" width="154" height="6" fill="{P["floor_shadow"]}" fill-opacity="0.7" />',
         ]
     )
     return "\n    ".join(parts)
@@ -184,13 +184,7 @@ def _render_window(is_daytime: bool = False) -> str:
             f'<rect x="195" y="104" width="2" height="4" fill="#ffd94a" />',
             f'<rect x="180" y="91" width="4" height="2" fill="#ffd94a" />',
             f'<rect x="208" y="91" width="4" height="2" fill="#ffd94a" />',
-            # Drifting pixel clouds clipped inside the 4 window panes
-            '<clipPath id="win-sky-clip">'
-            f'<rect x="44" y="63" width="92" height="88" />'
-            f'<rect x="144" y="63" width="92" height="88" />'
-            f'<rect x="44" y="159" width="92" height="90" />'
-            f'<rect x="144" y="159" width="92" height="90" />'
-            '</clipPath>',
+            # Drifting pixel clouds clipped inside the 4 window panes (#win-sky-clip in <defs>)
             '<g clip-path="url(#win-sky-clip)" pointer-events="none">',
             '  <g class="cloud-drift-1">',
             f'    <rect x="64" y="112" width="38" height="10" fill="#ffffff" />',
@@ -238,13 +232,7 @@ def _render_window(is_daytime: bool = False) -> str:
             f'<rect x="184" y="88" width="8" height="24" fill="{P["cream"]}" />',
             f'<rect x="184" y="104" width="24" height="8" fill="{P["cream"]}" />',
             f'<rect class="star-twinkle-c" x="208" y="120" width="4" height="4" fill="{P["cream"]}" />',
-            # Shooting stars (clipped to window sky area, 2-min delay, 5-min cycle)
-            '<clipPath id="win-sky-clip">'
-            f'<rect x="44" y="63" width="92" height="88" />'
-            f'<rect x="144" y="63" width="92" height="88" />'
-            f'<rect x="44" y="159" width="92" height="90" />'
-            f'<rect x="144" y="159" width="92" height="90" />'
-            '</clipPath>',
+            # Shooting stars (clipped to window sky area via #win-sky-clip in <defs>, 2-min delay, 5-min cycle)
             '<g clip-path="url(#win-sky-clip)" pointer-events="none">',
             f'  <line class="shooting-star-1" x1="52" y1="67" x2="52" y2="67" stroke="{P["cream"]}" stroke-width="1.5" stroke-linecap="round" />',
             f'  <line class="shooting-star-2" x1="152" y1="70" x2="152" y2="70" stroke="#c8e0ff" stroke-width="1.5" stroke-linecap="round" />',
@@ -330,6 +318,10 @@ def _render_name_plaque_and_wall_decor(display_name: str) -> str:
 def _render_desk_and_lamp(is_daytime: bool = False) -> str:
     """Render layered wooden desk with depth, ambient shadows, and Day (off) / Night (lit) table lamp."""
     if is_daytime:
+        room_ambient_light = (
+            f'<rect x="0" y="0" width="{WORKSPACE_WIDTH}" height="385" fill="#7cb8ff" fill-opacity="0.06" />',
+            '<polygon class="day-sunbeam" points="44,269 244,269 420,428 110,428" fill="url(#sunbeam-grad)" pointer-events="none" />',
+        )
         lamp_light_and_shade = [
             # Daytime: table lamp is OFF (no glow cone, unlit shade & dark bulb)
             f'<rect x="264" y="293" width="22" height="4" fill="{P["lamp_pole"]}" />',
@@ -340,6 +332,10 @@ def _render_desk_and_lamp(is_daytime: bool = False) -> str:
             f'<rect x="257" y="190" width="36" height="2" fill="#756333" />',
         ]
     else:
+        room_ambient_light = (
+            # Soft ambient desk glow from external monitor onto wall at night
+            f'<rect x="410" y="118" width="280" height="170" fill="#5aa9ff" fill-opacity="0.035" />',
+        )
         lamp_light_and_shade = [
             # Nighttime: animated warm desk lamp glow cone illuminating MacBook & left desk
             f'<polygon class="lamp-glow-cone" points="258,192 292,192 332,297 248,297" fill="url(#lamp-beam-grad)" />',
@@ -354,8 +350,7 @@ def _render_desk_and_lamp(is_daytime: bool = False) -> str:
 
     return "\n    ".join(
         [
-            # Soft ambient desk glow from external monitor onto wall
-            f'<rect x="410" y="118" width="280" height="170" fill="#5aa9ff" fill-opacity="0.035" />',
+            *room_ambient_light,
             # Desk legs & inner leg shadow (x=248..742, y=297..403)
             f'<rect x="266" y="323" width="14" height="80" fill="{P["wood_shadow"]}" />',
             f'<rect x="266" y="323" width="14" height="6" fill="{P["wood_dark"]}" />',
@@ -649,8 +644,163 @@ def _render_indoor_plants(include_second_plant: bool) -> str:
     return "\n    ".join(parts)
 
 
+def _render_bed_and_cat() -> str:
+    """Render wooden storage bed beside the desk with under-bed drawers, plank footboard, and sleeping cat on top."""
+    parts: list[str] = [
+        # Soft wall shadow behind headboard & floor shadow beneath angled bed base
+        f'<rect x="756" y="324" width="146" height="22" fill="{P["shadow_ambient"]}" fill-opacity="0.35" />',
+        f'<rect x="802" y="446" width="154" height="8" fill="{P["floor_shadow"]}" fill-opacity="0.85" />',
+        # Headboard against wall (x=752..898, y=320..398)
+        f'<rect x="752" y="324" width="10" height="74" fill="{P["wood_top"]}" />',
+        f'<rect x="752" y="324" width="2" height="74" fill="{P["wood_highlight"]}" />',
+        f'<rect x="760" y="324" width="2" height="30" fill="{P["wood_dark"]}" />',
+        f'<rect x="888" y="324" width="10" height="34" fill="{P["wood_top"]}" />',
+        f'<rect x="888" y="324" width="2" height="22" fill="{P["wood_highlight"]}" />',
+        f'<rect x="896" y="324" width="2" height="34" fill="{P["wood_shadow"]}" />',
+        # Gently arched headboard top rail & 2 recessed horizontal planks
+        f'<rect x="804" y="320" width="42" height="2" fill="{P["wood_highlight"]}" />',
+        f'<rect x="782" y="322" width="86" height="2" fill="{P["wood_highlight"]}" />',
+        f'<rect x="762" y="324" width="126" height="2" fill="{P["wood_highlight"]}" />',
+        f'<rect x="762" y="326" width="126" height="8" fill="{P["wood_top"]}" />',
+        f'<rect x="762" y="334" width="126" height="2" fill="{P["wood_dark"]}" />',
+        f'<rect x="762" y="336" width="126" height="6" fill="{P["wood_top"]}" />',
+    ]
+
+    # Oblique floor shadow along angled left side, right wooden side rail, mattress, sheet & blanket
+    for dy in range(0, 54, 2):
+        lx = 756 + dy
+        rx = 888 + dy
+        y = 340 + dy
+
+        # Angled floor cast shadow under left side rail
+        parts.append(
+            f'<rect x="{lx - 6}" y="{396 + dy}" width="10" height="4" '
+            f'fill="{P["floor_shadow"]}" fill-opacity="0.7" />'
+        )
+
+        # Right wooden side rail outer frame (connects headboard right post to footboard right post)
+        rail_h = min(48, 446 - (y + 8))
+        parts.append(f'<rect x="{rx}" y="{y + 6}" width="10" height="2" fill="{P["wood_highlight"]}" />')
+        if rail_h > 0:
+            parts.append(f'<rect x="{rx}" y="{y + 8}" width="10" height="{rail_h}" fill="{P["wood_shadow"]}" />')
+            parts.append(f'<rect x="{rx + 8}" y="{y + 8}" width="2" height="{rail_h}" fill="{P["wood_dark"]}" />')
+
+        # Mattress top surface (fitted slate-blue sheet upper half, deep navy folded duvet lower half)
+        is_blanket = dy >= 26
+        is_trim = 26 <= dy <= 28
+        if is_trim:
+            top_fill = P["bed_blanket_trim"]
+            side_fill = P["bed_blanket_shadow"]
+        elif is_blanket:
+            top_fill = P["bed_blanket_shadow"] if dy in (34, 42) else P["bed_blanket"]
+            side_fill = P["bed_blanket_shadow"]
+        else:
+            top_fill = P["bed_sheet_light"] if dy in (18, 24) else P["bed_sheet_top"]
+            side_fill = P["bed_sheet_side"]
+
+        parts.append(f'<rect x="{lx + 4}" y="{y}" width="128" height="2" fill="{top_fill}" />')
+
+        # Left mattress edge thickness + piping highlight
+        parts.append(f'<rect x="{lx + 2}" y="{y}" width="2" height="2" fill="{P["bed_sheet_light"]}" />')
+        parts.append(f'<rect x="{lx + 2}" y="{y + 2}" width="2" height="10" fill="{side_fill}" />')
+
+        # Left wooden box frame below mattress (supports 3 under-bed storage drawers)
+        parts.append(f'<rect x="{lx}" y="{y + 12}" width="2" height="2" fill="{P["wood_highlight"]}" />')
+        parts.append(f'<rect x="{lx}" y="{y + 14}" width="2" height="2" fill="{P["wood_top"]}" />')
+        parts.append(f'<rect x="{lx}" y="{y + 16}" width="2" height="36" fill="{P["wood_shadow"]}" />')
+        parts.append(f'<rect x="{lx}" y="{y + 52}" width="2" height="4" fill="{P["wood_dark"]}" />')
+
+    # 3 Under-bed storage drawers along the left box frame (matching photo's side drawer structure)
+    for d_start in (6, 20, 34):
+        for offset in range(0, 12, 2):
+            dy = d_start + offset
+            lx = 756 + dy
+            y = 340 + dy
+            parts.append(f'<rect x="{lx}" y="{y + 20}" width="2" height="26" fill="{P["wood_dark"]}" />')
+            if 2 <= offset <= 8:
+                parts.append(f'<rect x="{lx}" y="{y + 22}" width="2" height="22" fill="{P["wood_top"]}" />')
+            else:
+                parts.append(f'<rect x="{lx}" y="{y + 22}" width="2" height="22" fill="{P["wood_shadow"]}" />')
+            if offset in (4, 6):
+                parts.append(f'<rect x="{lx}" y="{y + 30}" width="2" height="4" fill="{P["wood_highlight"]}" />')
+                parts.append(f'<rect x="{lx}" y="{y + 34}" width="2" height="2" fill="{P["wood_dark"]}" />')
+
+    # Plump cream pillow tucked neatly near the headboard (clean pillow silhouette with soft shade)
+    parts.extend(
+        [
+            f'<rect x="784" y="342" width="92" height="2" fill="#f5efe4" />',
+            f'<rect x="782" y="344" width="96" height="8" fill="{P["bed_pillow"]}" />',
+            f'<rect x="784" y="352" width="94" height="2" fill="{P["bed_pillow_shadow"]}" />',
+            f'<rect x="786" y="354" width="92" height="2" fill="{P["bed_sheet_side"]}" />',
+        ]
+    )
+
+    # Front footboard (x=806..952, y=380..452): corner posts, arched top rail, 3 horizontal planks & short feet
+    parts.extend(
+        [
+            f'<rect x="806" y="384" width="10" height="68" fill="{P["wood_top"]}" />',
+            f'<rect x="806" y="384" width="2" height="68" fill="{P["wood_highlight"]}" />',
+            f'<rect x="814" y="386" width="2" height="58" fill="{P["wood_dark"]}" />',
+            f'<rect x="806" y="446" width="10" height="6" fill="{P["wood_dark"]}" />',
+            f'<rect x="942" y="384" width="10" height="68" fill="{P["wood_top"]}" />',
+            f'<rect x="942" y="384" width="2" height="62" fill="{P["wood_highlight"]}" />',
+            f'<rect x="950" y="384" width="2" height="68" fill="{P["wood_shadow"]}" />',
+            f'<rect x="942" y="446" width="10" height="6" fill="{P["wood_dark"]}" />',
+            f'<rect x="809" y="386" width="2" height="2" fill="{P["wood_dark"]}" />',
+            f'<rect x="945" y="386" width="2" height="2" fill="{P["wood_dark"]}" />',
+            f'<rect x="856" y="380" width="46" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="834" y="382" width="90" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="816" y="384" width="126" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="816" y="386" width="126" height="2" fill="{P["wood_top"]}" />',
+            f'<rect x="816" y="388" width="126" height="2" fill="{P["wood_dark"]}" />',
+            f'<rect x="816" y="390" width="126" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="816" y="392" width="126" height="12" fill="{P["wood_top"]}" />',
+            f'<rect x="816" y="404" width="126" height="2" fill="{P["wood_dark"]}" />',
+            f'<rect x="816" y="406" width="126" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="816" y="408" width="126" height="12" fill="{P["wood_top"]}" />',
+            f'<rect x="816" y="420" width="126" height="2" fill="{P["wood_dark"]}" />',
+            f'<rect x="816" y="422" width="126" height="2" fill="{P["wood_highlight"]}" />',
+            f'<rect x="816" y="424" width="126" height="12" fill="{P["wood_top"]}" />',
+            f'<rect x="816" y="436" width="126" height="4" fill="{P["wood_shadow"]}" />',
+            f'<rect x="816" y="440" width="126" height="8" fill="{P["floor_shadow"]}" />',
+            # Sleeping orange cat curled up ON TOP OF THE BED (resting on blanket at y=380, clear of pillow)
+            f'<rect x="828" y="378" width="74" height="4" fill="{P["bed_blanket_shadow"]}" fill-opacity="0.7" />',
+            '<g transform="translate(834, 372)">',
+            '  <g class="cat-tail-wag">',
+            f'    <rect x="-22" y="-4" width="24" height="6" fill="{P["cat_body"]}" />',
+            f'    <rect x="-22" y="-4" width="6" height="4" fill="{P["cream"]}" />',
+            "  </g>",
+            "</g>",
+            '<g transform="translate(858, 380)">',
+            '  <g class="cat-breathe">',
+            f'    <rect x="-24" y="-22" width="48" height="22" fill="{P["cat_body"]}" />',
+            f'    <rect x="-18" y="-16" width="28" height="3" fill="{P["cat_stripe"]}" />',
+            f'    <rect x="-6" y="-10" width="14" height="3" fill="{P["cat_stripe"]}" />',
+            "  </g>",
+            "</g>",
+            f'<rect x="878" y="352" width="24" height="26" fill="{P["cat_body"]}" />',
+            f'<rect x="878" y="346" width="6" height="6" fill="{P["cat_body"]}" />',
+            f'<rect x="896" y="346" width="6" height="6" fill="{P["cat_body"]}" />',
+            f'<rect x="890" y="362" width="4" height="2" fill="{P["cat_stripe"]}" />',
+            f'<rect x="896" y="362" width="4" height="2" fill="{P["cat_stripe"]}" />',
+            f'<rect x="895" y="367" width="3" height="2" fill="#d97777" />',
+            '<g class="sleep-z-1">',
+            f'  <rect x="910" y="324" width="6" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="912" y="326" width="2" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="910" y="328" width="6" height="2" fill="{P["window_star"]}" />',
+            "</g>",
+            '<g class="sleep-z-2">',
+            f'  <rect x="920" y="312" width="8" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="924" y="314" width="2" height="2" fill="{P["window_star"]}" />',
+            f'  <rect x="920" y="316" width="8" height="2" fill="{P["window_star"]}" />',
+            "</g>",
+        ]
+    )
+    return "\n    ".join(parts)
+
+
 def _render_clock_shelves_and_cat() -> str:
-    """Render animated wall clock, well-stocked programmer bookshelves, and animated sleeping cat."""
+    """Render animated wall clock, well-stocked programmer bookshelves, and wooden bed with sleeping cat."""
     return "\n    ".join(
         [
             # Wall clock with animated hands (cx=860, cy=73)
@@ -713,38 +863,7 @@ def _render_clock_shelves_and_cat() -> str:
             f'<rect x="908" y="255" width="24" height="24" fill="{P["plaque_border"]}" />',
             f'<rect x="911" y="258" width="18" height="18" fill="{P["poster_bg"]}" />',
             f'<rect x="917" y="263" width="6" height="8" fill="{P["lamp_shade"]}" />',
-            # Sleeping orange cat on right floor (x=764..872, resting at y=404) with animated tail & sleep Zs
-            '<g transform="translate(790, 392)">',
-            '  <g class="cat-tail-wag">',
-            f'    <rect x="-26" y="-4" width="26" height="8" fill="{P["cat_body"]}" />',
-            f'    <rect x="-26" y="-4" width="6" height="4" fill="{P["cream"]}" />',
-            "  </g>",
-            "</g>",
-            '<g transform="translate(818, 404)">',
-            '  <g class="cat-breathe">',
-            f'    <rect x="-28" y="-28" width="56" height="28" fill="{P["cat_body"]}" />',
-            f'    <rect x="-20" y="-20" width="34" height="4" fill="{P["cat_stripe"]}" />',
-            f'    <rect x="-6" y="-12" width="16" height="3" fill="{P["cat_stripe"]}" />',
-            "  </g>",
-            "</g>",
-            # Cat head & pixel ears
-            f'<rect x="846" y="366" width="26" height="30" fill="{P["cat_body"]}" />',
-            f'<rect x="846" y="358" width="8" height="8" fill="{P["cat_body"]}" />',
-            f'<rect x="864" y="358" width="8" height="8" fill="{P["cat_body"]}" />',
-            f'<rect x="860" y="378" width="4" height="2" fill="{P["cat_stripe"]}" />',
-            f'<rect x="867" y="378" width="4" height="2" fill="{P["cat_stripe"]}" />',
-            f'<rect x="865" y="383" width="3" height="2" fill="#d97777" />',
-            # Animated drifting sleep 'z' glyphs above cat
-            '<g class="sleep-z-1">',
-            f'  <rect x="888" y="338" width="6" height="2" fill="{P["window_star"]}" />',
-            f'  <rect x="890" y="340" width="2" height="2" fill="{P["window_star"]}" />',
-            f'  <rect x="888" y="342" width="6" height="2" fill="{P["window_star"]}" />',
-            "</g>",
-            '<g class="sleep-z-2">',
-            f'  <rect x="898" y="324" width="8" height="2" fill="{P["window_star"]}" />',
-            f'  <rect x="902" y="326" width="2" height="2" fill="{P["window_star"]}" />',
-            f'  <rect x="898" y="328" width="8" height="2" fill="{P["window_star"]}" />',
-            "</g>",
+            _render_bed_and_cat(),
         ]
     )
 

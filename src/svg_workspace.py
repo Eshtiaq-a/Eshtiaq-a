@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import datetime
 from pathlib import Path
@@ -52,6 +53,17 @@ def build_workspace_svg(
     <clipPath id="monitor-screen-clip">
       <rect x="{sx}" y="{sy}" width="{sw}" height="{sh}" rx="2" ry="2" />
     </clipPath>
+    <clipPath id="win-sky-clip">
+      <rect x="44" y="63" width="92" height="88" />
+      <rect x="144" y="63" width="92" height="88" />
+      <rect x="44" y="159" width="92" height="90" />
+      <rect x="144" y="159" width="92" height="90" />
+    </clipPath>
+    <linearGradient id="sunbeam-grad" x1="0.2" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#fff4bf" stop-opacity="0.16" />
+      <stop offset="65%" stop-color="#ffe999" stop-opacity="0.07" />
+      <stop offset="100%" stop-color="#ffe999" stop-opacity="0.0" />
+    </linearGradient>
     <linearGradient id="screen-top-fade" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="{P["screen_bg"]}" stop-opacity="0.95" />
       <stop offset="100%" stop-color="{P["screen_bg"]}" stop-opacity="0" />
@@ -109,17 +121,17 @@ def build_workspace_svg(
       }}
     }}
     @keyframes catTailWag {{
-      0%, 72%, 100% {{
+      0%, 100% {{
         transform: rotate(0deg);
       }}
-      80% {{
+      25% {{
         transform: rotate(-7deg);
       }}
-      88% {{
+      50% {{
         transform: rotate(4deg);
       }}
-      94% {{
-        transform: rotate(-3deg);
+      75% {{
+        transform: rotate(-5deg);
       }}
     }}
     @keyframes catBreathe {{
@@ -229,11 +241,13 @@ def build_workspace_svg(
       animation: steamRise 3.5s ease-in-out 2.0s infinite;
     }}
     .cat-tail-wag {{
-      transform-origin: 0px 0px;
-      animation: catTailWag 6.5s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 100% 50%;
+      animation: catTailWag 4.8s ease-in-out infinite;
     }}
     .cat-breathe {{
-      transform-origin: 0px 0px;
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
       animation: catBreathe 4.2s ease-in-out infinite;
     }}
     .sleep-z-1 {{
@@ -267,7 +281,7 @@ def build_workspace_svg(
       animation: cloudDrift 28s ease-in-out infinite;
     }}
     .cloud-drift-2 {{
-      animation: cloudDrift 36s ease-in-out 4s reverse infinite;
+      animation: cloudDrift 36s ease-in-out -4s reverse infinite;
     }}
     /* Shooting stars: 2-min initial delay, 5-min cycle, ~0.9s flash */
     .shooting-star-1 {{
@@ -331,5 +345,13 @@ def generate_workspace_svg_file(
 
 
 if __name__ == "__main__":
-    written = generate_workspace_svg_file()
+    parser = argparse.ArgumentParser(description="Generate Section 01 animated workspace SVG.")
+    parser.add_argument(
+        "--theme",
+        choices=("auto", "day", "night"),
+        default="auto",
+        help="Workspace lighting theme (auto = day 06:00-17:59, night 18:00-05:59 in configured timezone).",
+    )
+    args = parser.parse_args()
+    written = generate_workspace_svg_file(theme=args.theme)
     print(f"Generated {written} ({written.stat().st_size} bytes)")
